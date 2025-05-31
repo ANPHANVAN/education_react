@@ -4,7 +4,7 @@ const JWT_SECRET = process.env.JWT_SECRET
 const authMiddleware = (req, res, next) => {
     const token = req.cookies.token || req.header('Authorization')?.replace('Bearer ', '');
     if (!token){
-        return res.redirect('/login')
+        return res.redirect('auth/login')
     } 
     
     try {
@@ -13,7 +13,7 @@ const authMiddleware = (req, res, next) => {
         next()
     } catch (error) {
         res.clearCookie('token');
-        return res.redirect('/login');
+        return res.redirect('auth/login');
     }
 }
 

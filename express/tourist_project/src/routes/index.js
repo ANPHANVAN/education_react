@@ -3,14 +3,17 @@ function route(app){
     
     const chatRouter = require('./chat');
     const meRouter = require('./me');
-    const apiRouter = require('./api');
-    const indexRouter = require('./site');
+    const homeRouter = require('./home');
+    const authRouter = require('./auth');
 
-    // homepage
+    // [GET] /health
+    app.get('/health', (req, res) => {
+        res.status(200).send('OK');
+    });
     app.use('/chat', authMiddleware, chatRouter)
     app.use('/me', authMiddleware, meRouter)
-    app.use('/api', authMiddleware, apiRouter)
-    app.use('/', indexRouter)
+    app.use('/auth', authRouter)
+    app.use('/', homeRouter)
 }
 
 module.exports = route;

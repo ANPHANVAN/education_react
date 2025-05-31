@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const Users = require('../models/userModel');
 const bcrypt = require('bcrypt');
 
-class SiteController {
+class AuthController {
     async index(req,res){
         try {
             res.render('sites/home');
@@ -27,7 +27,7 @@ class SiteController {
     async logout(req,res,next){
         try {
             res.clearCookie('token');
-            res.redirect('/login');
+            res.redirect('/auth/login');
         } catch (err) {
             console.error('Error fetching data:', err);
             res.status(500).send('Internal Server Error');
@@ -60,7 +60,7 @@ class SiteController {
                     username: user.username,
                     hash_password: hashPassword
                 })
-                res.redirect('/login');
+                res.redirect('auth/login');
             }
 
         } catch (err) {
@@ -97,4 +97,4 @@ class SiteController {
     }
 }
 
-module.exports = new SiteController();
+module.exports = new AuthController();

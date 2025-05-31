@@ -15,9 +15,9 @@
 __pycache__/
 
 # plan files
-0_plan/
-0_plan/task.xlsx
-*.xlsx
+# 0_plan/
+# 0_plan/task.xlsx
+# *.xlsx
 
+# .database
 *.pem
-.database
