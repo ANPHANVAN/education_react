@@ -1,0 +1,178 @@
+/* General Container Styling */
+.container.mt-5 {
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e0e7f0 100%);
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  margin-top: 30px;
+  min-height: 80vh;
+}
+
+/* Go Back Link */
+a[href="/destination"] {
+  background-color: #fff;
+  color: #4facfe !important;
+  font-weight: 600;
+  display: inline-block;
+  padding: 8px 15px;
+  border-radius: 20px;
+  background: #fff;
+  color: #34495e;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* No Destination Message */
+.text-center {
+  color: #7f8c8d;
+  font-style: italic;
+  font-size: 1.2rem;
+}
+
+/* Destination Card */
+.card {
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  background: #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(44, 62, 80, 0.15);
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: #2c3e50;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  transition: color 0.3s ease;
+}
+
+.card-title:hover {
+  color: #34495e;
+}
+
+.card-text {
+  color: #7f8c8d;
+  line-height: 1.6;
+}
+
+.card-text.text-end {
+  font-weight: 500;
+  color: #34495e;
+}
+
+.card-img-top {
+  height: 500px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .card-img-top {
+  transform: scale(1.03);
+}
+
+.card-text.fst-italic {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+}
+
+/* Embedded Content (YouTube and Google Map) */
+div[style*="padding-bottom: 56.25%"] {
+  margin: 20px 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+div[style*="padding-bottom: 56.25%"]:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+iframe {
+  border: none;
+  border-radius: 10px;
+}
+
+/* Buttons in Card Footer */
+.like-btn, .went-btn {
+  border-radius: 20px;
+  padding: 5px 15px;
+  transition: all 0.3s ease;
+}
+
+.like-btn:hover, .went-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.like-btn.btn-success {
+  background: linear-gradient(135deg, #28a745 0%, #34ce57 100%);
+  border: none;
+  color: white;
+}
+
+.like-btn.btn-success:hover {
+  background: linear-gradient(135deg, #218838 0%, #2ecc71 100%);
+}
+
+.went-btn.btn-info {
+  background: linear-gradient(135deg, #17a2b8 0%, #00c4cc 100%);
+  border: none;
+  color: white;
+}
+
+.went-btn.btn-info:hover {
+  background: linear-gradient(135deg, #138496 0%, #009ba7 100%);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .container.mt-5 {
+    margin-top: 10px;
+    padding: 10px;
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+  }
+
+  .card-img-top {
+    height: 300px;
+  }
+
+  div[style*="padding-bottom: 56.25%"] {
+    margin: 10px 0;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    gap: 10px !important;
+  }
+
+  .like-btn, .went-btn {
+    max-width: 100%;
+    width: 100%;
+  }
+}

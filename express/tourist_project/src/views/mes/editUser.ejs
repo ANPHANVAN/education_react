@@ -1,0 +1,215 @@
+  <link rel="stylesheet" href="/public/css/editUserProfile.css">
+
+  <div class="container mt-5">
+    <h2 class="text-center mb-5 fw-bold text-primary">Edit Profile</h2>
+
+    <!-- Thông tin user -->
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+
+
+          <form id="profileForm" method="POST">
+            <!-- Ảnh bìa -->
+            <div>
+              <img id="coverPreview" src="" alt="Cover Picture" class="cover-preview">
+              <div class="input-group mb-4 px-3">
+                <input id="coverInput" name="cover_picture" type="url" class="form-control shadow-on-focus" placeholder="Enter new cover picture URL" readonly>
+                <button class="btn btn-outline-secondary" type="button" id="changeCoverBtn" disabled>
+                  <i class="bi bi-camera-fill"></i> Change
+                </button>
+              </div>
+            </div>
+
+            <div class="card-body text-center">
+              <!-- Ảnh đại diện -->
+              <div class="mb-4">
+                <img id="avatarPreview" src="" alt="Avatar" class="rounded-circle avatar-preview">
+                <div class="input-group mt-3">
+                  <input id="avatarInput" name="avatar" type="url" class="form-control shadow-on-focus" placeholder="Enter new avatar URL" readonly>
+                  <button class="btn btn-outline-secondary" type="button" id="changeAvatarBtn" disabled>
+                    <i class="bi bi-camera-fill"></i> Change
+                  </button>
+                </div>
+              </div>
+
+              <!-- Bio -->
+              <div class="mb-3">
+                <label for="bioInput" class="form-label fw-bold">Bio</label>
+                <textarea id="bioInput" name="bio" class="form-control shadow-on-focus" rows="3" placeholder="Tell something about yourself..." readonly></textarea>
+              </div>
+
+              <!-- Thông tin cá nhân -->
+              <div class="mb-3">
+                <label for="fullnameInput" class="form-label fw-bold">Full Name</label>
+                <input id="fullnameInput" name="fullname" type="text" class="form-control shadow-on-focus" readonly>
+              </div>
+              <div class="mb-3">
+                <label for="usernameInput" class="form-label fw-bold">Username</label>
+                <input id="usernameInput" name="" type="text" class="form-control shadow-on-focus" readonly>
+              </div>
+              <div class="mb-4">
+                <label for="emailInput" class="form-label fw-bold">Email</label>
+                <input id="emailInput" name="" type="email" class="form-control shadow-on-focus" readonly>
+              </div>
+
+              <!-- Nút điều chỉnh -->
+              <div class="d-flex justify-content-center gap-2">
+                <button id="editBtn" type="button" class="btn btn-primary">
+                  <i class="bi bi-pencil-fill me-1"></i> Edit
+                </button>
+                <button id="saveBtn" type="submit" class="btn btn-success" style="display: none;">
+                  <i class="bi bi-floppy-fill me-1"></i> Save
+                </button>
+                <button id="cancelBtn" type="button" class="btn btn-secondary" style="display: none;">
+                  <i class="bi bi-x-circle-fill me-1"></i> Cancel
+                </button>
+              </div>
+            </div>
+          </form>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let originalData = {}; // Lưu dữ liệu ban đầu để khôi phục khi cancel
+    let isEditing = false;
+
+    // Lấy các phần tử giao diện
+    const profileForm = document.getElementById('profileForm');
+    const coverPreview = document.getElementById('coverPreview');
+    const coverInput = document.getElementById('coverInput');
+    const changeCoverBtn = document.getElementById('changeCoverBtn');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const avatarInput = document.getElementById('avatarInput');
+    const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+    const bioInput = document.getElementById('bioInput');
+    const fullnameInput = document.getElementById('fullnameInput');
+    const usernameInput = document.getElementById('usernameInput');
+    const emailInput = document.getElementById('emailInput');
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    // Hàm fetch thông tin user
+    async function fetchUser(userId) {
+      try {
+        const response = await fetch(`/api/users/${userId}`);
+        const data = await response.json();
+        return data.user;
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        alert('Failed to load user data.');
+        return null;
+      }
+    }
+
+    // Hàm hiển thị thông tin user
+    function displayUser(user) {
+      coverPreview.src = user.cover_picture || 'https://via.placeholder.com/800x200?text=No+Cover+Picture';
+      coverInput.value = user.cover_picture || '';
+      avatarPreview.src = user.avatar || 'https://via.placeholder.com/150?text=No+Avatar';
+      avatarInput.value = user.avatar || '';
+      bioInput.value = user.bio || '';
+      fullnameInput.value = user.fullname;
+      usernameInput.value = user.username;
+      emailInput.value = user.email;
+      originalData = { ...user }; // Lưu dữ liệu ban đầu
+    }
+
+    // Hàm chuyển sang trạng thái chỉnh sửa
+    function enableEditing() {
+      isEditing = true;
+      coverInput.removeAttribute('readonly');
+      changeCoverBtn.removeAttribute('disabled');
+      avatarInput.removeAttribute('readonly');
+      changeAvatarBtn.removeAttribute('disabled');
+      bioInput.removeAttribute('readonly');
+      fullnameInput.removeAttribute('readonly');
+      // usernameInput.removeAttribute('readonly');
+      // emailInput.removeAttribute('readonly');
+      editBtn.style.display = 'none';
+      saveBtn.style.display = 'inline-block';
+      cancelBtn.style.display = 'inline-block';
+    }
+
+    // Hàm hủy chỉnh sửa
+    function cancelEditing() {
+      isEditing = false;
+      coverInput.setAttribute('readonly', true);
+      changeCoverBtn.setAttribute('disabled', true);
+      avatarInput.setAttribute('readonly', true);
+      changeAvatarBtn.setAttribute('disabled', true);
+      bioInput.setAttribute('readonly', true);
+      fullnameInput.setAttribute('readonly', true);
+      usernameInput.setAttribute('readonly', true);
+      emailInput.setAttribute('readonly', true);
+      editBtn.style.display = 'inline-block';
+      saveBtn.style.display = 'none';
+      cancelBtn.style.display = 'none';
+      displayUser(originalData); // Khôi phục dữ liệu ban đầu
+    }
+
+    // Xử lý sự kiện
+    editBtn.addEventListener('click', () => {
+      enableEditing();
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      cancelEditing();
+    });
+
+    saveBtn.addEventListener('click', async (event) => {
+      event.preventDefault();
+      if (isEditing) {
+          const form = document.querySelector('#profileForm');
+          try {
+        const user = await takeUser()
+        form.setAttribute('action', `/me/api/${user._id}/edit`);
+        form.submit()
+     
+        } catch (error) {
+          console.error('Error updating profile:', error);
+          alert('Failed to update profile.');
+        }
+      }
+    });
+
+    changeCoverBtn.addEventListener('click', () => {
+      const newCoverUrl = coverInput.value.trim();
+      if (newCoverUrl) {
+        coverPreview.src = newCoverUrl;
+      }
+    });
+
+    changeAvatarBtn.addEventListener('click', () => {
+      const newAvatarUrl = avatarInput.value.trim();
+      if (newAvatarUrl) {
+        avatarPreview.src = newAvatarUrl;
+      }
+    });
+
+
+    // Hàm khởi tạo trang
+    async function init() {
+      const user = await takeUser()
+      if (user) {
+        displayUser(user);
+      }
+    }
+
+    async function takeUser() {
+      const pathParts = window.location.pathname.split('/');
+      // ['','me','680f1e0064457c69ff1f2c8e','edit']
+      const userId = pathParts[2];
+
+      const user = await fetchUser(userId);
+        return user
+    }
+
+    // Gọi hàm init khi trang được tải
+    document.addEventListener('DOMContentLoaded', init);
+  </script>

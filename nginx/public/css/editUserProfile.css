@@ -1,0 +1,191 @@
+/* General Container Styling */
+.container.mt-5 {
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e0e7f0 100%);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  margin-top: 30px;
+  min-height: 80vh;
+}
+
+/* Heading Styling */
+h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: #2c3e50;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease;
+}
+
+/* Card Styling */
+.card {
+  border: none;
+  border-radius: 15px;
+  background: #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(44, 62, 80, 0.15) !important;
+}
+
+/* Cover and Avatar Previews */
+.cover-preview {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 15px 15px 0 0;
+  transition: opacity 0.3s ease;
+}
+
+.cover-preview:hover {
+  opacity: 0.9;
+}
+
+.avatar-preview {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  top: -75px;
+  margin-bottom: -50px;
+  border-radius: 50%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avatar-preview:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Body */
+.card-body {
+  padding-top: 0;
+  padding: 20px;
+}
+
+/* Form Inputs and Labels */
+.form-label {
+  font-weight: 600;
+  color: #34495e;
+}
+
+.form-control, textarea {
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus, textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
+.input-group input[readonly],
+.input-group textarea[readonly] {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+/* Input Group Buttons */
+.input-group .btn-outline-secondary {
+  border-radius: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.input-group .btn-outline-secondary:hover {
+  background-color: #e9ecef;
+  transform: scale(1.05);
+}
+
+.input-group .btn-outline-secondary:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Action Buttons (Edit, Save, Cancel) */
+.btn-primary, .btn-success, .btn-secondary {
+  border-radius: 20px;
+  padding: 8px 20px;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #007bff 0%, #00c4cc 100%);
+  border: none;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #0056b3 0%, #009ba7 100%);
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #28a745 0%, #34ce57 100%);
+  border: none;
+}
+
+.btn-success:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #218838 0%, #2ecc71 100%);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #6c757d 0%, #adb5bd 100%);
+  border: none;
+}
+
+.btn-secondary:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #5a6268 0%, #959ca5 100%);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .container.mt-5 {
+    margin-top: 10px;
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .avatar-preview {
+    width: 120px;
+    height: 120px;
+    top: -60px;
+    margin-bottom: -40px;
+  }
+
+  .cover-preview {
+    height: 150px;
+  }
+
+  .d-flex.gap-2 {
+    flex-direction: column;
+    gap: 10px !important;
+  }
+
+  .btn-primary, .btn-success, .btn-secondary {
+    width: 100%;
+  }
+}

@@ -1,0 +1,500 @@
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="/public/css/chat.css">
+<div class="chat-container">
+<!-- Cột 1: Danh sách cuộc trò chuyện -->
+<div class="sidebar col-md-3 p-0">
+    <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0">Chats</h5>
+        <button id="add-new-conversation" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#createConversationModal">
+            <i class="bi bi-plus-circle-fill"></i>
+        </button>
+    </div>
+    
+    <ul class="list-group list-group-flush conversation-list" id="conversationList">
+    <!-- Danh sách cuộc trò chuyện sẽ được fetch và hiển thị ở đây -->
+    </ul>
+</div>
+
+<!-- Cột 2: Ô trò chuyện -->
+<div class="chat-area col-md-6 p-0">
+    <div class="chat-header d-flex align-items-center">
+    <img src="" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;" id="chatAvatar">
+    <div>
+        <h6 class="mb-0 fw-bold" id="chatName">Select a conversation</h6>
+        <small class="text-muted" id="chatStatus">Click a chat to start</small>
+    </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+    <!-- Tin nhắn sẽ được hiển thị ở đây -->
+    </div>
+    <div class="input-group">
+    <input type="text" class="form-control" id="messageInput" placeholder="Type a message...">
+    <button class="btn btn-primary" id="sendBtn"><i class="bi bi-send-fill"></i></button>
+    </div>
+</div>
+
+<!-- Cột 3: Tất cả user -->
+<div class="sidebar col-md-3 p-0">
+    <div class="p-2 border-bottom">
+    <!-- <h5 class="fw-bold">All Users</h5> -->
+    <div class="mb-2">
+        <input type="text" id="search-input" class="form-control" placeholder="Search Users ...">
+    </div>
+    </div>
+    <ul class="list-group list-group-flush all-users" id="allUsers">
+    <!-- Danh sách tất cả user sẽ được hiển thị ở đây -->
+    </ul>
+</div>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loading" class="loading position-fixed bg-white w-100 h-100" style="z-index: 1000; opacity: 0.8;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<!-- Modal tạo conversation -->
+<div class="modal fade" id="createConversationModal" tabindex="-1" aria-labelledby="createConversationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createConversationModalLabel">Create New Conversation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Ô tìm kiếm -->
+                <div class="mb-3">
+                <input type="text" class="form-control" id="searchUserInput" placeholder="Search users..." oninput="searchUsers()">
+                </div>
+                <!-- Danh sách user tìm kiếm -->
+                <ul class="list-group mb-3" id="searchResults">
+                <!-- Kết quả tìm kiếm sẽ hiển thị ở đây -->
+                </ul>
+                <!-- Danh sách user đã chọn -->
+                <h6>Selected Users:</h6>
+                <ul class="list-group selected-users-list mb-3" id="selectedUsersList">
+                <!-- Danh sách user đã chọn sẽ hiển thị ở đây -->
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="createConversationFromModal()">Create Conversation</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // DOM Elements
+    const conversationList = document.getElementById('conversationList');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatName = document.getElementById('chatName');
+    const chatAvatar = document.getElementById('chatAvatar');
+    const chatStatus = document.getElementById('chatStatus');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const allUsers = document.getElementById('allUsers');
+    const loading = document.getElementById('loading');
+    const searchInput = document.getElementById("search-input");
+    const listUsers = document.querySelectorAll(".list-users");
+    const searchResults = document.getElementById("searchResults");
+    const selectedUsersList = document.getElementById("selectedUsersList");
+    let allUsersFetch = [];
+    fetchAllUser().then(users => {
+        allUsersFetch = users.users;
+    });
+
+    let selectedUsers = []; // Danh sách user được chọn trong modal
+
+    
+    const socket = io('<%=FINAL_HOST%>');
+    let selectedConversationId = null;
+    let currentUserId = `<%= UserId %>`;
+    let currentMessages = null
+
+    socket.on('connect', () => {
+        fetchData(); // Fetch dữ liệu sau khi có userId
+        console.log('Connected to Socket.IO with userId:', currentUserId);
+        socket.emit('sendUserInfo', { userId: currentUserId });
+    });
+
+    function searchUser() {
+        searchInput.addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            const listUsers = document.querySelectorAll(".list-users"); // Lấy lại mỗi lần
+            listUsers.forEach(listUser => {
+                const text = listUser.outerText.toLowerCase();
+                if (text.includes(query)) {
+                    listUser.classList.remove("d-none");
+                } else {
+                    listUser.classList.add("d-none");
+                }
+            });
+        });
+    }
+
+    // Show loading
+    function showLoading(show) {
+        loading.style.display = show ? 'block' : 'none';
+    }
+
+    // Render conversations
+    function renderConversations(conversations) {
+    conversationList.innerHTML = '';
+    conversations.forEach(conv => {
+        // Lấy tất cả user khác ngoài currentUserId
+        const otherUsers = conv.user.filter(u => u._id !== currentUserId);
+        
+        if (otherUsers.length > 0) { // Đảm bảo có ít nhất 1 user khác
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex align-items-center';
+
+        // Xử lý hiển thị tên và avatar
+        let displayName = '';
+        let avatarSrc = '';
+        if (otherUsers.length === 1) {
+            // Chat 1-1: Hiển thị tên và avatar của otherUser
+            displayName = otherUsers[0].fullname;
+            avatarSrc = otherUsers[0].avatar;
+        } else {
+            // Group chat: Hiển thị tên nhóm và avatar của user đầu tiên
+            const maxNames = 2; // Giới hạn số tên hiển thị
+            displayName = otherUsers.length > maxNames
+            ? `Group: ${otherUsers.slice(0, maxNames).map(u => u.fullname).join(', ')} and ${otherUsers.length - maxNames} more`
+            : `Group: ${otherUsers.map(u => u.fullname).join(', ')}`;
+            avatarSrc = otherUsers[0].avatar || 'https://via.placeholder.com/40'; // Dùng avatar của user đầu tiên
+        }
+
+        // Lấy tin nhắn cuối cùng (nếu có)
+        let lastMessage = conv.message;
+        let lastMessageText = lastMessage
+            ? (lastMessage.text.length > 20 ? lastMessage.text.slice(0, 20) + '...' : lastMessage.text)
+            : 'No messages yet';
+        let senderName = lastMessage && lastMessage.sender ? lastMessage.sender.fullname : '';
+
+        li.innerHTML = `
+            <img src="${avatarSrc}" alt="${displayName}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+            <div>
+            <div class="fw-bold">${displayName}</div>
+            <small class="text-muted">${senderName ? senderName + ': ' : ''}</small>
+            <small class="text-muted">${lastMessageText}</small>
+            <br><small class="text-muted">${new Date(conv.updatedAt).toLocaleString()}</small>
+            </div>
+        `;
+        
+        // Gọi selectConversation với otherUsers (mảng)
+        li.addEventListener('click', () => selectConversation(conv._id, otherUsers));
+        conversationList.appendChild(li);
+        }
+    });
+    }
+
+    // Render messages
+    function renderMessages(messages) {
+        chatMessages.innerHTML = '';
+        messages.forEach(msg => {
+        const isSent = msg.sender._id === currentUserId;
+        const div = document.createElement('div');
+        div.className = `message ${isSent ? 'sent' : 'received'} mb-2`;
+        div.innerHTML = `
+            <div class="d-flex align-items-start mb-3">
+                <img src="${msg.sender.avatar}" alt="${msg.sender.fullname}"
+                    class="rounded-circle me-3"
+                    style="width: 40px; height: 40px; object-fit: cover;">
+
+                <div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <strong class="me-2">${msg.sender.fullname}</strong>
+                    <small class="text-muted">${new Date(msg.createdAt).toLocaleString()}</small>
+                </div>
+                <div class="message-text mt-1">
+                    ${msg.text}
+                </div>
+                </div>
+            </div>
+            `;
+
+        chatMessages.appendChild(div);
+        });
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Render all users
+    function renderAllUsers(users) {
+        allUsers.innerHTML = '';
+        users.forEach(user => {
+            if (user._id !== currentUserId) {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex align-items-center list-users';
+                li.innerHTML = `
+                <div class="d-flex align-items-center">
+                    ${user.online_status ? '<i class="bi bi-circle-fill text-success"></i>' : '<i class="bi bi-circle"></i> '}
+                    <img src="${user.avatar}" alt="${user.fullname}" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                    <span class="user-full-name" onclick="window.location.href='/me/${user._id}'" style="cursor: pointer;">${user.fullname}</span>
+                </div>
+                <button class="btn btn-sm btn-primary ms-auto" onclick="buttonNavigation('${user._id}')">
+                    <i class="bi bi-chat-left-text-fill"></i>
+                </button>
+                `;
+                allUsers.appendChild(li);
+            }
+            
+        });
+    }
+
+    // Select conversation
+    async function selectConversation(conversationId, otherUser) {
+        selectedConversationId = conversationId;
+        // Kiểm tra otherUser là mảng hay object
+        if (Array.isArray(otherUser)) {
+            let onlineStatusTeam = false
+            for (let i = 0; i < otherUser.length; i++) {
+                if (otherUser[i].online_status) {
+                    onlineStatusTeam = true
+                    break
+                }
+            }
+            // Trường hợp group chat (otherUser là mảng)
+            const displayName = otherUser.length > 0 
+            ? `Group: ${otherUser.map(u => u.fullname).join(', ')}`
+            : 'Unknown Group';
+            chatName.textContent = displayName;
+            chatAvatar.src = otherUser[0]?.avatar || 'https://via.placeholder.com/40'; // Dùng avatar của user đầu tiên hoặc ảnh mặc định
+            if (onlineStatusTeam) {
+            chatStatus.innerHTML = `<i class="bi bi-circle-fill text-success"></i> Online`;
+            } else {
+            chatStatus.innerHTML = `<i class="bi bi-circle"></i> Offline`;
+            }
+        } else {
+            // Trường hợp chat 1-1 (otherUser là object)
+            chatName.textContent = otherUser.fullname;
+            chatAvatar.src = otherUser.avatar;
+            if (otherUser.online_status) {
+            chatStatus.innerHTML = `<i class="bi bi-circle-fill text-success"></i> Online`;
+            } else {
+            chatStatus.innerHTML = `<i class="bi bi-circle"></i> Offline`;
+            }
+        }
+
+        try {
+            const response = await fetch(`/chat/api/get-message/${conversationId}`);
+            const messages = await response.json();
+            renderMessages(messages);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+            renderMessages([]);
+        }
+    }
+
+
+
+    async function buttonNavigation(otherUserId) {
+        let matchedConversation = null;
+        let users = [currentUserId, otherUserId].sort()
+        const conversationsResponse = await fetch('/chat/api/get-all-conversation');
+        const conversations = await conversationsResponse.json();
+        conversations.forEach(conversation => {
+            const convUserIds = conversation.user.map(u=>u._id).sort()
+
+            const isSame = users.length === convUserIds.length &&
+            users.every((id, idx) => id === convUserIds[idx]);
+
+            if (isSame) {
+                matchedConversation = conversation;
+            }
+        })
+
+        if (matchedConversation) {
+            const otherUser = await fetchOneUser(otherUserId)
+            selectConversation(matchedConversation._id, otherUser.user);
+        } else {
+            createConversation(otherUserId);
+        }
+    }
+
+    // Create new conversation
+    async function createConversation(otherUserId) {
+        try {
+        const response = await fetch('/chat/api/create-conversation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ users: [currentUserId, otherUserId] }),
+        });
+        const newConversation = await response.json();
+        fetchConversations();
+        const otherUser = newConversation.user.find(u => u._id !== currentUserId);
+        selectConversation(newConversation._id, otherUser);
+        } catch (error) {
+        console.error('Error creating conversation:', error);
+        alert('Failed to create conversation.');
+        }
+    }
+
+    // Send message
+    function sendMessage() {
+        const content = messageInput.value.trim();
+        if (content && selectedConversationId) {
+        const message = {
+            conversation: selectedConversationId,
+            sender: currentUserId,
+            text: content,
+        };
+        socket.emit('sendMessage', { conversationId: selectedConversationId, message });
+        messageInput.value = '';
+        }
+    }
+    // Socket.IO events
+    socket.on('receiveMessage', async (data) => {
+        const { conversationId, message } = data;
+        if (conversationId === selectedConversationId) {
+            socket.emit('takeMessageData', (conversationId) )
+
+            socket.on('receiveMessageData', (messages)=>{
+                renderMessages(messages);
+                fetchConversations()
+            });
+        }
+    });
+
+
+    socket.on('updateAllUsers', (users) => {
+        renderAllUsers(users);
+    });
+
+    socket.on('updateAllConversation', () => {
+        fetchConversations()
+    });
+
+    socket.on('error', (msg) => {
+        console.error('Socket error:', msg);
+        alert('Authentication failed. Please login again.');
+    });
+
+    // Event listeners
+    sendBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    // Fetch conversations
+    async function fetchConversations() {
+        try {
+        const response = await fetch('/chat/api/get-all-conversation');
+        const conversations = await response.json();
+        renderConversations(conversations);
+        } catch (error) {
+        console.error('Error fetching conversations:', error);
+        }
+    }
+
+    // Fetch all users
+    async function fetchAllUsers() {
+        try {
+        const response = await fetch('/api/user/all-user');
+        const data = await response.json();
+        renderAllUsers(data.users);
+        } catch (error) {
+        console.error('Error fetching users:', error);
+        }
+    }
+
+    // Initialize
+    async function fetchData() {
+        if (!currentUserId) return; // Chờ xác thực trước khi fetch
+        showLoading(true);
+        await Promise.all([fetchConversations(), fetchAllUsers()]);
+        showLoading(false);
+        searchUser()
+    }
+
+        // Tìm kiếm user trong modal
+    function searchUsers() {
+        const query = searchUserInput.value.trim().toLowerCase();
+        const filteredUsers = allUsersFetch.filter(user =>
+        (user.fullname.toLowerCase().includes(query) || user.username.toLowerCase().includes(query)) &&
+        user._id !== currentUserId &&
+        !selectedUsers.some(selected => selected._id === user._id)
+    );
+
+        searchResults.innerHTML = '';
+        filteredUsers.forEach(user => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item d-flex align-items-center justify-content-between';
+            li.innerHTML = `
+            <div class="d-flex align-items-center">
+                <img src="${user.avatar}" alt="${user.fullname}" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                <span>${user.fullname}</span>
+            </div>
+            <button class="btn btn-sm btn-success" onclick="addUserToSelected('${user._id}')">
+                Add
+            </button>
+            `;
+            searchResults.appendChild(li);
+        });
+    }
+    // Thêm user vào danh sách tạm
+    function addUserToSelected(userId) {
+        const user = allUsersFetch.find(u => u._id === userId);
+        if (user && !selectedUsers.some(u => u._id === userId)) {
+            selectedUsers.push(user);
+            renderSelectedUsers();
+            searchUserInput.value = ''; // Xóa ô tìm kiếm
+            searchResults.innerHTML = ''; // Xóa kết quả tìm kiếm
+        }
+    }
+    // Render danh sách user đã chọn
+    function renderSelectedUsers() {
+        selectedUsersList.innerHTML = '';
+        selectedUsers.forEach(user => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex align-items-center justify-content-between';
+        li.innerHTML = `
+            <div class="d-flex align-items-center">
+            <img src="${user.avatar}" alt="${user.fullname}" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+            <span>${user.fullname}</span>
+            </div>
+            <button class="btn btn-sm btn-danger" onclick="removeUserFromSelected('${user._id}')">
+            Remove
+            </button>
+        `;
+        selectedUsersList.appendChild(li);
+        });
+    }
+
+    // Tạo conversation từ modal
+    async function createConversationFromModal() {
+        if (selectedUsers.length === 0) {
+            alert('Please select at least one user to create a conversation.');
+            return;
+        }
+
+        const userIds = [currentUserId, ...selectedUsers.map(user => user._id)];
+        try {
+            const response = await fetch('/chat/api/create-conversation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ users: userIds }),
+            });
+            const newConversation = await response.json();
+            fetchConversations();
+
+            // Chọn hội thoại mới
+            const otherUsers = newConversation.user.filter(u => u._id !== currentUserId);
+            selectConversation(newConversation._id, otherUsers);
+
+            // Đóng modal và reset danh sách
+            const modal = bootstrap.Modal.getInstance(document.getElementById('createConversationModal'));
+            modal.hide();
+            selectedUsers = [];
+            renderSelectedUsers();
+            searchUserInput.value = '';
+            searchResults.innerHTML = '';
+        } catch (error) {
+            console.error('Error creating conversation:', error);
+            alert('Failed to create conversation.');
+        }
+    }
+</script>
