@@ -1,0 +1,124 @@
+
+  <style>
+    .sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 200px;
+      background-color: #4f83b8;
+      padding: 15px;
+      border-right: 1px solid #dee2e6;
+    }
+    .main-content {
+      margin-left: 200px;
+      padding: 20px;
+    }
+    .student-table th, .student-table td {
+      vertical-align: middle;
+      text-align: center;
+    }
+    .student-table .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #e9ecef;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      background-color: #28a745;
+      margin-right: 5px;
+    }
+    .action-btns .btn {
+      margin-right: 5px;
+    }
+  </style>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <br><br>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Danh sách học sinh</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Bài tập, đề thi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Bảng tin</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Bảng điểm</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2>Lớp học tình thương (2025 - 2026)</h2>
+      <div>
+        <a href="#" class="text-muted me-2"><i class="bi bi-qr-code"></i></a>
+        <a href="#" class="text-muted"><i class="bi bi-share"></i> Chia sẻ</a>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between mb-5">
+      <!-- Ô tìm kiếm nhỏ gọn -->
+      <div class="input-group flex-grow-0 w-auto me-3">
+        <input type="text" class="form-control" placeholder="Tìm theo tên, sđt, email">
+        <button class="btn btn-outline-secondary" type="button">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+
+      <!-- Các nút bên phải -->
+      <div class="d-flex">
+        <button class="btn btn-outline-primary text-nowrap me-2">Xuất danh sách HS</button>
+        <button class="btn btn-outline-primary text-nowrap me-2">Xuất bảng điểm</button>
+        <button class="btn btn-primary text-nowrap me-2">+ Thêm học sinh</button>
+        <button class="btn btn-outline-secondary"><i class="bi bi-gear"></i></button>
+      </div>
+    </div>
+
+
+    <!-- Student Table -->
+    <table class="table student-table">
+      <thead>
+        <tr>
+          <th><input type="checkbox"></th>
+          <th>Sĩ số: 1</th>
+          <th>Họ và tên</th>
+          <th>Số báo danh</th>
+          <th>Bài tập đã làm</th>
+          <th>Đề thi đã làm</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>1</td>
+          <td>
+            <span class="avatar">A</span>
+            <span class="status-dot"></span>
+            anphan <small class="text-muted">anphan@gmail.com</small><br>
+            <small class="text-muted">Ngày tạo: 31/05/2025</small>
+          </td>
+          <td>C00000112</td>
+          <td>2/2</td>
+          <td>1/1</td>
+          <td class="action-btns">
+            <button class="btn btn-outline-primary btn-sm">Sửa</button>
+            <button class="btn btn-outline-danger btn-sm">Xóa</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

@@ -43,7 +43,7 @@ class AuthController {
         }
     }
 
-    // [POST] /register-new
+    // [POST] /auth/register-new
     async registerNew(req,res,next){
         try {
             let registerInformation = req.body
@@ -69,7 +69,7 @@ class AuthController {
         }
     }
 
-    // [POST] /login/authentication
+    // [POST] /auth/login/authentication
     async authentication(req,res,next) {
         try {
             let loginInformation = req.body

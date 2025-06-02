@@ -5,7 +5,7 @@ function route(app){
     const meRouter = require('./me');
     const homeRouter = require('./home');
     const authRouter = require('./auth');
-
+    const classTeacherRouter = require('./classTeacher.js');
     // [GET] /health
     app.get('/health', (req, res) => {
         res.status(200).send('OK');
@@ -13,7 +13,8 @@ function route(app){
     app.use('/chat', authMiddleware, chatRouter)
     app.use('/me', authMiddleware, meRouter)
     app.use('/auth', authRouter)
-    app.use('/', homeRouter)
+    app.use('/class-teacher', authMiddleware, classTeacherRouter)
+    app.use('/', authMiddleware, homeRouter)
 }
 
 module.exports = route;
