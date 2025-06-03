@@ -40,7 +40,8 @@
       margin-right: 5px;
     }
   </style>
-  <!-- Sidebar -->
+
+    <!-- Sidebar -->
   <div class="sidebar">
     <br><br>
     <ul class="nav flex-column">
@@ -62,7 +63,7 @@
   <!-- Main Content -->
   <div class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2>Lớp học tình thương (2025 - 2026)</h2>
+      <h2 id="classTitle"></h2>
       <div>
         <a href="#" class="text-muted me-2"><i class="bi bi-qr-code"></i></a>
         <a href="#" class="text-muted"><i class="bi bi-share"></i> Chia sẻ</a>
@@ -72,8 +73,8 @@
     <div class="d-flex justify-content-between mb-5">
       <!-- Ô tìm kiếm nhỏ gọn -->
       <div class="input-group flex-grow-0 w-auto me-3">
-        <input type="text" class="form-control" placeholder="Tìm theo tên, sđt, email">
-        <button class="btn btn-outline-secondary" type="button">
+        <input type="text" class="form-control" id="searchInput" placeholder="Tìm theo tên, sđt, email">
+        <button class="btn btn-outline-secondary" type="button" onclick="searchStudents()">
           <i class="bi bi-search"></i>
         </button>
       </div>
@@ -87,13 +88,12 @@
       </div>
     </div>
 
-
     <!-- Student Table -->
     <table class="table student-table">
       <thead>
         <tr>
-          <th><input type="checkbox"></th>
-          <th>Sĩ số: 1</th>
+          <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+          <th id="studentCount">Sĩ số: 0</th>
           <th>Họ và tên</th>
           <th>Số báo danh</th>
           <th>Bài tập đã làm</th>
@@ -101,24 +101,114 @@
           <th>Hành động</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td><input type="checkbox"></td>
-          <td>1</td>
+      <tbody id="studentTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let allStudents = [];
+
+    // Fetch class details from API
+    async function fetchClassDetails() {
+      try {
+        const response = await fetch('/class-teacher/api/classroom-details/683c17bace809b5942a85ca6');
+        if (!response.ok) throw new Error('Failed to fetch class details');
+        const data = await response.json();
+
+        // Update class title
+        document.getElementById('classTitle').textContent = `${data.class_name} (${data.school_year})`;
+
+        // Update student count
+        allStudents = data.students || [];
+        document.getElementById('studentCount').textContent = `Sĩ số: ${allStudents.length}`;
+
+        // Render students
+        renderStudents(allStudents);
+      } catch (error) {
+        console.error('Error fetching class details:', error);
+        alert('Không thể tải chi tiết lớp học. Vui lòng thử lại sau.');
+      }
+    }
+
+    // Render students to the table
+    function renderStudents(students) {
+      const tbody = document.getElementById('studentTableBody');
+      tbody.innerHTML = '';
+
+      students.forEach((student, index) => {
+        const studentData = student.student_user_id;
+        const registrationNumber = student.student_id.registration_number;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input type="checkbox" class="student-checkbox"></td>
+          <td>${index + 1}</td>
           <td>
-            <span class="avatar">A</span>
+            <span class="avatar">${studentData.fullname.charAt(0).toUpperCase()}</span>
             <span class="status-dot"></span>
-            anphan <small class="text-muted">anphan@gmail.com</small><br>
+            ${studentData.fullname} <small class="text-muted">${studentData.email}</small><br>
             <small class="text-muted">Ngày tạo: 31/05/2025</small>
           </td>
-          <td>C00000112</td>
-          <td>2/2</td>
-          <td>1/1</td>
+          <td>${String(registrationNumber).padStart(6, '0')}</td>
+          <td>0/0</td>
+          <td>0/0</td>
           <td class="action-btns">
             <button class="btn btn-outline-primary btn-sm">Sửa</button>
             <button class="btn btn-outline-danger btn-sm">Xóa</button>
           </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        `;
+        tbody.appendChild(row);
+      });
+
+      // Update select all checkbox state
+      updateSelectAllCheckbox();
+    }
+
+    // Search students by name or email
+    function searchStudents() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const filteredStudents = allStudents.filter(student => {
+        const studentData = student.student_user_id;
+        return (
+          studentData.fullname.toLowerCase().includes(searchTerm) ||
+          studentData.email.toLowerCase().includes(searchTerm)
+        );
+      });
+      renderStudents(filteredStudents);
+    }
+
+    // Toggle select all checkboxes
+    function toggleSelectAll() {
+      const selectAll = document.getElementById('selectAll');
+      const checkboxes = document.querySelectorAll('.student-checkbox');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAll.checked;
+      });
+    }
+
+    // Update select all checkbox based on student checkboxes
+    function updateSelectAllCheckbox() {
+      const selectAll = document.getElementById('selectAll');
+      const checkboxes = document.querySelectorAll('.student-checkbox');
+      selectAll.checked = checkboxes.length > 0 && Array.from(checkboxes).every(checkbox => checkbox.checked);
+    }
+
+    // Add event listeners for student checkboxes
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchClassDetails();
+
+      // Add search on Enter key
+      document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchStudents();
+      });
+
+      // Add event listener for student checkboxes to update select all
+      document.getElementById('studentTableBody').addEventListener('change', (e) => {
+        if (e.target.classList.contains('student-checkbox')) {
+          updateSelectAllCheckbox();
+        }
+      });
+    });
+  </script>

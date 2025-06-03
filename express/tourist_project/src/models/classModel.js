@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const studentSchema = new mongoose.Schema({
   student_id: { type: mongoose.Schema.Types.ObjectId, 
-    default: new mongoose.Types.ObjectId(),
     required: true, 
     ref: 'Students' },
   student_user_id: { type: mongoose.Schema.Types.ObjectId, 

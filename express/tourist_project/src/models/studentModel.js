@@ -9,8 +9,10 @@ const studentSchema = new mongoose.Schema({
     class_id: { type: mongoose.Schema.Types.ObjectId, 
         ref: 'Classes', 
         required: true },
-    registration_number: { type: String, 
-        required: true },
+    registration_number: { type: Number, 
+        required: true,
+        unique: true,
+        default: () => Math.floor(Math.random() * 1000000) },
 })
 
 module.exports = mongoose.model('Students', studentSchema);

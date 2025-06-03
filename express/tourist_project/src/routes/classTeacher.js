@@ -10,6 +10,16 @@ router.get('/classroom-details/:classId', classTeacherController.classDetails )
 // [GET] /class-teacher/api/classroom-details/:classId
 router.get('/api/classroom-details/:classId', classTeacherController.getClassDetails )
 
+// [PUT] /class-teacher/api/classroom-details/:classId
+router.put('/api/classroom-details/:classId', classTeacherController.putClassDetails )
+
+// [POST] /class-teacher/api/classroom-details/:classId/add-student
+router.post('/api/classroom-details/:classId/add-student', classTeacherController.addStudentToClass )
+
+// dont finish, need to delete student more information
+// [DELETE] /class-teacher/api/classroom-details/:classId/delete-student
+router.delete('/api/classroom-details/:classId/delete-student', classTeacherController.deleteStudentFromClass )
+
 
 ///////////////////////////////////// Index /class-teacher //////////////////////////////////
 // [POST] /class-teacher/api/create-class
