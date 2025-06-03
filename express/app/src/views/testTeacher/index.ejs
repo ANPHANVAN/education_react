@@ -1,0 +1,88 @@
+  <style>
+    .btn-custom { min-width: 180px; }
+    .doc-card {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 1rem;
+      background-color: #fff;
+      height: 100%;
+    }
+    .tag-badge {
+      background-color: #0d6efd;
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+    }
+  </style>
+<div class="container mt-4">
+
+  <!-- Tìm kiếm + nút tạo -->
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
+    <input type="text" class="form-control w-auto" placeholder="Tìm kiếm" style="max-width: 300px;">
+
+    <div class="d-flex flex-wrap gap-2">
+      <button class="btn btn-info text-white btn-custom">Tạo đề từ ngân hàng chung</button>
+      <button class="btn btn-purple text-white btn-custom" style="background-color: #6f42c1;">Tạo nhanh thư mục</button>
+      <button class="btn btn-success btn-custom"><a href="/test-teacher/upload-files-test">+ Tạo đề thi</a></button>
+      <button class="btn btn-purple text-white btn-custom" style="background-color: #6f42c1;">📁 Tạo thư mục</button>
+    </div>
+  </div>
+
+  <!-- Được đề xuất -->
+  <h5 class="mb-3">Được đề xuất</h5>
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="doc-card">
+        <p><strong>de-thi-thpt-mau.pdf</strong></p>
+        <small>Ngày tạo: 02/06/2025 17:54</small><br>
+        <small>Thời gian làm bài: 40 phút</small>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="doc-card">
+        <p><strong>de-thi-thu-tot-nghiep-thp.pdf</strong></p>
+        <small>Ngày tạo: 29/05/2025 20:48</small><br>
+        <small>Thời gian làm bài: 90 phút</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danh sách tất cả -->
+  <h5 class="mb-3">Tất cả</h5>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th><input type="checkbox"></th>
+          <th>Tên</th>
+          <th>Số bài đã nộp</th>
+          <th>Trạng Thái</th>
+          <th>Đã Giao Cho</th>
+          <th>Sửa lần cuối</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>
+            <i class="bi bi-folder-fill text-secondary"></i>
+            Kho đề Azota <span class="tag-badge">Azota</span>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><i class="bi bi-file-earmark-pdf text-danger"></i> de-thi-thpt-mau.pdf</td>
+          <td>0</td>
+          <td>Chưa xuất bản</td>
+          <td>Tất cả mọi người</td>
+          <td>02/06/2025 17:54</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

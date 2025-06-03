@@ -41,6 +41,7 @@
     }
   </style>
 
+<script src="/public/js/teacherDetail/deleteStudent.js"></script>
     <!-- Sidebar -->
   <div class="sidebar">
     <br><br>
@@ -73,7 +74,7 @@
     <div class="d-flex justify-content-between mb-5">
       <!-- Ô tìm kiếm nhỏ gọn -->
       <div class="input-group flex-grow-0 w-auto me-3">
-        <input type="text" class="form-control" id="searchInput" placeholder="Tìm theo tên, sđt, email">
+        <input type="text" class="form-control" id="searchInput" placeholder="Tìm theo tên, email">
         <button class="btn btn-outline-secondary" type="button" onclick="searchStudents()">
           <i class="bi bi-search"></i>
         </button>
@@ -83,7 +84,10 @@
       <div class="d-flex">
         <button class="btn btn-outline-primary text-nowrap me-2">Xuất danh sách HS</button>
         <button class="btn btn-outline-primary text-nowrap me-2">Xuất bảng điểm</button>
-        <button class="btn btn-primary text-nowrap me-2">+ Thêm học sinh</button>
+        <!-- Button để mở modal -->
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+        + Thêm học sinh
+      </button>
         <button class="btn btn-outline-secondary"><i class="bi bi-gear"></i></button>
       </div>
     </div>
@@ -105,9 +109,32 @@
     </table>
   </div>
 
-  <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<!-- Modal add Student -->
+<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="addStudentForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addStudentModalLabel">Thêm học sinh</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="studentEmail" class="form-label">Email học sinh</label>
+            <input type="email" class="form-control" id="studentEmail" name="studentEmail" required />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Thêm</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
   <script>
     let allStudents = [];
 
@@ -146,19 +173,16 @@
           <td><input type="checkbox" class="student-checkbox"></td>
           <td>${index + 1}</td>
           <td>
-            <span class="avatar">${studentData.fullname.charAt(0).toUpperCase()}</span>
-            <span class="status-dot"></span>
-            ${studentData.fullname} <small class="text-muted">${studentData.email}</small><br>
-            <small class="text-muted">Ngày tạo: 31/05/2025</small>
+            ${studentData.fullname} <br><small class="text-muted">${studentData.email}</small><br>
           </td>
           <td>${String(registrationNumber).padStart(6, '0')}</td>
           <td>0/0</td>
           <td>0/0</td>
           <td class="action-btns">
-            <button class="btn btn-outline-primary btn-sm">Sửa</button>
-            <button class="btn btn-outline-danger btn-sm">Xóa</button>
-          </td>
-        `;
+            <button class="btn btn-outline-danger btn-sm delete-student" onclick="deleteStudent('${student.student_id._id}')">Xóa</button>
+            </td>
+            `;
+            // <button class="btn btn-outline-primary btn-sm change-student">Sửa</button>
         tbody.appendChild(row);
       });
 
@@ -171,6 +195,7 @@
       const searchTerm = document.getElementById('searchInput').value.toLowerCase();
       const filteredStudents = allStudents.filter(student => {
         const studentData = student.student_user_id;
+        console.log("go in searchStudents");
         return (
           studentData.fullname.toLowerCase().includes(searchTerm) ||
           studentData.email.toLowerCase().includes(searchTerm)
@@ -199,6 +224,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       fetchClassDetails();
 
+
       // Add search on Enter key
       document.getElementById('searchInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') searchStudents();
@@ -212,3 +238,6 @@
       });
     });
   </script>
+
+  <!-- Add Student Modal -->
+  <script src="/public/js/teacherDetail/addStudent.js"></script>

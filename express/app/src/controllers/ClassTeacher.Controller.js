@@ -136,6 +136,7 @@ class ClassTeacherController {
         }
     }
 
+
     // dont finish, need to delete student more information
     // [DELETE] /class-teacher/api/classroom-details/:classId/delete-student
     async deleteStudentFromClass(req, res) {

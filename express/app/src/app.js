@@ -6,7 +6,6 @@ const cookieParser = require('cookie-parser');
 const http = require('http');
 const { Server } = require('socket.io');
 
-const session = require('./config/session');
 // const multer = require('multer');
 // const upload = multer({ dest: 'uploads/' });
 require('dotenv').config();
@@ -28,7 +27,6 @@ initSocket(io)
 app.use(morgan('combined'));
 app.use(express.json());        // Đọc body dạng JSON
 app.use(express.urlencoded({ extended: true }));  // Đọc form (x-www-form-urlencoded)
-// app.use(session); // Thêm express-session
 app.use(hideFooter); // Middleware để ẩn footer
 
 app.set('view engine' , 'ejs');

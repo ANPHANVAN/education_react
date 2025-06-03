@@ -21,7 +21,7 @@ services:
 
   express:
     build:
-      context: ./express/tourist_project
+      context: ./express/app
       dockerfile: Dockerfile
     environment:
       - NODE_ENV=development
@@ -29,13 +29,12 @@ services:
       - MONGO_LINK=${MONGO_LINK}
       - HASH_SALT=${HASH_SALT}
       - JWT_SECRET=${JWT_SECRET}
-      - RABBIT_LINK_CONNECT=${RABBIT_LINK_CONNECT}
       - FINAL_HOST=${FINAL_HOST}
     expose:
       - "3000"
     volumes:
-      - ./express/tourist_project:/tourist_project
-      - /tourist_project/node_modules
+      - ./express/app:/app
+      - /app/node_modules
     depends_on:
       mongodb:
         condition: service_healthy
