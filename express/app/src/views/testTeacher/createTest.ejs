@@ -1,0 +1,322 @@
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.development.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/babel-standalone@7.23.2/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.27.5/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    .editor-container {
+        height: 90vh;
+        display: flex;
+    }
+    .editor-form-scrollable {
+        overflow-y: auto;
+        height: 100%;
+    }
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+</style>
+<div class="container-fluid editor-container">
+    <!-- Bên trái: Form React -->
+    <div class="col-md-4 p-4 bg-gray-100 editor-form-scrollable">
+        <div id="test-form"></div>
+    </div>
+    <!-- Bên phải: Xem file -->
+    <div class="col-md-8 p-0">
+        <iframe id="viewer" src=""></iframe>
+    </div>
+</div>
+
+<script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const TestForm = () => {
+        const [test, setTest] = useState({
+            title: '',
+            testTime: '',
+            subject: '',
+            grade: '',
+            urlFile: '',
+            answers: []
+        });
+
+        // Load file từ URL params
+        useEffect(() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fileUrl = urlParams.get('file');
+            if (fileUrl) {
+                const filePath = `/uploads/${encodeURIComponent(fileUrl)}#pagemode=none`;
+                document.getElementById('viewer').src = filePath;
+                setTest((prev) => ({ ...prev, urlFile: `/uploads/${encodeURIComponent(fileUrl)}` }));
+            }
+        }, []);
+
+        // Thêm câu hỏi mới
+        const addAnswer = () => {
+            setTest({
+                ...test,
+                answers: [...test.answers, { number: '', part: '', type: '', answer: '' }]
+            });
+        };
+
+        // Xóa câu hỏi
+        const removeAnswer = (index) => {
+            setTest({
+                ...test,
+                answers: test.answers.filter((_, i) => i !== index)
+            });
+        };
+
+        // Cập nhật thông tin câu hỏi
+        const updateAnswer = (index, field, value) => {
+            const updatedAnswers = [...test.answers];
+            updatedAnswers[index] = { ...updatedAnswers[index], [field]: value };
+            if (field === 'type') {
+                updatedAnswers[index].answer = ''; // Reset answer khi đổi type
+            }
+            setTest({ ...test, answers: updatedAnswers });
+        };
+
+        // Xử lý submit
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            // Validate dữ liệu
+            console.log('Submitting test:', test);
+            if (!test.title || !test.testTime || !test.subject || !test.grade || !test.urlFile) {
+                alert('Vui lòng điền đầy đủ thông tin và đảm bảo có file đề thi!');
+                return;
+            }
+            if (test.answers.length === 0) {
+                alert('Vui lòng thêm ít nhất một câu trả lời!');
+                return;
+            }
+            for (let i = 0; i < test.answers.length; i++) {
+                const answer = test.answers[i];
+                if (!answer.number || !answer.part || !answer.type || !answer.answer) {
+                    alert(`Câu trả lời ${i + 1} chưa đầy đủ thông tin!`);
+                    return;
+                }
+            }
+
+            try {
+                const response = await fetch('/test-teacher/api/create-test', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(test)
+                });
+                if (response.ok) {
+                    alert('Lưu bài test thành công!');
+                    setTest({
+                        title: '',
+                        testTime: '',
+                        subject: '',
+                        grade: '',
+                        urlFile: '',
+                        answers: []
+                    });
+                    // Chuyển hướng đến trang khác
+                    window.location.href = '/test-teacher';
+
+                } else {
+                    alert('Lưu bài test thất bại!');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra!');
+            }
+        };
+
+        return (
+            <div>
+                <h4 className="text-lg font-bold mb-4">Thông tin đề thi</h4>
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium">Tên đề thi</label>
+                        <input
+                            type="text"
+                            className="w-full p-2 border rounded"
+                            value={test.title}
+                            onChange={(e) => setTest({ ...test, title: e.target.value })}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium">Thời gian làm bài (phút)</label>
+                        <input
+                            type="number"
+                            className="w-full p-2 border rounded"
+                            value={test.testTime}
+                            onChange={(e) => setTest({ ...test, testTime: e.target.value })}
+                            placeholder="VD: 40"
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium">Môn học</label>
+                        <select
+                            className="w-full p-2 border rounded"
+                            value={test.subject}
+                            onChange={(e) => setTest({ ...test, subject: e.target.value })}
+                            required
+                        >
+                            <option value="">Chọn môn học</option>
+                            <option value="math">Toán</option>
+                            <option value="physics">Vật Lý</option>
+                            <option value="chemistry">Hóa học</option>
+                            <option value="literature">Ngữ văn</option>
+                            <option value="history">Lịch sử</option>
+                            <option value="geography">Địa lý</option>
+                            <option value="english">Tiếng Anh</option>
+                        </select>
+                    </div>
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium">Khối</label>
+                        <select
+                            className="w-full p-2 border rounded"
+                            value={test.grade}
+                            onChange={(e) => setTest({ ...test, grade: e.target.value })}
+                            required
+                        >
+                            <option value="">Chọn khối</option>
+                            <option value="6">Khối 6</option>
+                            <option value="7">Khối 7</option>
+                            <option value="8">Khối 8</option>
+                            <option value="9">Khối 9</option>
+                            <option value="10">Khối 10</option>
+                            <option value="11">Khối 11</option>
+                            <option value="12">Khối 12</option>
+                        </select>
+                    </div>
+                    {test.urlFile && (
+                        <div className="mb-3">
+                            <label className="block text-sm font-medium">File đề thi</label>
+                            <p className="text-sm text-green-600">{test.urlFile}</p>
+                        </div>
+                    )}
+                    <div className="mb-3">
+                        <label className="block text-sm font-medium">Đáp án từng câu</label>
+                        {test.answers.map((answer, index) => (
+                            <div key={index} className="p-3 border rounded mb-2">
+                                <div className="grid grid-cols-3 gap-2">
+                                    <div>
+                                        <label className="block text-sm">Câu số</label>
+                                        <input
+                                            type="text"
+                                            className="w-full p-2 border rounded"
+                                            value={answer.number}
+                                            onChange={(e) => updateAnswer(index, 'number', e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm">Phần</label>
+                                        <select
+                                            className="w-full p-2 border rounded"
+                                            value={answer.part}
+                                            onChange={(e) => updateAnswer(index, 'part', e.target.value)}
+                                            required
+                                        >
+                                            <option value="">Chọn phần</option>
+                                            <option value="part_1">Phần 1</option>
+                                            <option value="part_2">Phần 2</option>
+                                            <option value="part_3">Phần 3</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm">Loại câu hỏi</label>
+                                        <select
+                                            className="w-full p-2 border rounded"
+                                            value={answer.type}
+                                            onChange={(e) => updateAnswer(index, 'type', e.target.value)}
+                                            required
+                                        >
+                                            <option value="">Chọn loại</option>
+                                            <option value="abcd">Trắc nghiệm (A, B, C, D)</option>
+                                            <option value="truefalse">Đúng/Sai</option>
+                                            <option value="value">Nhập giá trị</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="mt-2">
+                                    {answer.type === 'abcd' && (
+                                        <div>
+                                            <label className="block text-sm">Đáp án đúng</label>
+                                            {['A', 'B', 'C', 'D'].map((option) => (
+                                                <div key={option} className="flex items-center">
+                                                    <input
+                                                        type="radio"
+                                                        name={`answer-${index}`}
+                                                        value={option}
+                                                        checked={answer.answer === option}
+                                                        onChange={(e) => updateAnswer(index, 'answer', e.target.value)}
+                                                        className="mr-2"
+                                                        required
+                                                    />
+                                                    <label>{option}</label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {answer.type === 'truefalse' && (
+                                        <div>
+                                            <label className="block text-sm">Đáp án đúng</label>
+                                            {['true', 'false'].map((option) => (
+                                                <div key={option} className="flex items-center">
+                                                    <input
+                                                        type="radio"
+                                                        name={`answer-${index}`}
+                                                        value={option}
+                                                        checked={answer.answer === option}
+                                                        onChange={(e) => updateAnswer(index, 'answer', e.target.value)}
+                                                        className="mr-2"
+                                                        required
+                                                    />
+                                                    <label>{option === 'true' ? 'Đúng' : 'Sai'}</label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {answer.type === 'value' && (
+                                        <div>
+                                            <label className="block text-sm">Đáp án</label>
+                                            <input
+                                                type="text"
+                                                className="w-full p-2 border rounded"
+                                                value={answer.answer}
+                                                onChange={(e) => updateAnswer(index, 'answer', e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                                <button
+                                    type="button"
+                                    className="mt-2 bg-red-500 text-white px-4 py-2 rounded"
+                                    onClick={() => removeAnswer(index)}
+                                >
+                                    Xóa
+                                </button>
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            className="mt-2 bg-gray-500 text-white px-4 py-2 rounded"
+                            onClick={addAnswer}
+                        >
+                            Thêm câu trả lời
+                        </button>
+                    </div>
+                    <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+                        Lưu thông tin
+                    </button>
+                </form>
+            </div>
+        );
+    };
+
+    ReactDOM.render(<TestForm />, document.getElementById('test-form'));
+</script>

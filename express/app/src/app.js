@@ -5,9 +5,8 @@ const expressLayouts = require('express-ejs-layouts');
 const cookieParser = require('cookie-parser');
 const http = require('http');
 const { Server } = require('socket.io');
+const multer = require('multer');
 
-// const multer = require('multer');
-// const upload = multer({ dest: 'uploads/' });
 require('dotenv').config();
 
 const FINAL_HOST = process.env.FINAL_HOST
