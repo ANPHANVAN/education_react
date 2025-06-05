@@ -15,6 +15,9 @@ router.get('/test-detail', testTeacherController.testDetail)
 // [GET] /test-teacher/api/get-test-detail?test-id=:testId
 router.get('/api/get-test-detail', testTeacherController.getTestDetail)
 
+// [DELETE] /test-teacher/api/delete-test/:testId
+router.delete('/api/delete-test/:testId', testTeacherController.deleteTest)
+
 // [GET] /test-teacher/api/get-tests/
 router.get('/api/get-tests/', testTeacherController.getTeacherTests)
 

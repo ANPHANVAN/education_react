@@ -44,7 +44,8 @@ class TestTeacherController {
             const teacherId = req.user._id;
             const testId = req.query['test-id'];
             const test = await Tests.findOne({ _id: testId, teacher_owner_id: teacherId }, { answers: 0 })
-                .populate('class.class_id');
+                .populate('class.class_id')
+                .populate('teacher_owner_id', 'fullname email')
 
             if (!test) {
                 return res.status(404).json({ message: 'Test not found or you do not have permission to access it.' });
@@ -58,12 +59,31 @@ class TestTeacherController {
         }
     }
 
+    // [DELETE] /test-teacher/api/delete-test/:testId
+    async deleteTest(req, res) {
+        try {
+            const teacherId = req.user._id;
+            const testId = req.params.testId;
+
+            const deletedTest = await Tests.findOneAndDelete({ _id: testId, teacher_owner_id: teacherId });
+
+            if (!deletedTest) {
+                return res.status(404).json({ message: 'Test not found or you do not have permission to delete it.' });
+            }
+
+            res.status(200).json({ message: 'Test deleted successfully.', test: deletedTest });
+        } catch (error) {
+            console.error('Error deleting test:', error);
+            res.status(500).json({ message: 'An error occurred while deleting the test.' });
+        }
+    }
+
     // [POST] /test-teacher/api/upload-files-test
     async postFileTests(req, res) {
         try {
             if (req.file) {
                 console.log('File uploaded:', req.file);
-                res.redirect(`/test-teacher/upload-files-test?file=${req.file.filename}`);
+                res.redirect(`/test-teacher/create-test?file=${req.file.filename}`);
             } else {
                 res.status(400).json({ message: 'No file uploaded' });
             }

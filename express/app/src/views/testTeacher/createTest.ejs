@@ -47,7 +47,7 @@
             const urlParams = new URLSearchParams(window.location.search);
             const fileUrl = urlParams.get('file');
             if (fileUrl) {
-                const filePath = `/uploads/${encodeURIComponent(fileUrl)}#pagemode=none`;
+                const filePath = `/uploads/${encodeURIComponent(fileUrl)}`;
                 document.getElementById('viewer').src = filePath;
                 setTest((prev) => ({ ...prev, urlFile: `/uploads/${encodeURIComponent(fileUrl)}` }));
             }
@@ -118,8 +118,7 @@
                         urlFile: '',
                         answers: []
                     });
-                    // Chuyển hướng đến trang khác
-                    window.location.href = '/test-teacher';
+                    window.location.href = `/test-teacher`; // Redirect to test list
 
                 } else {
                     alert('Lưu bài test thất bại!');
