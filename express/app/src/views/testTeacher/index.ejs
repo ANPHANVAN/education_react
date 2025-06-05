@@ -70,7 +70,7 @@
           <td><a href="/test-teacher/test-detail?test-id=${test._id}">${test.title || 'no data'}</a></td>
           <td>${test.test_time +' phút' || 'no data'}</td>
           <td>${(test.class && test.class.length > 0)
-            ? test.class.map(classItem => classItem.class_id.class_name).join(', ')
+            ? test.class.map(classItem => classItem.class_name).join(', ')
             : 'chưa giao'}</td>
           <td>${new Date(test.updatedAt).toLocaleString() || 'no data'}</td>
         `;

@@ -1,4 +1,6 @@
 const Tests = require('../models/testModel.js');
+const Classes = require('../models/classModel.js');
+const mongoose = require('mongoose');
 
 class TestTeacherController {
     // [GET] /test-teacher/
@@ -26,7 +28,7 @@ class TestTeacherController {
         try {
             const teacherId = req.user._id;
             const tests = await Tests.find({ teacher_owner_id: teacherId },{answers: 0})
-            .populate('class.class_id', 'class_name')
+            .populate('class', 'class_name')
 
             if (!tests || tests.length === 0) {
                 return res.status(404).json({ message: 'No tests found for this teacher.' });
@@ -126,6 +128,48 @@ class TestTeacherController {
         } catch (error) {
             console.error('Error creating test:', error);
             res.status(500).json({ message: 'An error occurred while creating the test.' });
+        }
+    }
+
+    // [GET] /test-teacher/api/get-classes  // this class take classes of teacher
+    async getClasses(req, res) {
+        try {
+            const teacherId = req.user._id;
+            const classes = await Classes.find({ teacher_id: teacherId });
+            console.log("classes", classes);
+
+            if (!classes || classes.length === 0) {
+                return res.status(404).json({ message: 'No classes found for this teacher.' });
+            }
+            res.status(200).json(classes);
+        } catch (error) {
+            console.error('Error fetching classes:', error);
+            res.status(500).json({ message: 'An error occurred while fetching the classes.' });
+        }
+    }
+
+    //[GET] /test-teacher/api/put-class-in-test   // this api to put class to test
+    async putClass(req, res) {
+        try {
+            const { class_id, testId } = req.body;
+            if (class_id.length === 0 || !testId) {
+                return res.status(400).json({ message: 'Class ID and Test ID are required.' });
+            }
+            
+            const putClass = await Tests.findOneAndUpdate(
+                { _id: testId },
+                { class: class_id },
+                { new: true }
+            );
+
+            if (!putClass) {
+                return res.status(404).json({ message: 'Test not found.' });
+            }
+
+            res.status(200).json({ message: 'Class added to test successfully.', test: putClass });
+        } catch (error) {
+            console.error('Error putting class to test:', error);
+            res.status(500).json({ message: 'An error occurred while putting class to test.' });
         }
     }
 }

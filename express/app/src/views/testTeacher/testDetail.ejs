@@ -88,7 +88,188 @@
   </div>
 </div>
 
+
+<!-- ✅ Modal -->
+<div class="modal fade" id="assignClassModal" tabindex="-1" aria-labelledby="assignClassLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="assignClassLabel">Giao bài kiểm tra cho lớp</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Thanh công cụ -->
+        <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
+          <button id="toggleSelectAll" class="btn btn-outline-secondary btn-sm">Chọn tất cả lớp</button>
+
+          <div class="input-group w-auto">
+            <input id="searchClass" class="form-control form-control-sm" placeholder="Tìm kiếm lớp">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+          </div>
+        </div>
+
+        <!-- Danh sách lớp -->
+        <div class="table-responsive border rounded" style="max-height:55vh;overflow:auto;">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th style="width:40px"></th>
+                <th>Tên lớp</th>
+                <th>Khối</th>
+                <th>Sĩ số</th>
+              </tr>
+            </thead>
+            <tbody id="classList"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button id="saveAssign" class="btn btn-primary">Lưu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+  const testId = new URLSearchParams(window.location.search).get('test-id');
+  let testInformation = {}
+  fetchTestdata()
+    .then(data => {
+      if (data) {
+        testInformation = data
+        console.log('Test testInformation:', testInformation);
+      } else {
+        console.error('Không tìm thấy thông tin đề thi');
+      }
+    })
+
+  async function fetchTestdata() {
+    if (!testId) {
+      console.error('Không tìm thấy test ID trong URL');
+      return;
+    }
+    try {
+      const response = await fetch(`/test-teacher/api/get-test-detail?test-id=${testId}`);
+      if (!response.ok) throw new Error('Lỗi tải thông tin đề thi');
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+      alert('Không thể tải thông tin đề thi. Vui lòng thử lại sau.');
+    }
+    
+  }
+  const classListTbody = document.getElementById('classList');
+  const searchInput    = document.getElementById('searchClass');
+  const selectAllBtn   = document.getElementById('toggleSelectAll');
+  const saveBtn        = document.getElementById('saveAssign');
+  let classesData      = [];  // lưu toàn bộ lớp
+  let allSelected      = false;
+
+  /** ⛳ Fetch danh sách lớp khi mở modal */
+  document.getElementById('assignClassModal').addEventListener('show.bs.modal', fetchClasses);
+
+  async function fetchClasses () {
+    classListTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Đang tải...</td></tr>';
+    try {
+      const res  = await fetch('/test-teacher/api/get-classes');
+      const data = await res.json();
+      classesData = data;                         // cache dữ liệu
+      renderClassRows(classesData);               // vẽ bảng
+    } catch (err) {
+      classListTbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">Lỗi tải lớp!</td></tr>';
+      console.error(err);
+    }
+  }
+
+  /** 🎨 Render bảng lớp */
+  function renderClassRows(list) {
+    if (!list.length) {
+      classListTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Không có lớp</td></tr>';
+      return;
+    }
+    classListTbody.innerHTML = list.map(c => {
+      const checked = testInformation.class?.includes(c._id) ? 'checked' : '';
+      return `
+        <tr>
+          <td>
+            <input type="checkbox" class="form-check-input class-check"
+                   data-id="${c._id}" ${checked}>
+          </td>
+          <td>${c.class_name}</td>
+          <td>${c.grade}</td>
+          <td>${c.number_student}</td>
+        </tr>`;
+    }).join('');
+  }
+
+  /** 🔍 Tìm kiếm lớp */
+  searchInput.addEventListener('input', () => {
+    const keyword = searchInput.value.trim().toLowerCase();
+    const filtered = classesData.filter(c =>
+      c.class_name.toLowerCase().includes(keyword)
+    );
+    renderClassRows(filtered);
+  });
+
+  /** 🗹 Chọn / bỏ chọn tất cả */
+  selectAllBtn.addEventListener('click', () => {
+    allSelected = !allSelected;
+    document.querySelectorAll('.class-check').forEach(cb => cb.checked = allSelected);
+    selectAllBtn.textContent = allSelected ? 'Bỏ chọn tất cả' : 'Chọn tất cả lớp';
+  });
+
+  /** 💾 Submit */
+  saveBtn.addEventListener('click', async () => {
+    const selectedIds = [...document.querySelectorAll('.class-check:checked')]
+      .map(cb => cb.dataset.id);
+
+    if (!selectedIds.length) {
+      alert('Vui lòng chọn ít nhất 1 lớp!');
+      return;
+    }
+
+    saveBtn.disabled = true;
+    try {
+      console.log('Selected class IDs:', selectedIds);
+      const res = await fetch(`/test-teacher/api/put-class-in-test`, {
+        method : 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body   : JSON.stringify({ class_id: selectedIds, testId:testId })
+      });
+      if (!res.ok) throw new Error('Lưu thất bại');
+      bootstrap.Modal.getInstance(
+        document.getElementById('assignClassModal')
+      ).hide();
+      alert('Giao bài thành công!');
+    } catch (err) {
+      alert('Có lỗi khi lưu!');
+      console.error(err);
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+</script>
+
+<script>
+
+  async function deleteTest(testId) {
+        if (!confirm('Bạn có chắc chắn muốn xóa đề thi này?')) {
+            return;
+        }
+        const response = await fetch(`/test-teacher/api/delete-test/${testId}`, {
+            method: 'DELETE'
+        });
+        if (response.ok) {
+            alert('Đề thi đã được xóa thành công.');
+            window.location.href = '/test-teacher';
+        } else {
+            alert('Xóa đề thi thất bại. Vui lòng thử lại sau.');
+        }
+    }
+
     async function fetchTestdata() {
         const searchQuerry = new URLSearchParams(window.location.search);
         const testId = searchQuerry.get('test-id');
@@ -122,14 +303,18 @@
             <div class="menu-item py-2"><i class="bi bi-gear"></i> Cài đặt</div>
             <div class="menu-item py-2"><i class="bi bi-bar-chart"></i> Thống kê</div>
             <div class="menu-item py-2"><i class="bi bi-trophy"></i> Bảng xếp hạng</div>
-            <div class="menu-item py-2 text-danger"><i class="bi bi-trash"></i> Xóa Đề thi</div>
+            <div onclick="deleteTest('${test._id}')" class="menu-item py-2 text-danger"><i class="bi bi-trash"></i> Xóa Đề thi</div>
 
             <hr>
-            <h6>Giao cho lớp</h6>
-            <input type="text" class="form-control form-control-sm" placeholder="Tìm theo tên lớp">
-            <button class="btn btn-link btn-sm mt-1">Sửa</button>
-        `
+            <div class="d-flex justify-content-between align-items-center">
+              <h6 class="mb-0">Giao cho lớp</h6>
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignClassModal">
+                Giao cho lớp
+              </button>
+              </div>
+            <div id="list-class-for-this-test"></div>
 
+        `
     }
 
     document.addEventListener('DOMContentLoaded', function() {

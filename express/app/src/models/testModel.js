@@ -19,12 +19,6 @@ const answersSchema = new mongoose.Schema({
         required: true },
 })
 
-const classSchema = new mongoose.Schema({
-  class_id: { type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: 'Classes' }
-},{ timestamps: true})
-
 const testSchema = new mongoose.Schema({
   title: { type: String,
     required: true },
@@ -54,7 +48,10 @@ const testSchema = new mongoose.Schema({
 
   description: { type: String },
 
-  class: { type: [classSchema] },
+  class: { type: [mongoose.Schema.Types.ObjectId],
+    default: [],
+    ref: 'Classes'
+   },
 
   see_answer: { type: Boolean,
     default: false }
