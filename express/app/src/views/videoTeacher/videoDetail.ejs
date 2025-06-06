@@ -38,26 +38,9 @@
 
 <div class="container-fluid">
   <div class="row">
-    <!-- Sidebar -->
-    <div class="col-md-3 sidebar">
-      <h6 class="text-truncate"><i class="bi bi-file-earmark-text"></i> de-thi-thu-tot-nghiep</h6>
-      <small class="text-muted">Ngày tạo: 29/05/2025 20:48</small><br>
-      <small class="text-muted">Người tạo: Anxam Phanxam</small><br>
-      <small class="text-muted">Số lượt làm: 1</small><br>
-      <button class="btn btn-outline-secondary btn-sm mt-2">📎 Copy link</button>
-
-      <hr>
-      <h6>Menu</h6>
-      <div class="menu-item py-2"><i class="bi bi-gear"></i> Cài đặt</div>
-      <div class="menu-item py-2"><i class="bi bi-bar-chart"></i> Thống kê</div>
-      <div class="menu-item py-2"><i class="bi bi-trophy"></i> Bảng xếp hạng</div>
-      <div class="menu-item py-2 text-danger"><i class="bi bi-trash"></i> Xóa Đề thi</div>
-
-      <hr>
-      <h6>Giao cho lớp</h6>
-      <input type="text" class="form-control form-control-sm" placeholder="Tìm theo tên lớp">
-      <button class="btn btn-link btn-sm mt-1">Sửa</button>
-    </div>
+    <!-- Sidebar is hear -->
+    <div class="col-md-3 sidebar" id="sidebar-list">
+    </div> 
 
     <!-- Content -->
     <div class="col-md-9 p-4">
@@ -134,33 +117,34 @@
 </div>
 
 <script>
-  const testId = new URLSearchParams(window.location.search).get('test-id');
-  let testInformation = {}
-  fetchTestdata()
+  const videoId = window.location.href.split('video-detail/')[1]
+
+  let videoInformation = {}
+  fetchVideodata()
     .then(data => {
       if (data) {
-        testInformation = data
-        console.log('Test testInformation:', testInformation);
+        videoInformation = data
+        console.log('Video videoInformation:', videoInformation);
       } else {
-        console.error('Không tìm thấy thông tin đề thi');
+        console.error('Không tìm thấy thông tin video');
       }
     })
 
-  async function fetchTestdata() {
-    if (!testId) {
-      console.error('Không tìm thấy test ID trong URL');
+  async function fetchVideodata() {
+    if (!videoId) {
+      console.error('Không tìm thấy video ID trong URL');
       return;
     }
     try {
-      const response = await fetch(`/test-teacher/api/get-test-detail?test-id=${testId}`);
-      if (!response.ok) throw new Error('Lỗi tải thông tin đề thi');
+      const response = await fetch(`/video-teacher/api/video-detail/${videoId}`);
+      if (!response.ok) throw new Error('Lỗi tải thông tin video');
       return await response.json();
     } catch (error) {
       console.error(error);
-      alert('Không thể tải thông tin đề thi. Vui lòng thử lại sau.');
+      alert('Không thể tải thông tin video. Vui lòng thử lại sau.');
     }
-    
   }
+  
   const classListTbody = document.getElementById('classList');
   const searchInput    = document.getElementById('searchClass');
   const selectAllBtn   = document.getElementById('toggleSelectAll');
@@ -174,10 +158,10 @@
   async function fetchClasses () {
     classListTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Đang tải...</td></tr>';
     try {
-      const res  = await fetch('/test-teacher/api/get-classes');
+      const res  = await fetch('/video-teacher/api/get-classes');
       const data = await res.json();
-      classesData = data;                         // cache dữ liệu
-      renderClassRows(classesData);               // vẽ bảng
+      classesData = data;
+      renderClassRows(classesData);    
     } catch (err) {
       classListTbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">Lỗi tải lớp!</td></tr>';
       console.error(err);
@@ -190,17 +174,17 @@
       classListTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Không có lớp</td></tr>';
       return;
     }
-    classListTbody.innerHTML = list.map(c => {
-      const checked = testInformation.class?.includes(c._id) ? 'checked' : '';
+    classListTbody.innerHTML = list.map(classItem => {
+      const checked = videoInformation.class.includes(classItem._id) ? 'checked' : '';
       return `
         <tr>
           <td>
             <input type="checkbox" class="form-check-input class-check"
-                   data-id="${c._id}" ${checked}>
+                   data-id="${classItem._id}" ${checked}>
           </td>
-          <td>${c.class_name}</td>
-          <td>${c.grade}</td>
-          <td>${c.number_student}</td>
+          <td>${classItem.class_name}</td>
+          <td>${classItem.grade}</td>
+          <td>${classItem.number_student}</td>
         </tr>`;
     }).join('');
   }
@@ -233,17 +217,21 @@
 
     saveBtn.disabled = true;
     try {
-      console.log('Selected class IDs:', selectedIds);
-      const res = await fetch(`/test-teacher/api/put-class-in-test`, {
+      const res = await fetch(`/video-teacher/api/put-class-in-video`, {
         method : 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body   : JSON.stringify({ class_id: selectedIds, testId:testId })
+        body   : JSON.stringify({ class_id: selectedIds, videoId:videoId })
       });
       if (!res.ok) throw new Error('Lưu thất bại');
       bootstrap.Modal.getInstance(
         document.getElementById('assignClassModal')
       ).hide();
-      alert('Giao bài thành công!');
+      
+      setTimeout(() => {
+        alert('Giao bài thành công!');
+        window.location.reload()
+      }, 1000);
+
     } catch (err) {
       alert('Có lỗi khi lưu!');
       console.error(err);
@@ -254,73 +242,74 @@
 </script>
 
 <script>
-
-  async function deleteTest(testId) {
-        if (!confirm('Bạn có chắc chắn muốn xóa đề thi này?')) {
-            return;
-        }
-        const response = await fetch(`/test-teacher/api/delete-test/${testId}`, {
-            method: 'DELETE'
+  async function deleteVideo(videoId) {
+    if (confirm('Bạn có chắc chắn muốn xóa video này?')) {
+      try {
+        const response = await fetch(`/video-teacher/api/delete-video/${videoId}`, {
+          method: 'DELETE'
         });
-        if (response.ok) {
-            alert('Đề thi đã được xóa thành công.');
-            window.location.href = '/test-teacher';
-        } else {
-            alert('Xóa đề thi thất bại. Vui lòng thử lại sau.');
-        }
+        if (!response.ok) throw new Error('Network response was not ok');
+        alert('Video đã được xóa thành công!');
+        window.location.href = '/video-teacher';
+      } catch (error) {
+        console.error('Error deleting video:', error);
+        alert('Đã xảy ra lỗi khi xóa video.');
+      }
     }
+  }
 
-    async function fetchTestdata() {
-        const searchQuerry = new URLSearchParams(window.location.search);
-        const testId = searchQuerry.get('test-id');
-        if (!testId) {
-            return
-        }
-        const response = await fetch(`/test-teacher/api/get-test-detail?test-id=${testId}`);
-        const test = await response.json();
-        if (!test) {
-            return;
-        }
-        const sidebar = document.querySelector('.sidebar');
-        sidebar.innerHTML = `
-            <h6 class="text-truncate">Tên Đề Thi: ${test.title}</h6>
-            <small class="text-muted">
-            Ngày tạo: ${new Date(test.createdAt).toLocaleString('vi-VN', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            })}
-            </small><br>
-            <small class="text-muted">Người tạo: ${test.teacher_owner_id.fullname}</small><br>
-            <small class="text-muted">Khối: ${test.grade}</small><br>
-            <small class="text-muted">Thời gian làm bài: ${test.test_time} phút</small><br>
-            <small class="text-muted">Môn học: ${test.subject}</small><br>
-            <button class="btn btn-outline-secondary btn-sm mt-2">📎 Copy link</button>
+  async function fetchVideo() {
+    try {
+      // i want take video info from href window.location.href
+      const videoId = window.location.href.split('video-detail/')[1]
+      const response = await fetch(`/video-teacher/api/video-detail/${videoId}`);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const videoInfo = await response.json();
 
-            <hr>
-            <h6>Menu</h6>
-            <div class="menu-item py-2"><a href="${test.url_file}" target="_blank">Xem đề thi</a></div>
-            <div class="menu-item py-2"><i class="bi bi-gear"></i> Cài đặt</div>
-            <div class="menu-item py-2"><i class="bi bi-bar-chart"></i> Thống kê</div>
-            <div class="menu-item py-2"><i class="bi bi-trophy"></i> Bảng xếp hạng</div>
-            <div onclick="deleteTest('${test._id}')" class="menu-item py-2 text-danger"><i class="bi bi-trash"></i> Xóa Đề thi</div>
+      const sidebarList = document.getElementById('sidebar-list');
+      if (!videoInfo) {
+        console.error('No video data found');
+        return;
+      }
+      sidebarList.innerHTML = `
+        <h6 class="text-truncate"><i class="bi bi-file-earmark-text"></i>Tên Video: ${videoInfo.video_requirement_name}</h6>
+        <small class="text-muted">Ngày tạo: ${new Date(videoInfo.createdAt).toLocaleDateString(
+          'vi-VN', {
+            year: 'numeric', month: '2-digit', day: '2-digit'
+          }
+        )}</small><br>
+        <small class="text-muted">Người tạo: ${videoInfo.teacher_owner_id.fullname}</small><br>
+        <small class="text-muted">Thời gian video: ${videoInfo.video_duration}</small><br>
+        <small class="text-muted">Khối: ${videoInfo.grade}</small><br>
+        <small class="text-muted">Môn: ${videoInfo.subject}</small><br>
+        <button class="btn btn-outline-secondary btn-sm mt-2">📎 Copy link</button>
 
-            <hr>
-            <div class="d-flex justify-content-between align-items-center">
-              <h6 class="mb-0">Giao cho lớp</h6>
-              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignClassModal">
-                Sửa
-              </button>
-              </div>
-            <div id="list-class-for-this-test"></div>
+        <hr>
+        <h6>Menu</h6>
+        <div class="menu-item py-2">
+          <a href="https://www.youtube.com/watch?v=${videoInfo.video_embed}" target="_blank" class="btn">
+            <i class="fa-brands fa-youtube"></i>
+            Xem video
+          </a>
+        </div>
 
-        `
+        <div class="menu-item py-2"><i class="bi bi-bar-chart"></i> Thống kê</div>
+        <div onclick="deleteVideo('${videoInfo._id}')" class="menu-item py-2 text-danger"><i class="bi bi-trash"></i> Xóa Video</div>
+
+        <hr>
+        <div class="d-flex justify-content-between align-items-center">
+          <h6 class="mb-0">Giao cho lớp</h6>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignClassModal">
+            Sửa
+          </button>
+        </div>
+      `
+
+    } catch (error) {
+      console.error('Error fetching video:', error);
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        fetchTestdata();
-    });
+  }
+  document.addEventListener('DOMContentLoaded', ()=>{
+    fetchVideo();
+  })
 </script>

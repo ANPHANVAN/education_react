@@ -7,6 +7,8 @@ function route(app){
     const authRouter = require('./auth');
     const classTeacherRouter = require('./classTeacher.js');
     const testTeacherRouter = require('./testTeacher.js');
+    const videoTeacherRouter = require('./videoTeacher.js');
+
     // [GET] /health
     app.get('/health', (req, res) => {
         res.status(200).send('OK');
@@ -16,6 +18,7 @@ function route(app){
     app.use('/auth', authRouter)
     app.use('/class-teacher', authMiddleware, classTeacherRouter)
     app.use('/test-teacher', authMiddleware, testTeacherRouter)
+    app.use('/video-teacher', authMiddleware, videoTeacherRouter)
     app.use('/', authMiddleware, homeRouter)
 }
 

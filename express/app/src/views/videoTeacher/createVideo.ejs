@@ -1,0 +1,55 @@
+<div class="container mt-5">
+  <h3>Thêm Video</h3>
+  <form action="/video-teacher/api/create-video" method="POST">
+    <div class="mb-3">
+      <label for="video_requirement_name" class="form-label">Tên Gợi Nhớ Cho Bạn</label>
+      <input type="text" class="form-control" id="video_requirement_name" name="video_requirement_name" placeholder="VD: Video 1 - Khối 12 Giới thiệu về môn Toán" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="note" class="form-label">Ghi Chú Cho Học Sinh</label>
+      <input type="text" class="form-control" id="note" name="note" placeholder="VD: Các bạn làm càng sớm càng tốt nhé">
+    </div>
+
+    <div class="mb-3">
+      <label for="video_embed" class="form-label">Video Id Của Youtube (VD: youtube.com/watch?v=k2WT1-C2Ydo thì nhập k2WT1-C2Ydo)</label>
+      <input type="text" class="form-control" id="video_embed" name="video_embed" placeholder="VD: k2WT1-C2Ydo" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="video_duration" class="form-label">Thời lượng video (phút)</label>
+      <input type="text" class="form-control" id="video_duration" name="video_duration" placeholder="VD: 1 giờ 30 phút" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="grade" class="form-label">Khối</label>
+      <select class="form-select" required id="grade" name="grade" > 
+        <option value="">Chọn khối</option>
+        <option value="6">Khối 6</option>
+        <option value="7">Khối 7</option>
+        <option value="8">Khối 8</option>
+        <option value="9">Khối 9</option>
+        <option value="10">Khối 10</option>
+        <option value="11">Khối 11</option>
+        <option value="12">Khối 12</option>
+    </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="subject" class="form-label">Môn học</label>
+      <select class="form-select" id="subject" name="subject" required>
+        <option value="">Chọn môn học</option>
+        <option value="Toán">Toán</option>
+        <option value="Vật Lý">Vật Lý</option>
+        <option value="Hóa học">Hóa học</option>
+        <option value="Ngữ văn">Ngữ văn</option>
+        <option value="Lịch sử">Lịch sử</option>
+        <option value="Địa lý">Địa lý</option>
+        <option value="Tiếng Anh">Tiếng Anh</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu</button>
+  </form>
+</div>
+<br>

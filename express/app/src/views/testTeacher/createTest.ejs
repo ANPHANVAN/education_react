@@ -57,7 +57,7 @@
         const addAnswer = () => {
             setTest({
                 ...test,
-                answers: [...test.answers, { number: '', part: '', type: '', answer: '' }]
+                answers: [...test.answers, { number: '', part: '', type: '', answer: '', score: '' }]
             });
         };
 
@@ -94,13 +94,14 @@
             }
             for (let i = 0; i < test.answers.length; i++) {
                 const answer = test.answers[i];
-                if (!answer.number || !answer.part || !answer.type || !answer.answer) {
+                if (!answer.number || !answer.part || !answer.type || !answer.answer || !answer.score) {
                     alert(`Câu trả lời ${i + 1} chưa đầy đủ thông tin!`);
                     return;
                 }
             }
 
             try {
+                console.log('Submitting test data:',test);
                 const response = await fetch('/test-teacher/api/create-test', {
                     method: 'POST',
                     headers: {
@@ -163,13 +164,13 @@
                             required
                         >
                             <option value="">Chọn môn học</option>
-                            <option value="math">Toán</option>
-                            <option value="physics">Vật Lý</option>
-                            <option value="chemistry">Hóa học</option>
-                            <option value="literature">Ngữ văn</option>
-                            <option value="history">Lịch sử</option>
-                            <option value="geography">Địa lý</option>
-                            <option value="english">Tiếng Anh</option>
+                            <option value="Toán">Toán</option>
+                            <option value="Vật Lý">Vật Lý</option>
+                            <option value="Hóa học">Hóa học</option>
+                            <option value="Ngữ văn">Ngữ văn</option>
+                            <option value="Lịch sử">Lịch sử</option>
+                            <option value="Địa lý">Địa lý</option>
+                            <option value="Tiếng Anh">Tiếng Anh</option>
                         </select>
                     </div>
                     <div className="mb-3">
@@ -225,6 +226,21 @@
                                             <option value="part_3">Phần 3</option>
                                         </select>
                                     </div>
+
+                                    {/* Ô điểm */}
+                                    <div>
+                                        <label className="block text-sm">Điểm</label>
+                                        <input
+                                        type="number"
+                                        step="0.01"              // cho phép số thập phân
+                                        min="0"
+                                        className="w-full p-2 border rounded"
+                                        value={answer.score}
+                                        onChange={(e) => updateAnswer(index, 'score', e.target.value)}
+                                        required
+                                        />
+                                    </div>
+
                                     <div>
                                         <label className="block text-sm">Loại câu hỏi</label>
                                         <select

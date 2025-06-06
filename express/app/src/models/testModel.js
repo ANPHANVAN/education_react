@@ -17,6 +17,9 @@ const answersSchema = new mongoose.Schema({
       // true, false for truefalse type
       // value for value type
         required: true },
+        
+    score: { type: Number,
+        required: true },
 })
 
 const testSchema = new mongoose.Schema({
@@ -37,8 +40,8 @@ const testSchema = new mongoose.Schema({
 
   subject: { type: String,
     required: true,
-    default: 'math',
-    enum: ['math', 'physics', 'chemistry', 'literature', 'history', 'geography', 'english'] },
+    default: 'Toán',
+    enum: ['Toán', 'Vật Lý', 'Hóa học', 'Ngữ văn', 'Lịch sử', 'Địa lý', 'Tiếng Anh'] },
 
     teacher_owner_id: { type: mongoose.Schema.Types.ObjectId,
       required: true,

@@ -1,0 +1,92 @@
+  <style>
+    .btn-custom { min-width: 180px; }
+    .doc-card {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 1rem;
+      background-color: #fff;
+      height: 100%;
+    }
+    .tag-badge {
+      background-color: #0d6efd;
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+    }
+  </style>
+<div class="container mt-4">
+
+  <!-- Tìm kiếm + nút tạo -->
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
+    <input type="text" class="form-control w-auto" placeholder="Tìm kiếm" style="max-width: 300px;">
+
+    <div class="d-flex flex-wrap gap-2">
+      <button class="btn btn-success btn-custom"><a href="/video-teacher/create-video">+ Tạo video học sinh phải xem</a></button>
+    </div>
+  </div>
+
+  <!-- Danh sách tất cả -->
+  <h5 class="mb-3">Tất cả</h5>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Tên</th>
+          <th>Thời lượng video</th>
+          <th>Môn Khối</th>
+          <th>Sửa lần cuối</th>
+        </tr>
+      </thead>
+      <tbody class="video-teacher-list">
+
+        <!-- Dữ liệu sẽ được chèn vào đây thông qua JavaScript -->
+        <!-- Ví dụ mẫu:
+        <tr>
+          <td>Video 1 - Khối 12 Giới thiệu về môn Toán</td>
+          <td>1 giờ 30 phút</td>
+          <td>Khối 12 - Toán</td>
+          <td>2023-10-01 12:00:00</td>
+        </tr>
+        -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+
+    async function fetchVideo() {
+        try {
+            const response = await fetch('/video-teacher/api/get-video', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const videos = await response.json();
+            console.log(videos);
+            document.querySelector('.video-teacher-list').innerHTML = videos.map(video => `
+                <tr onclick="location.href='/video-teacher/video-detail/${video._id}'" style="cursor: pointer;">
+                    <td>${video.video_requirement_name}</td>
+                    <td>${video.video_duration}</td>
+                    <td> ${video.subject} - ${video.grade}</td>
+                    <td>${new Date(video.updatedAt).toLocaleString(
+                        'vi-VN', 
+                        { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }
+                    )}</td>
+                </tr>
+            `).join('');
+        } catch (error) {
+            console.error('Error fetching videos:', error);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchVideo();
+    });
+
+</script>
