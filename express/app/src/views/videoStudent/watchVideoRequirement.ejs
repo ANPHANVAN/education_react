@@ -18,10 +18,10 @@ let VIDEO_ID, KEY_MAX, KEY_LAST, KEY_DONE;
 let VIDEO_REQUIREMENT_INFO, STUDENT_ID;
 let player, saveTimer = null, duration = 0;
 
+const queryParams = new URLSearchParams(window.location.search)
+STUDENT_ID = queryParams.get('student_id')
 /* ---------- ❷ lấy thông tin video từ server ---------- */
 async function fetchVideoInfo () {
-  const queryParams = new URLSearchParams(window.location.search)
-  const STUDENT_ID = queryParams.get('student_id')
 
   const videoIdFromURL = location.href.split('watch-video/')[1];        // lấy id trong URL
   const res            = await fetch(`/video-student/api/watch-video/${videoIdFromURL}`);
@@ -90,17 +90,20 @@ function trackProgress () {
   /* 1. không cho vượt quá phần đã xem */
   const allowed = max + ALLOW_BUFFER;
   if (cur > allowed) {
-    player.seekTo(Math.max(allowed - 0.1, 0), true);  // tránh < 0
+    player.seekTo(Math.max(allowed - 5, 0), true);  // tránh < 0
     return;
   }
 
   /* 2. cập nhật mốc cao nhất */
   if (cur > max) localStorage.setItem(KEY_MAX, cur);
   localStorage.setItem(KEY_LAST, cur);
-
+  console.log("this is", (!localStorage.getItem(KEY_DONE) && duration &&
+      cur >= duration * COMPLETE_RATIO) )
+  console.log("!localStorage.getItem(KEY_DONE)", !localStorage.getItem(KEY_DONE))
   /* 3. gửi “hoàn thành 90 %” */
   if (!localStorage.getItem(KEY_DONE) && duration &&
       cur >= duration * COMPLETE_RATIO) {
+        console.log({student_id:STUDENT_ID, video_requirement_id:VIDEO_REQUIREMENT_INFO._id})
     fetch('/video-student/api/finish-video/', {
       method : 'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -1,8 +1,8 @@
 const Classes = require('../models/classModel.js'); // Assuming you have a Class model defined
-const Users = require('../models/userModel.js'); // Assuming you have a User model defined
-const Students = require('../models/studentModel.js'); // Assuming you have a Student model defined
 const Tests = require('../models/testModel.js')
 const Submissions = require('../models/submissionModel.js')
+const VideoRequirements = require('../models/videoRequirementModel.js')
+const Students = require('../models/studentModel.js')
 
 class ClassTeacherController {
     async index(req, res) {
@@ -56,24 +56,49 @@ class ClassTeacherController {
                 student_id:student_id,
                 tests:[]
             }
+
             for (let i = 0; i < testDocs.length; i++) {
+                let found = false;
                 for (let j = 0; j < submitList.length; j++) {
-                    if ( testDocs[i]==submitList[j] ) {
+                    if ( testDocs[i]._id.toString() === submitList[j].test_id.toString() ) {
                         studentTest.tests.push({test_id:testDocs[i]._id, 
                             test_title: testDocs[i].title,
                             score: submitList[j].score,
+                            sum_score: testDocs[j].sum_score,
                             test_status_submit:true})
+
+                        found = true
                         break
                     }
                 }
-                studentTest.tests.push({test_id:testDocs[i]._id, 
+                if ( !found ) {
+                    studentTest.tests.push({test_id:testDocs[i]._id, 
                     test_title: testDocs[i].title,
                     test_status_submit:false})
+                }
             }
             res.json(studentTest)
 
             
         } catch(error) {
+            console.error('Error fetching data:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    }
+
+    async getStudentVideoStatus(req, res) {
+        try {
+            const class_id = req.student.class_id
+            const student_id = req.student.student_id
+
+            const videoClassInfo = await VideoRequirements.find({class: class_id})
+            const studentVideoInfo = await Students.findById(student_id)
+                .populate({
+                    path: 'video',
+                })
+            res.status(200).json({videoClassInfo, studentVideoInfo, student_id})
+
+        } catch (error) {
             console.error('Error fetching data:', error);
             res.status(500).send('Internal Server Error');
         }

@@ -24,6 +24,7 @@
     <!-- Sidebar -->
     <div class="col-2 sidebar p-3">
       <button class="btn tab-button active mb-2" id="btn-baitap">📅 Đề Thi</button>
+      <button class="btn tab-button" id="btn-video">🎥 Video Watch</button>
       <button class="btn tab-button" id="btn-bangtin">📰 Bảng Tin</button>
     </div>
 
@@ -37,6 +38,11 @@
       <div id="content-bangtin" class="tab-content d-none">
       </div>
 
+      <!-- video watch -->
+      <div id="content-video" class="tab-content d-none">
+      <h4>Video sẽ được hiển thị tại đây.</h4>
+      </div>  
+
     </div>
   </div>
 </div>
@@ -46,19 +52,39 @@
   const btnBangtin = document.getElementById("btn-bangtin");
   const contentBaitap = document.getElementById("content-baitap");
   const contentBangtin = document.getElementById("content-bangtin");
+  const btnVideo = document.getElementById("btn-video");
+  const contentVideo = document.getElementById("content-video");
 
   btnBaitap.addEventListener("click", () => {
     btnBaitap.classList.add("active");
     btnBangtin.classList.remove("active");
+    btnVideo.classList.remove("active");
+
     contentBaitap.classList.remove("d-none");
     contentBangtin.classList.add("d-none");
+    contentVideo.classList.add("d-none");
+
   });
 
   btnBangtin.addEventListener("click", () => {
     btnBangtin.classList.add("active");
     btnBaitap.classList.remove("active");
+    btnVideo.classList.remove("active");
+
     contentBangtin.classList.remove("d-none");
     contentBaitap.classList.add("d-none");
+    contentVideo.classList.add("d-none");
+
+  });
+
+  btnVideo.addEventListener("click", () => {
+    btnVideo.classList.add("active");
+    btnBaitap.classList.remove("active");
+    btnBangtin.classList.remove("active");
+
+    contentVideo.classList.remove("d-none");
+    contentBaitap.classList.add("d-none");
+    contentBangtin.classList.add("d-none");
   });
 </script>
 
@@ -103,8 +129,62 @@
             .map(test => `
                 <div class="card mt-3 p-3">
                     <strong><a href="/test-student/test-information/${test.test_id}?class_id=${CLASS_ID}">${test.test_title}</a></strong>
-                    <p>Trạng Thái: ${test.test_status_submit?'Đã nộp' : 'Chưa Nộp'}</p>
-                    <p>${test.test_status_submit ? 'Điểm Số : ' + test.score : ''}</p>
+                    <p>Trạng Thái: ${test.test_status_submit?'Đã nộp ✅' : 'Chưa Nộp ❌'}</p>
+                    <p>${test.test_status_submit ? 'Điểm Số : ' + test.score + ' / ' + test.sum_score : ''}</p>
+                </div>
+            `)
+            .join('');
+            
+        } catch(error) {
+            console.error('error fetch class info')
+        }
+    }
+
+    async function renderVideoInfo(){
+        try {
+            const res = await fetch(`/class-student/student-video?class_id=${CLASS_ID}`)
+            const videoStudentInfoStatus = await res.json()
+            const { videoClassInfo, studentVideoInfo, student_id } = videoStudentInfoStatus
+
+            // this part merge information
+            let videoStatus = [] ;
+            for (let i = 0; i < videoClassInfo.length; i++) {
+              const videoRequirement = videoClassInfo[i];
+              let haveFound = false;
+              for (let j = 0; j < studentVideoInfo.video.length; j++) {
+                const video = studentVideoInfo.video[j];
+                if ( videoRequirement._id === video.video_requirement_id ) {
+                  videoStatus.push({
+                    video_requirement_id: videoRequirement._id,
+                    video_requirement_name:videoRequirement.video_requirement_name,
+                    video_embed: videoRequirement.videoRequirement,
+                    video_duration: videoRequirement.video_duration,
+                    note: videoRequirement.note,
+                    completedStatus: true
+                  })
+                  haveFound = true
+                }
+              }
+
+              if ( !haveFound ) {
+                videoStatus.push({
+                  video_requirement_id: videoRequirement._id,
+                  video_requirement_name:videoRequirement.video_requirement_name,
+                  video_embed: videoRequirement.videoRequirement,
+                  video_duration: videoRequirement.video_duration,
+                  note: videoRequirement.note,
+                  completedStatus: false
+                })
+              }
+            }
+
+            contentVideo.innerHTML = videoStatus
+            .map(video_Status => `
+                <div class="card mt-3 p-3">
+                    <strong><a href="/video-student/watch-video/${video_Status.video_requirement_id}?student_id=${student_id}">${video_Status.video_requirement_name}</a></strong>
+                    <p>Thời gian xem: ${video_Status.video_duration}</p>
+                    <p>Ghi chú: ${video_Status.note} phút</p>
+                    <p>Trạng Thái: ${ video_Status.completedStatus ? ' Đã hoàn thành ✅' : ' Chưa hoàn thành ❌' }</p>
                 </div>
             `)
             .join('');
@@ -117,5 +197,21 @@
     document.addEventListener('DOMContentLoaded', ()=>{
         renderAnnounce()
         renderTestInfo()
+        renderVideoInfo()
     })
 </script>
+
+<a href="https://m.me/61575332265438" target="_blank" >
+  <i style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #0084ff;
+  color: white;
+  padding: 15px;
+  border-radius: 50%;
+  font-size: 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  z-index: 9999;
+  text-decoration: none;" class="fa-brands fa-facebook-messenger"></i>
+</a>

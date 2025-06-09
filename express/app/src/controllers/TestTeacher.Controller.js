@@ -111,6 +111,8 @@ class TestTeacherController {
             const {title, testTime, subject, grade, urlFile, answers} = req.body;
             const teacherOwnerId = req.user._id;
 
+            const sum_score = answers.reduce((sum, {score})=> sum + Number(score), 0)
+            
             const newTest = await Tests.create({
                 title: title,
                 test_time: testTime,
@@ -118,7 +120,8 @@ class TestTeacherController {
                 grade: grade,
                 url_file: urlFile,
                 answers: answers,
-                teacher_owner_id: teacherOwnerId
+                teacher_owner_id: teacherOwnerId,
+                sum_score: sum_score
             });
 
             if (!newTest) {

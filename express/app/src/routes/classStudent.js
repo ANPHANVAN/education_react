@@ -7,10 +7,11 @@ const setStudentInfo = require('../middleware/setStudentInfo.js')
 // [GET] /class-student/api/get-class-test?class_id=class_id
 router.get('/api/get-class-test', setStudentInfo, classStudentController.getclassTest);
 
-
 // [GET] /class-student/api/:class_id
 router.get('/api/:class_id', classStudentController.getclassDetail);
 
+// [GET] /class-student/student-video?class_id=class_id   //get student status video
+router.get('/student-video', setStudentInfo, classStudentController.getStudentVideoStatus);
 
 //////////// ROUTE /////////////
 // [GET] /class-student/:class_id

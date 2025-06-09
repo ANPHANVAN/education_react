@@ -13,6 +13,16 @@ const studentSchema = new mongoose.Schema({
         required: true,
         unique: true,
         default: () => Math.floor(Math.random() * 1000000) },
+    test: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Submissions',
+        default: []
+    },
+    video: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'VideoProgress',
+        default: []
+    }
 })
 
 module.exports = mongoose.model('Students', studentSchema);

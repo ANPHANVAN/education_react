@@ -16,12 +16,11 @@ const mongodb = require('./config/db/mongodb');
 mongodb.connect()
 
 const hideFooter = require('./middleware/hideFooter');
-const initSocket = require('./services/socket');
 app = express();
 const port = 3000;
 const server = http.createServer(app)
 const io = new Server(server)
-initSocket(io)
+// initSocket(io)
 
 app.use(morgan('combined'));
 app.use(express.json());        // Đọc body dạng JSON

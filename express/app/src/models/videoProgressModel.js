@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 const videoProgressSchema = new mongoose.Schema({
   student_id: { type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Users',
+    ref: 'Students',
     required: true},
 
   completed: { type: Boolean,
-    default: true
+    default: false
    },
 
    video_requirement_id:

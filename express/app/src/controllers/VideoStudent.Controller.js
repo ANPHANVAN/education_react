@@ -32,6 +32,7 @@ class VideoStudentController {
                 video_requirement_id:video_requirement_id,
                 completed: true
             })
+            
             if (!videoProgress) {
                 res.status(400).json({message: "An error occurred while create finish video"})
             }

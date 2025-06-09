@@ -12,13 +12,13 @@
     <!-- Header bar -->
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h4 class="mb-0 fw-semibold">Danh sách lớp</h4>
-        <div class="d-flex flex-grow-1 gap-2" style="max-width:400px;">
+        <!-- <div class="d-flex flex-grow-1 gap-2" style="max-width:400px;">
         <div class="input-group">
             <input id="searchInput" type="text" class="form-control" placeholder="Tìm kiếm theo tên lớp" />
             <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
         </div>
-        </div>
-        <button class="btn btn-primary d-flex align-items-center gap-1"><i class="bi bi-plus-lg"></i> Tìm giáo viên</button>
+        </div> -->
+        <!-- <button class="btn btn-primary d-flex align-items-center gap-1"><i class="bi bi-plus-lg"></i> Tìm giáo viên</button> -->
     </div>
 
     <!-- List of class cards -->
@@ -50,7 +50,6 @@
             <small class="text-muted">${cls.teacher_id?.length ? 'Gmail: ' + cls.teacher_id[0].email : ''}</small>
             </div>
             <div class="dropdown ms-auto">
-            <button class="btn btn-sm btn-link text-muted" data-bs-toggle="dropdown"><i class="bi bi-three-dots-vertical"></i></button>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
             </ul>

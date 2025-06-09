@@ -56,7 +56,11 @@ const testSchema = new mongoose.Schema({
    },
 
   see_answer: { type: Boolean,
-    default: false }
+    default: false },
+
+  sum_score: {
+    type: Number,
+  }
 
 }, { timestamps: true });
 
