@@ -1,0 +1,121 @@
+  <style>
+    body {
+      background-color: #f2f4f8;
+    }
+    .sidebar {
+      height: 100vh;
+      background-color: #f8f9fa;
+    }
+    .tab-button {
+      width: 100%;
+      text-align: left;
+    }
+    .tab-button.active {
+      background-color: #6200ea;
+      color: white;
+    }
+    .tab-content {
+      padding: 2rem;
+    }
+  </style>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-2 sidebar p-3">
+      <button class="btn tab-button active mb-2" id="btn-baitap">📅 Đề Thi</button>
+      <button class="btn tab-button" id="btn-bangtin">📰 Bảng Tin</button>
+    </div>
+
+    <!-- Content -->
+    <div class="col-10">
+      <!-- Bài tập, đề thi -->
+      <div id="content-baitap" class="tab-content">
+      </div>
+
+      <!-- Bảng tin -->
+      <div id="content-bangtin" class="tab-content d-none">
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const btnBaitap = document.getElementById("btn-baitap");
+  const btnBangtin = document.getElementById("btn-bangtin");
+  const contentBaitap = document.getElementById("content-baitap");
+  const contentBangtin = document.getElementById("content-bangtin");
+
+  btnBaitap.addEventListener("click", () => {
+    btnBaitap.classList.add("active");
+    btnBangtin.classList.remove("active");
+    contentBaitap.classList.remove("d-none");
+    contentBangtin.classList.add("d-none");
+  });
+
+  btnBangtin.addEventListener("click", () => {
+    btnBangtin.classList.add("active");
+    btnBaitap.classList.remove("active");
+    contentBangtin.classList.remove("d-none");
+    contentBaitap.classList.add("d-none");
+  });
+</script>
+
+<script>
+    const pathParts = window.location.pathname.split('/');
+    const CLASS_ID = pathParts[pathParts.length - 1];
+
+    async function renderAnnounce(){
+        try {
+            const res = await fetch(`/class-student/api/${CLASS_ID}`)
+            const classInfo = await res.json()
+
+            // change content Bang tin
+            let listAnnouncements = classInfo.announcement
+            listAnnouncements = (classInfo.announcement || []).sort((a, b) => {
+                return new Date(b.date) - new Date(a.date);
+            });
+            contentBangtin.innerHTML = listAnnouncements
+            .map(a => `
+                <div class="card p-3 mb-3">
+                <span class="text-muted">
+                    ${new Date(a.date).toLocaleDateString('vi-VN')}
+                </span>
+                <p class="mb-0">${a.content}</p>
+                </div>
+            `)
+            .join('');
+            
+        } catch(error) {
+            console.error('error fetch class info')
+        }
+    }
+
+
+    async function renderTestInfo(){
+        try {
+            const res = await fetch(`/class-student/api/get-class-test?class_id=${CLASS_ID}`)
+            const testInfoStatus = await res.json()
+            const { student_id, tests} = testInfoStatus
+
+            contentBaitap.innerHTML = tests
+            .map(test => `
+                <div class="card mt-3 p-3">
+                    <strong><a href="/test-student/test-information/${test.test_id}?class_id=${CLASS_ID}">${test.test_title}</a></strong>
+                    <p>Trạng Thái: ${test.test_status_submit?'Đã nộp' : 'Chưa Nộp'}</p>
+                    <p>${test.test_status_submit ? 'Điểm Số : ' + test.score : ''}</p>
+                </div>
+            `)
+            .join('');
+            
+        } catch(error) {
+            console.error('error fetch class info')
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=>{
+        renderAnnounce()
+        renderTestInfo()
+    })
+</script>

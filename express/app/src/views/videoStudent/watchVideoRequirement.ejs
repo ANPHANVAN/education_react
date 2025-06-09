@@ -1,0 +1,123 @@
+<!-- ❶ YouTube API đặt TRƯỚC phần <script> chính để có YT khi cần -->
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<div class="container mt-5 text-center">
+  <h4>Vui lòng xem video và chỉ được tua trong phần đã xem</h4>
+  <div id="player" class="my-4"></div>
+
+  <button id="doQuiz" class="btn btn-success d-none">Làm bài</button>
+</div>
+
+<script>
+/* ---------- hằng số chung ---------- */
+const ALLOW_BUFFER   = 3;      // Giây vượt cho phép
+const COMPLETE_RATIO = 0.9;    // 90 %
+
+/* ---------- biến toàn cục (sẽ gán sau) ---------- */
+let VIDEO_ID, KEY_MAX, KEY_LAST, KEY_DONE;
+let VIDEO_REQUIREMENT_INFO, STUDENT_ID;
+let player, saveTimer = null, duration = 0;
+
+/* ---------- ❷ lấy thông tin video từ server ---------- */
+async function fetchVideoInfo () {
+  const queryParams = new URLSearchParams(window.location.search)
+  const STUDENT_ID = queryParams.get('student_id')
+
+  const videoIdFromURL = location.href.split('watch-video/')[1];        // lấy id trong URL
+  const res            = await fetch(`/video-student/api/watch-video/${videoIdFromURL}`);
+  if (!res.ok) throw new Error('Không lấy được thông tin video');
+
+  const info   = await res.json();
+  VIDEO_REQUIREMENT_INFO = info
+  VIDEO_ID     = info.video_embed;                 // gán vào biến toàn cục
+  KEY_MAX      = `progress_${VIDEO_ID}`;
+  KEY_LAST     = `last_${VIDEO_ID}`;
+  KEY_DONE     = `completed_${VIDEO_ID}`;
+}
+
+/* ---------- ❸ khởi tạo player khi cả API & dữ liệu sẵn sàng ---------- */
+function createPlayer () {
+  player = new YT.Player('player', {
+    videoId : VIDEO_ID,
+    width   : 640,
+    height  : 390,
+    playerVars: { controls: 1, disablekb: 0, modestbranding: 1 },
+    events: { onReady: handleReady, onStateChange: handleState }
+  });
+}
+
+/* YouTube sẽ gọi hàm này khi API sẵn sàng */
+function onYouTubeIframeAPIReady () {
+  window.youtubeReady = true;       // đặt cờ để chờ dữ liệu
+}
+
+/* ---------- ❹ khi DOM tải xong: lấy video rồi tạo player ---------- */
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    await fetchVideoInfo();                      // lấy VIDEO_ID & key lưu
+    if (window.youtubeReady) createPlayer();    // API đã sẵn ➜ tạo luôn
+    else window.onYouTubeIframeAPIReady = () => {   // API chưa sẵn ➜ đợi
+      createPlayer();
+    };
+  } catch (err) { console.error(err); }
+});
+
+/* ---------- ❺ sự kiện player ---------- */
+function handleReady () {
+  duration = player.getDuration();
+  const resume = parseFloat(localStorage.getItem(KEY_LAST)) || 0;
+  player.seekTo(resume, true);
+}
+
+function handleState (e) {
+  if (e.data === YT.PlayerState.PLAYING) {
+    saveTimer = setInterval(trackProgress, 1000);
+  } else {
+    clearInterval(saveTimer);
+  }
+  if (e.data === YT.PlayerState.ENDED) {
+    document.getElementById('doQuiz').classList.remove('d-none');
+    localStorage.removeItem(KEY_LAST);
+  }
+}
+
+/* ---------- ❻ theo dõi & khóa tua ---------- */
+function trackProgress () {
+  const cur = player.getCurrentTime();
+  const max = parseFloat(localStorage.getItem(KEY_MAX)) || 0;
+  duration  = duration || player.getDuration();
+
+  /* 1. không cho vượt quá phần đã xem */
+  const allowed = max + ALLOW_BUFFER;
+  if (cur > allowed) {
+    player.seekTo(Math.max(allowed - 0.1, 0), true);  // tránh < 0
+    return;
+  }
+
+  /* 2. cập nhật mốc cao nhất */
+  if (cur > max) localStorage.setItem(KEY_MAX, cur);
+  localStorage.setItem(KEY_LAST, cur);
+
+  /* 3. gửi “hoàn thành 90 %” */
+  if (!localStorage.getItem(KEY_DONE) && duration &&
+      cur >= duration * COMPLETE_RATIO) {
+    fetch('/video-student/api/finish-video/', {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({student_id:STUDENT_ID, video_requirement_id:VIDEO_REQUIREMENT_INFO._id})
+    })
+    .then(() => localStorage.setItem(KEY_DONE, '1'))
+    .catch(console.error);
+  }
+}
+
+/* ---------- ❼ pause khi rời tab/app ---------- */
+function pauseIfHidden () {
+  if (document.hidden && player?.pauseVideo) player.pauseVideo();
+}
+function pauseIfBlur () {
+  player?.pauseVideo?.();
+}
+document.addEventListener('visibilitychange', pauseIfHidden);
+window.addEventListener('blur', pauseIfBlur);
+</script>

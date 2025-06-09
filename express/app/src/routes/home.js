@@ -1,15 +1,19 @@
 const express = require('express');
 const router = express.Router();
 
-const authMiddleware = require('../middleware/authMiddleware')
+const homeController = require('../controllers/Home.Controller.js')
 
-router.use('/', authMiddleware, async function (req,res){
-        try {
-            res.render('sites/home');
-        } catch (err) {
-            console.error('Error fetching data:', err);
-            res.status(500).send('Internal Server Error');
-        }
-    })
+//////////////// API ////////////////
+
+// [GET] /home-student/get-user-student-classes
+router.use('/home-student/get-user-student-classes', homeController.getUserStudentClass)
+
+
+//////////////// ROUTE //////////////
+// [GET] /home-student
+router.use('/home-student', homeController.homeStudent)
+
+// [GET] /
+router.use('/', homeController.index)
 
 module.exports = router;

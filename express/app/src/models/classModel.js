@@ -10,8 +10,6 @@ const studentSchema = new mongoose.Schema({
 })
 
 announcementSchema = new mongoose.Schema({
-  title: { type: String, 
-    required: true },
   content: { type: String },
   date: { type: Date, 
     default: Date.now }

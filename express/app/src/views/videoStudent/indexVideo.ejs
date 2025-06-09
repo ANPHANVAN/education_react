@@ -1,0 +1,93 @@
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<div class="container mt-5 text-center">
+  <h4>Vui lòng xem video và chỉ được tua trong phần đã xem</h4>
+  <div id="player" class="my-4"></div>
+
+  <!-- Có thể thêm nút “Làm bài” nếu muốn ẩn/hiện -->
+  <button id="doQuiz" class="btn btn-success d-none">Làm bài</button>
+</div>
+
+<script>
+/* ----- Thông số cấu hình ----- */
+const VIDEO_ID = 'rb7PvNCELNE';        // Thay video thật
+const ALLOW_BUFFER = 3;                // Cho phép tua vượt 3 s
+const COMPLETE_RATIO = 0.9;            // 90 %
+/* ----- Khóa cứng key lưu trữ ----- */
+const KEY_MAX   = `progress_${VIDEO_ID}`;
+const KEY_LAST  = `last_${VIDEO_ID}`;
+const KEY_DONE  = `completed_${VIDEO_ID}`;
+
+let player, saveTimer = null, duration = 0;
+
+/* API gọi hàm này khi ready */
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    videoId: VIDEO_ID,
+    width: 640, height: 390,
+    playerVars: {
+      controls: 1,       // vẫn cho tua bằng thanh timeline
+      disablekb: 0,      // muốn khóa phím K/L/J thì =1
+      modestbranding: 1
+    },
+    events: {
+      onReady: handleReady,
+      onStateChange: handleState
+    }
+  });
+}
+
+function handleReady(e) {
+  duration = player.getDuration();                // có thể 0 vài ms đầu
+  const resume = parseFloat(localStorage.getItem(KEY_LAST)) || 0;
+  player.seekTo(resume, true);                    // tiếp tục từ chỗ cũ
+}
+
+function handleState(e) {
+  if (e.data === YT.PlayerState.PLAYING) {        // bắt đầu/tiếp tục xem
+    saveTimer = setInterval(trackProgress, 1000);
+  } else {                                        // PAUSED, ENDED,…
+    clearInterval(saveTimer);
+  }
+
+  if (e.data === YT.PlayerState.ENDED) {          // xem xong
+    document.getElementById('doQuiz').classList.remove('d-none');
+    localStorage.removeItem(KEY_LAST);            // không cần resume nữa
+  }
+}
+
+/* --- Hàm chính: theo dõi + khóa tua --- */
+function trackProgress() {
+  const cur   = player.getCurrentTime();
+  const max   = parseFloat(localStorage.getItem(KEY_MAX)) || 0;
+  duration    = duration || player.getDuration();          // cập nhật trễ
+
+  /* 1️⃣ Nếu người dùng kéo quá xa phần đã xem => kéo lại */
+  const allowed = max + ALLOW_BUFFER;
+  if (cur > allowed) {
+    player.seekTo(allowed - 5 , true);
+    return;
+  }
+
+  /* 2️⃣ Cập nhật mốc cao nhất */
+  if (cur > max) localStorage.setItem(KEY_MAX, cur);
+  localStorage.setItem(KEY_LAST, cur);
+
+  /* 3️⃣ Nếu vượt 90 % mà chưa báo server → gửi API */
+  if (!localStorage.getItem(KEY_DONE) && duration &&
+      cur >= duration * COMPLETE_RATIO) {
+    fetch('/api/video-complete', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ videoId: VIDEO_ID })
+    }).then(() => localStorage.setItem(KEY_DONE, '1'))
+      .catch(console.error);
+  }
+}
+
+// pause video when tab is hidden
+document.addEventListener('visibilitychange', function () {
+  player.pauseVideo();  // hoặc stopVideo() nếu muốn dừng hẳn
+});
+
+</script>

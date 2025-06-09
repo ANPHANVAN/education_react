@@ -6,8 +6,7 @@ const answersSchema = new mongoose.Schema({
         enum: ['abcd', 'truefalse', 'value'] },
 
     part: { type: String,
-        required: true,
-        enum: ['part_1', 'part_2', 'part_3'] },
+        required: true },
 
     number: { type: String,
         required: true },
