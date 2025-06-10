@@ -2,6 +2,9 @@ const Class = require('../models/classModel.js'); // Assuming you have a Class m
 const Users = require('../models/userModel.js'); // Assuming you have a User model defined
 const Students = require('../models/studentModel.js'); // Assuming you have a Student model defined
 const mongoose = require('mongoose');
+const Submissions = require('../models/submissionModel.js')
+const Tests = require('../models/testModel.js')
+const VideoRequirements = require('../models/videoRequirementModel.js')
 
 class ClassTeacherController {
     async index(req, res) {
@@ -68,6 +71,91 @@ class ClassTeacherController {
         } catch (err) {
             console.error('Error fetching class details:', err);
             res.status(500).send('Internal Server Error');
+        }
+    }
+
+    // [GET] /class-teacher/classroom-details/:classId/test
+    async classDetailsTest(req, res) {
+        try {
+            res.status(200).render('classTeacher/classroomDetailsTest')
+        } catch(error) {
+            console.error('Error fetching class details:', error);
+            res.status(500).send('Internal Server Error')
+        }
+    }
+    
+    // [GET] /class-teacher/api/classroom-details/:classId/test
+    async getClassDetailsTest(req, res) {
+        try {
+            const classId = req.params.classId
+            const testLists = await Tests.find({class: classId},{answers:0})
+            
+            res.status(200).json({testLists:testLists})
+        } catch(error) {
+            console.error('Error fetching test class details:', error);
+            res.status(500).send('Internal Server Error')
+        }
+    }
+
+    // [GET] /class-teacher/classroom-details/:classId/video
+    async classDetailsVideo(req,res){
+        try {  
+            res.status(200).render('classTeacher/classroomDetailsVideo')
+        } catch (err) {
+            console.error('Failure to engine ejs: ', err)
+            res.status(500).send('Internal Server Error')
+        }
+    }
+    
+    // [GET] /class-teacher/api/classroom-details/:classId/video
+    async getClassDetailsVideo(req,res){
+        try {
+            const classId = req.params.classId
+            const videoClassList = await VideoRequirements.find({class: classId})
+            res.status(200).json({videoClassList})
+        } catch (err) {
+            console.error('Failure to into route /class-teacher/api/classroom-details/:classId/video  :', err)
+            res.status(500).send('Internal Server Error')
+
+        }
+    }
+    // [GET] /class-teacher/classroom-details/:classId/announce
+    async classDetailsAnnounce(req, res) {
+        try {
+            res.status(200).render('classTeacher/classroomDetailsAnnounce')
+        } catch (err) {
+            console.error('Failure to render ejs')
+            res.status(500).send("Internal Server Error")
+        }
+    }
+    
+    // [GET] /class-teacher/api/classroom-details/:classId/announce
+    async getClassDetailsAnnounce(req, res) {
+        try {
+            const classId = req.params.classId
+            const classInfo = await Class.findById(classId)
+            res.status(200).json(classInfo)
+        } catch (err) {
+            console.error('Failure to find class info in route /class-teacher/api/classroom-details/:classId/announce')
+            res.status(500).send("Internal Server Error")
+        }
+    }
+
+    // [POST] /class-teacher/api/classroom-details/:classId/announce
+    async postClassDetailsAnnounce(req, res) {
+        try {
+            const classId = req.params.classId
+            const { content } = req.body
+            const classInfoUpdate = await Class.findByIdAndUpdate(classId, {
+                $push: {
+                    announcement: {content}
+                }
+            })
+
+            res.status(200).json(classInfoUpdate)
+        } catch (err) {
+            console.error('')
+            res.status(500).send("Internal Server Error")
         }
     }
 

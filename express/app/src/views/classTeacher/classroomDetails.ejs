@@ -1,80 +1,22 @@
-
-  <style>
-    .sidebar {
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      width: 200px;
-      background-color: #4f83b8;
-      padding: 15px;
-      border-right: 1px solid #dee2e6;
-    }
-    .main-content {
-      margin-left: 200px;
-      padding: 20px;
-    }
-    .student-table th, .student-table td {
-      vertical-align: middle;
-      text-align: center;
-    }
-    .student-table .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: #e9ecef;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 10px;
-    }
-    .status-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      display: inline-block;
-      background-color: #28a745;
-      margin-right: 5px;
-    }
-    .action-btns .btn {
-      margin-right: 5px;
-    }
-  </style>
+<link rel="stylesheet" href="/public/css/classroomDetail.css">
 
 <script src="/public/js/teacherDetail/deleteStudent.js"></script>
-    <!-- Sidebar -->
-  <div class="sidebar">
-    <br><br>
-    <ul class="nav flex-column">
-      <li class="nav-item">
-        <a class="nav-link" href="#">Danh sách học sinh</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">đề thi</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Bảng tin</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Bảng điểm</a>
-      </li>
-    </ul>
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    
   </div>
+
 
   <!-- Main Content -->
   <div class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2 id="classTitle"></h2>
-      <div>
-        <a href="#" class="text-muted me-2"><i class="bi bi-qr-code"></i></a>
-        <a href="#" class="text-muted"><i class="bi bi-share"></i> Chia sẻ</a>
-      </div>
     </div>
 
     <div class="d-flex justify-content-between mb-5">
       <!-- Ô tìm kiếm nhỏ gọn -->
       <div class="input-group flex-grow-0 w-auto me-3">
-        <input type="text" class="form-control" id="searchInput" placeholder="Tìm theo tên, email">
+        <input type="text" class="form-control" id="searchInput" placeholder="Tìm học sinh theo tên, email">
         <button class="btn btn-outline-secondary" type="button" onclick="searchStudents()">
           <i class="bi bi-search"></i>
         </button>
@@ -82,13 +24,10 @@
 
       <!-- Các nút bên phải -->
       <div class="d-flex">
-        <button class="btn btn-outline-primary text-nowrap me-2">Xuất danh sách HS</button>
-        <button class="btn btn-outline-primary text-nowrap me-2">Xuất bảng điểm</button>
         <!-- Button để mở modal -->
       <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
         + Thêm học sinh
       </button>
-        <button class="btn btn-outline-secondary"><i class="bi bi-gear"></i></button>
       </div>
     </div>
 
@@ -96,7 +35,6 @@
     <table class="table student-table">
       <thead>
         <tr>
-          <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
           <th id="studentCount">Sĩ số: 0</th>
           <th>Họ và tên</th>
           <th>Số báo danh</th>
@@ -134,14 +72,37 @@
   </div>
 </div>
 
-
+  <!-- this is list student script -->
   <script>
     let allStudents = [];
+    const url = new URL(window.location.href)
+    const CLASS_ID = url.pathname.split('/')[3]
 
+    function renderSidebar() {
+      const sidebar = document.getElementById('sidebar')
+      sidebar.innerHTML = `
+        <br><br>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="/class-teacher/classroom-details/${CLASS_ID}/">Học Sinh</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/test">Đề Thi</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/video">Video</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/announce">Bảng Tin</a>
+          </li>
+        </ul>
+      `
+      return
+    }
     // Fetch class details from API
     async function fetchClassDetails() {
       try {
-        const response = await fetch('/class-teacher/api/classroom-details/683c17bace809b5942a85ca6');
+        const response = await fetch(`/class-teacher/api/classroom-details/${CLASS_ID}`);
         if (!response.ok) throw new Error('Failed to fetch class details');
         const data = await response.json();
 
@@ -170,7 +131,6 @@
         const registrationNumber = student.student_id.registration_number;
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td><input type="checkbox" class="student-checkbox"></td>
           <td>${index + 1}</td>
           <td>
             ${studentData.fullname} <br><small class="text-muted">${studentData.email}</small><br>
@@ -186,8 +146,6 @@
         tbody.appendChild(row);
       });
 
-      // Update select all checkbox state
-      updateSelectAllCheckbox();
     }
 
     // Search students by name or email
@@ -204,38 +162,15 @@
       renderStudents(filteredStudents);
     }
 
-    // Toggle select all checkboxes
-    function toggleSelectAll() {
-      const selectAll = document.getElementById('selectAll');
-      const checkboxes = document.querySelectorAll('.student-checkbox');
-      checkboxes.forEach(checkbox => {
-        checkbox.checked = selectAll.checked;
-      });
-    }
-
-    // Update select all checkbox based on student checkboxes
-    function updateSelectAllCheckbox() {
-      const selectAll = document.getElementById('selectAll');
-      const checkboxes = document.querySelectorAll('.student-checkbox');
-      selectAll.checked = checkboxes.length > 0 && Array.from(checkboxes).every(checkbox => checkbox.checked);
-    }
-
-    // Add event listeners for student checkboxes
     document.addEventListener('DOMContentLoaded', () => {
       fetchClassDetails();
-
+      renderSidebar()
 
       // Add search on Enter key
       document.getElementById('searchInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') searchStudents();
       });
 
-      // Add event listener for student checkboxes to update select all
-      document.getElementById('studentTableBody').addEventListener('change', (e) => {
-        if (e.target.classList.contains('student-checkbox')) {
-          updateSelectAllCheckbox();
-        }
-      });
     });
   </script>
 

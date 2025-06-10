@@ -60,30 +60,26 @@
     </div>
 
     <!-- Content -->
-    <div class="col-md-9 p-4">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5>Danh sách đã thi (1/2)</h5>
-        <button class="btn btn-primary btn-sm">Chọn nhóm lớp: Khác <span class="badge bg-light text-dark">1</span></button>
-      </div>
+    <div class="col-md-9 p-4" id="class-info">
+      <!-- ======================= DANH SÁCH LỚP SỬ DỤNG ĐỀ THI ======================= -->
+      <div class="col-md-9 p-4">
+        <h3 class="mb-3">Các lớp sử dụng đề thi này</h3>
 
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
-          <a class="nav-link active" href="#">Lớp học tính thường (0)</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Tự do (1/1)</a>
-        </li>
-      </ul>
-
-      <div class="mt-3">
-        <div class="user-card">
-          <div class="avatar">A</div>
-          <div>
-            <strong>anphan</strong><br>
-            <small class="text-muted">Chưa thi</small>
-          </div>
+        <!-- Spinner khi đang tải -->
+        <div id="classLoading" class="text-center my-5">
+          <div class="spinner-border text-primary" role="status"></div>
         </div>
+
+        <!-- Danh sách lớp -->
+        <div id="classList" class="list-group"></div>
+
+        <!-- Thông báo khi trống -->
+        <p id="classEmpty" class="text-muted text-center d-none">
+          Đề thi này chưa được giao cho lớp nào.
+        </p>
       </div>
+
+
     </div>
   </div>
 </div>
@@ -323,4 +319,61 @@
     document.addEventListener('DOMContentLoaded', function() {
         fetchTestdata();
     });
+</script>
+
+
+<!-- script load class -->
+<script>
+  document.addEventListener('DOMContentLoaded', loadClassList);
+
+  async function loadClassList() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const testId = urlParams.get('test-id');
+
+    if (!testId) return;
+
+    const apiUrl = `/test-teacher/api/get-test-info-details?test-id=${testId}`;
+
+    const spinner   = document.getElementById('classLoading');
+    const listGroup = document.getElementById('classList');
+    const emptyNote = document.getElementById('classEmpty');
+
+    try {
+      const res = await fetch(apiUrl);
+      if (!res.ok) throw new Error('Fetch failed');
+
+      const { classTestInfo } = await res.json();
+      const classes = classTestInfo?.class || [];
+
+      // Ẩn spinner
+      spinner.classList.add('d-none');
+
+      if (!classes.length) {
+        emptyNote.classList.remove('d-none');
+        return;
+      }
+
+      // Render từng lớp
+      classes.forEach(cls => {
+
+        listGroup.insertAdjacentHTML('beforeend', `
+          <a href="/test-teacher/test-class-detail?test-id=${testId}&class-id=${cls._id}" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">${cls.class_name}</h5>
+              <small class="text-muted">Sĩ số: ${cls.number_student}</small>
+            </div>
+            <p class="mb-1">Khối ${cls.grade} • Năm học ${cls.school_year}</p>
+            <small class="text-muted">
+              Tạo ngày ${new Date(cls.createdAt).toLocaleDateString('vi-VN')}
+            </small>
+          </a>
+        `);
+      });
+    } catch (err) {
+      console.error(err);
+      spinner.classList.add('d-none');
+      listGroup.innerHTML =
+        '<div class="alert alert-danger">Không thể tải dữ liệu lớp. Vui lòng thử lại sau.</div>';
+    }
+  }
 </script>

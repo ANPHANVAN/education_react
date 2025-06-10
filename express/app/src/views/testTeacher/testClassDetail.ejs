@@ -1,0 +1,124 @@
+  <style>
+    .status-pill {padding: .25rem .6rem; border-radius: 50px;}
+  </style>
+
+<div class="container my-4">
+  <h2 class="mb-4">Danh sách nộp bài</h2>
+
+  <!-- spinner -->
+  <div id="loading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+
+  <!-- bảng kết quả -->
+  <div class="table-responsive">
+    <table id="resultTable" class="table table-striped align-middle d-none">
+      <thead class="table-primary">
+        <tr>
+          <th>#</th>
+          <th>Họ&nbsp;tên&nbsp;/&nbsp;Email</th>
+          <th>Trạng&nbsp;thái</th>
+          <th>Điểm</th>
+          <th>Thời&nbsp;gian&nbsp;nộp</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- khi không có dữ liệu -->
+  <p id="emptyMsg" class="text-muted text-center d-none">
+    Chưa có thông tin học sinh.
+  </p>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    /* === Lấy classId & testId từ URL === */
+    const urlParams = new URLSearchParams(window.location.search);
+    const CLASS_ID = urlParams.get('class-id');
+    const TEST_ID  = urlParams.get('test-id');
+    if (!CLASS_ID || !TEST_ID) {
+      alert('Thiếu class-id hoặc test-id trên URL');
+      return;
+    }
+
+    const API = `/test-teacher/api/test-class-detail?class-id=${CLASS_ID}&test-id=${TEST_ID}`;
+
+    loadData(API);
+  });
+
+  /* ---- Hàm tải & render ---- */
+  async function loadData(apiUrl) {
+    const spinner   = document.getElementById('loading');
+    const table     = document.getElementById('resultTable');
+    const tbody     = table.querySelector('tbody');
+    const emptyMsg  = document.getElementById('emptyMsg');
+
+    try {
+      const res = await fetch(apiUrl);
+      if (!res.ok) throw new Error('Fetch failed');
+      const { submissionInfo = [], classInfo = {} } = await res.json();
+      const students = classInfo.students || [];
+
+      /* ---- Ghép hai mảng ---- */
+      const merged = students.map(st => {
+        // tìm tất cả bài nộp của học sinh này
+        const subs = submissionInfo.filter(
+          s => s.student_id === st.student_id
+        );
+        if (!subs.length) return { ...st, submit_status: false };
+
+        // lấy bài nộp mới nhất (time_end lớn nhất)
+        subs.sort((a, b) => new Date(b.time_end) - new Date(a.time_end));
+        return {
+          ...st,
+          submit_status: true,
+          submission: subs[0]
+        };
+      });
+
+      /* ---- Hiển thị ---- */
+      spinner.classList.add('d-none');
+
+      if (!merged.length) {
+        emptyMsg.classList.remove('d-none');
+        return;
+      }
+
+      table.classList.remove('d-none');
+
+      merged.forEach((st, idx) => {
+        const u = st.student_user_id;
+        const tr = document.createElement('tr');
+
+        // trạng thái + điểm
+        const statusHtml = st.submit_status
+          ? `<span class="status-pill bg-success text-white">Đã nộp</span>`
+          : `<span class="status-pill bg-secondary text-white">Chưa nộp</span>`;
+
+        const score = st.submit_status ? st.submission.score : '-';
+        const time  = st.submit_status
+          ? new Date(st.submission.time_end).toLocaleString('vi-VN')
+          : '-';
+
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>
+            ${u.fullname}<br>
+            <small class="text-muted">${u.email}</small>
+          </td>
+          <td>${statusHtml}</td>
+          <td>${score}</td>
+          <td>${time}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (err) {
+      console.error(err);
+      spinner.classList.add('d-none');
+      emptyMsg.textContent = 'Không thể tải dữ liệu. Vui lòng thử lại.';
+      emptyMsg.classList.remove('d-none');
+    }
+  }
+</script>

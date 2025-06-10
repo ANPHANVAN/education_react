@@ -1,5 +1,6 @@
 const Tests = require('../models/testModel.js');
 const Classes = require('../models/classModel.js');
+const Submissions = require('../models/submissionModel.js')
 const mongoose = require('mongoose');
 
 class TestTeacherController {
@@ -173,6 +174,56 @@ class TestTeacherController {
         } catch (error) {
             console.error('Error putting class to test:', error);
             res.status(500).json({ message: 'An error occurred while putting class to test.' });
+        }
+    }
+
+    // [GET] /test-teacher/api/get-test-info-details?test-id=:testId
+    async getTestInfoDetails(req,res ){
+        try {
+            const testId = req.query['test-id'];
+            const classTestInfo = await Tests.findById(testId, {answers:0})
+                .populate({
+                    path: 'class',
+                    select: '_id grade class_name number_student school_year createdAt students'
+                })
+            // const classSubmissionInfo = await Submissions.find({test_id: testId},{student_answers:0})
+            
+            res.status(200).json({classTestInfo})
+        } catch(err) {
+            console.error('Failure to get test info details in route /test-teacher/api/get-test-info-details: ', err)
+            res.status(500).json({message: "Internal Server Error"})
+        }
+    }
+
+    // [GET] /test-teacher/test-class-detail?test-id=:testId&class-id=classId
+    async testClassDetail(req,res) {
+        try {
+            res.status(200).render('testTeacher/testClassDetail')
+        } catch(err) {
+            console.error("Failure when render engine ejs with route /test-teacher/test-class-detail?test-id=:testId&class-id=classId:", err)
+            res.status(500).send("Internal Server Error")
+        }
+    }
+
+    // [GET] /test-teacher/api/test-class-detail?test-id=:testId&class-id=classId
+    async getTestClassDetail(req,res) {
+        try {
+            const classId = req.query['class-id']
+            const testId = req.query['test-id']
+            const submissionInfo = await Submissions.find({class_id:classId, test_id: testId},{student_answers:0})
+            const classInfo = await Classes.findById(classId,{announcement:0})
+                .populate({
+                    path:'students',
+                    populate: {
+                        path: 'student_user_id',
+                        select: 'fullname email'
+                    }
+                })
+            res.status(200).json({submissionInfo, classInfo})
+
+        } catch (err) {
+            console.error("Failure with route // [GET] /test-teacher/api/test-class-detail?test-id=:testId&class-id=classId", err)
+            res.status(500).send("Internal Server Error")
         }
     }
 }

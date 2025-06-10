@@ -2,7 +2,29 @@ const express = require('express');
 const router = express.Router();
 const classTeacherController = require('../controllers/ClassTeacher.Controller.js');
 
+
 ///////////////////////////////////// Classroom Details /////////////////////////////////////
+
+// [GET] /class-teacher/classroom-details/:classId/test
+router.get('/classroom-details/:classId/test', classTeacherController.classDetailsTest )
+
+// [GET] /class-teacher/api/classroom-details/:classId/test
+router.get('/api/classroom-details/:classId/test', classTeacherController.getClassDetailsTest )
+
+// [GET] /class-teacher/classroom-details/:classId/video
+router.get('/classroom-details/:classId/video', classTeacherController.classDetailsVideo )
+
+// [GET] /class-teacher/api/classroom-details/:classId/video
+router.get('/api/classroom-details/:classId/video', classTeacherController.getClassDetailsVideo )
+
+// [GET] /class-teacher/classroom-details/:classId/announce
+router.get('/classroom-details/:classId/announce', classTeacherController.classDetailsAnnounce )
+
+// [GET] /class-teacher/api/classroom-details/:classId/announce
+router.get('/api/classroom-details/:classId/announce', classTeacherController.getClassDetailsAnnounce )
+
+// [POST] /class-teacher/api/classroom-details/:classId/announce
+router.post('/api/classroom-details/:classId/announce', classTeacherController.postClassDetailsAnnounce )
 
 // [GET] /class-teacher/classroom-details/:classId
 router.get('/classroom-details/:classId', classTeacherController.classDetails )

@@ -1,0 +1,133 @@
+<link rel="stylesheet" href="/public/css/classroomDetail.css">
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">  
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 id="classTitle"></h2>
+  </div>
+
+  <div class="d-flex justify-content-between mb-5">
+    <!-- Các nút bên phải -->
+    <div class="d-flex">
+    </div>
+  </div>
+
+  <!-- video content -->
+  <div class="container mt-4">
+    <h3 class="mb-3">Danh sách video đã giao</h3>
+
+    <!-- Spinner trong lúc fetch -->
+    <div id="videoLoading" class="text-center my-4">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-2">Đang tải danh sách video...</p>
+    </div>
+
+    <!-- Danh sách video render tại đây -->
+    <div id="videoListContainer" class="row g-4"></div>
+
+    <!-- Thông báo khi không có video -->
+    <p id="videoEmpty" class="text-muted text-center d-none">
+      Chưa có video nào được giao cho lớp này.
+    </p>
+  </div>
+
+</div>
+
+<!-- this is list sidebar script render -->
+<script>
+  const url = new URL(window.location.href)
+  const CLASS_ID = url.pathname.split('/')[3]
+
+  function renderSidebar() {
+    const sidebar = document.getElementById('sidebar')
+    sidebar.innerHTML = `
+  <br><br>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/">Học Sinh</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/test">Đề Thi</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="/class-teacher/classroom-details/${CLASS_ID}/video">Video</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/announce">Bảng Tin</a>
+    </li>
+  </ul>
+    `
+    return
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderSidebar()
+
+  });
+</script>
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', loadVideos);
+
+  async function loadVideos() {
+    const apiUrl = `/class-teacher/api/classroom-details/${CLASS_ID}/video`;
+
+    document.getElementById('videoLoading').classList.remove('d-none');
+
+    try {
+      const res = await fetch(apiUrl);
+      if (!res.ok) throw new Error('Fetch failed');
+      const { videoClassList = [] } = await res.json();
+
+      renderVideos(videoClassList);
+    } catch (err) {
+      console.error(err);
+      alert('Lỗi khi tải video. Vui lòng thử lại sau.');
+    } finally {
+      document.getElementById('videoLoading').classList.add('d-none');
+    }
+  }
+
+  function renderVideos(videos) {
+    const container = document.getElementById('videoListContainer');
+    const emptyMsg = document.getElementById('videoEmpty');
+    container.innerHTML = '';
+
+    if (!videos.length) {
+      emptyMsg.classList.remove('d-none');
+      return;
+    }
+    emptyMsg.classList.add('d-none');
+
+    videos.forEach(video => {
+      const videoEmbedUrl = `https://www.youtube.com/embed/${video.video_embed}`;
+      container.insertAdjacentHTML('beforeend', `
+        <div class="col-md-6 col-lg-4">
+          <div class="card shadow-sm h-100">
+            <div class="ratio ratio-16x9">
+              <iframe src="${videoEmbedUrl}" allowfullscreen></iframe>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">${video.video_requirement_name}</h5>
+              <p class="card-text small text-muted mb-1">
+                <strong>Môn:</strong> ${video.subject} • <strong>Lớp:</strong> ${video.grade}
+              </p>
+              <p class="card-text small text-muted mb-1">
+                <strong>Thời lượng:</strong> ${video.video_duration}
+              </p>
+              <p class="card-text small">
+                <strong>Ghi chú:</strong> ${video.note || "Không có"}
+              </p>
+            </div>
+          </div>
+        </div>
+      `);
+    });
+  }
+</script>

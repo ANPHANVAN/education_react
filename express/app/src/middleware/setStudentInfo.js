@@ -3,7 +3,12 @@ const Students = require('../models/studentModel.js');
 const setStudentInfo = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        const classId = req.query.class_id;
+        let classId;
+        if (req.params.classId) {
+            classId = req.params.classId;
+        } else {
+            classId = req.query.class_id;
+        }
 
         console.log("classId", classId);
         console.log("userId", userId)

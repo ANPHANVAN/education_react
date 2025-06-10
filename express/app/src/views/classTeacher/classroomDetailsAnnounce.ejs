@@ -1,0 +1,161 @@
+<link rel="stylesheet" href="/public/css/classroomDetail.css">
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">  
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 id="classTitle"></h2>
+  </div>
+
+  <div class="d-flex justify-content-between mb-5">
+    <!-- Các nút bên phải -->
+    <div class="d-flex">
+    </div>
+  </div>
+
+  <!-- ============ BẢNG TIN (ANNOUNCEMENTS) ============ -->
+  <div class="container my-4" id="announcementSection">
+    <h3 class="mb-3">Bảng tin của lớp</h3>
+
+    <!-- Form đăng thông báo mới -->
+    <form id="announceForm" class="mb-4">
+      <div class="mb-2">
+        <textarea id="announceContent" class="form-control" rows="3"
+                  placeholder="Nhập thông báo..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Đăng thông báo</button>
+    </form>
+
+    <!-- Spinner khi tải dữ liệu -->
+    <div id="announceLoading" class="text-center my-4 d-none">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-2">Đang tải bảng tin...</p>
+    </div>
+
+    <!-- Danh sách thông báo -->
+    <div id="announceList"></div>
+
+    <!-- Thông báo rỗng -->
+    <p id="announceEmpty" class="text-muted text-center d-none">
+      Chưa có thông báo nào.
+    </p>
+  </div>
+
+</div>
+
+<!-- this is list sidebar script render -->
+<script>
+  const url = new URL(window.location.href)
+  const CLASS_ID = url.pathname.split('/')[3]
+
+  function renderSidebar() {
+    const sidebar = document.getElementById('sidebar')
+    sidebar.innerHTML = `
+  <br><br>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/">Học Sinh</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/test">Đề Thi</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/video">Video</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="/class-teacher/classroom-details/${CLASS_ID}/announce">Bảng Tin</a>
+    </li>
+  </ul>
+    `
+    return
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderSidebar()
+
+  });
+</script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const BASE_URL = `/class-teacher/api/classroom-details/${CLASS_ID}/announce`;
+
+    const announceLoading = document.getElementById('announceLoading');
+    const announceList    = document.getElementById('announceList');
+    const announceEmpty   = document.getElementById('announceEmpty');
+    const announceForm    = document.getElementById('announceForm');
+    const announceContent = document.getElementById('announceContent');
+
+    /* ----- Tải và render bảng tin ----- */
+    async function loadAnnouncements() {
+      announceLoading.classList.remove('d-none');
+      try {
+        const res = await fetch(BASE_URL);
+        if (!res.ok) throw new Error('Fetch failed');
+        const data = await res.json();
+        const list = (data.announcement || [])
+                      .sort((a, b) => new Date(b.date) - new Date(a.date));  // Mới nhất trước
+        renderAnnouncements(list);
+      } catch (err) {
+        console.error(err);
+        alert('Không thể tải bảng tin.');
+      } finally {
+        announceLoading.classList.add('d-none');
+      }
+    }
+
+    /* ----- Render danh sách ----- */
+    function renderAnnouncements(list) {
+      announceList.innerHTML = '';
+      if (!list.length) {
+        announceEmpty.classList.remove('d-none');
+        return;
+      }
+      announceEmpty.classList.add('d-none');
+
+      list.forEach(a => {
+        const dateStr = new Date(a.date)
+                        .toLocaleString('vi-VN', {
+                          hour: '2-digit', minute: '2-digit',
+                          day: '2-digit', month: '2-digit', year: 'numeric'
+                        });
+        announceList.insertAdjacentHTML('beforeend', `
+          <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+              <span class="text-muted small">${dateStr}</span>
+              <p class="mb-0">${a.content}</p>
+            </div>
+          </div>
+        `);
+      });
+    }
+
+    /* ----- Submit thông báo mới ----- */
+    announceForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const content = announceContent.value.trim();
+      if (!content) return;
+
+      try {
+        const res = await fetch(BASE_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content })
+        });
+        if (!res.ok) throw new Error('Post failed');
+        announceContent.value = '';
+        await loadAnnouncements();                       // refresh danh sách
+      } catch (err) {
+        console.error(err);
+        alert('Đăng thông báo thất bại.');
+      }
+    });
+
+    /* Khởi động */
+    loadAnnouncements();
+  });
+</script>
