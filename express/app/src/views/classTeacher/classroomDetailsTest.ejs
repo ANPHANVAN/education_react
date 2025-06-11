@@ -12,11 +12,6 @@
     <h2 id="classTitle"></h2>
   </div>
 
-  <div class="d-flex justify-content-between mb-5">
-    <!-- Các nút bên phải -->
-    <div class="d-flex">
-    </div>
-  </div>
 
   <!-- test content -->
   <!-- ===== KHU VỰC HIỂN THỊ DANH SÁCH ĐỀ THI ===== -->
@@ -69,9 +64,25 @@
     return
   }
 
+    // Fetch class details from API
+    async function fetchClassDetails() {
+      try {
+        const response = await fetch(`/class-teacher/api/classroom-details/${CLASS_ID}`);
+        if (!response.ok) throw new Error('Failed to fetch class details');
+        const data = await response.json();
+
+        // Update class title
+        document.getElementById('classTitle').textContent = `${data.class_name} (${data.school_year})`;
+
+      } catch (error) {
+        console.error('Error fetching class details:', error);
+        alert('Không thể tải chi tiết lớp học. Vui lòng thử lại sau.');
+      }
+    }
+
   document.addEventListener('DOMContentLoaded', () => {
     renderSidebar()
-
+    fetchClassDetails()
   });
 </script>
 

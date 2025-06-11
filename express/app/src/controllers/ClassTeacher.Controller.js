@@ -24,7 +24,10 @@ class ClassTeacherController {
             const { className, schoolYear, grade } = req.body;
             const newClass = await Class.create({class_name: className, school_year: schoolYear, grade: grade, teacher_id: [_id]});
             const teacherId = req.user.ObjectId; // Assuming the teacher's ID is stored in req.user
-            await Users.findByIdAndUpdate(teacherId, { $push: { class_id: newClass._id } });
+            const userAddClass = await Users.findByIdAndUpdate(teacherId, { $push: { class_id: newClass._id } });
+            if (!userAddClass) {
+                res.status(404).json({message: "dont update class in user"})
+            }
             res.status(201).json({ message: 'Class created successfully:', class: newClass });
         } catch (err) {
             console.error('Error creating class:', err);
@@ -189,12 +192,16 @@ class ClassTeacherController {
             const classId = req.params.classId;
             const student_id = new mongoose.Types.ObjectId();
 
-            const userStudent = await Users.find({ email: studentEmail})
-            if (userStudent.length === 0) {
+            const userStudent = await Users.findOneAndUpdate({ email: studentEmail},{
+                $push: {
+                    class_id: classId
+                }
+            })
+            if (!userStudent) {
                 return res.status(404).send('Users with email not found');
             }
 
-            const student = await Students.create({_id: student_id, student_user_id: userStudent[0]._id, class_id: classId})
+            const student = await Students.create({_id: student_id, student_user_id: userStudent._id, class_id: classId})
             if (!student) {
                 return res.status(400).send('Failed to create student');
             }
@@ -204,7 +211,7 @@ class ClassTeacherController {
                 { 
                     $push: { 
                         students: { 
-                            student_user_id: userStudent[0]._id, 
+                            student_user_id: userStudent._id, 
                             student_id: student_id 
                         } 
                     },
@@ -231,6 +238,13 @@ class ClassTeacherController {
         try {
             const { studentId } = req.body;
             const classId = req.params.classId;
+
+            const studentInfo = await Students.findById(studentId)
+            const userStudent = await Users.findOneAndUpdate({ _id: studentInfo.student_user_id},{
+                $pull: {
+                    class_id: classId
+                }
+            })
 
             const student = await Students.findOneAndDelete({ _id: studentId, class_id: classId });
             if (!student) {

@@ -3,7 +3,30 @@
   </style>
 
 <div class="container my-4">
+
+    <!-- ==== THÔNG TIN VIDEO & LỚP ==== -->
   <h2 class="mb-4">Danh sách nộp bài</h2>
+
+  <div id="infoCard" class="card mb-4 d-none">
+    <div class="card-body row gy-2">
+      <div class="col-md-6">
+        <h5 class="card-title mb-1"><span id="videoName"></span></h5>
+        <p class="mb-0 small text-muted">
+          Môn <span id="TestSubject"></span> • Khối <span id="TestGrade"></span><br>
+          Thời lượng: <strong id="TestDuration"></strong><br>
+          Tạo ngày: <span id="TestCreated"></span>
+        </p>
+      </div>
+      <div class="col-md-6">
+        <h5 class="card-title mb-1">Thông tin lớp</h5>
+        <p class="mb-0 small text-muted">
+          Tên lớp: <strong id="className"></strong><br>
+          Năm học: <span id="classYear"></span><br>
+          Khối: <span id="classGrade"></span> • Sĩ số: <span id="classSize"></span>
+        </p>
+      </div>
+    </div>
+  </div>
 
   <!-- spinner -->
   <div id="loading" class="text-center my-5">
@@ -33,6 +56,7 @@
 </div>
 
 <script>
+  
   document.addEventListener('DOMContentLoaded', () => {
     /* === Lấy classId & testId từ URL === */
     const urlParams = new URLSearchParams(window.location.search);
@@ -58,8 +82,23 @@
     try {
       const res = await fetch(apiUrl);
       if (!res.ok) throw new Error('Fetch failed');
-      const { submissionInfo = [], classInfo = {} } = await res.json();
+      const { submissionInfo = [], classInfo = {} ,testInfo={}} = await res.json();
       const students = classInfo.students || [];
+
+    /* ----- HIỂN THỊ THÔNG TIN TEST + CLASS ----- */
+    document.getElementById('videoName').textContent     = testInfo.title;
+    document.getElementById('TestSubject').textContent  = testInfo.subject;
+    document.getElementById('TestGrade').textContent    = testInfo.grade;
+    document.getElementById('TestDuration').textContent = testInfo.test_time + ' phút';
+    document.getElementById('TestCreated').textContent  =
+      new Date(testInfo.createdAt).toLocaleString('vi-VN');
+
+    document.getElementById('className').textContent = classInfo.class_name;
+    document.getElementById('classYear').textContent = classInfo.school_year;
+    document.getElementById('classGrade').textContent= classInfo.grade;
+    document.getElementById('classSize').textContent = classInfo.number_student;
+    infoCard.classList.remove('d-none');
+
 
       /* ---- Ghép hai mảng ---- */
       const merged = students.map(st => {

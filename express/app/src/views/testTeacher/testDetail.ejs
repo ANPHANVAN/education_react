@@ -116,7 +116,7 @@
                 <th>Sĩ số</th>
               </tr>
             </thead>
-            <tbody id="classList"></tbody>
+            <tbody id="classListModel"></tbody>
           </table>
         </div>
       </div>
@@ -157,7 +157,7 @@
     }
     
   }
-  const classListTbody = document.getElementById('classList');
+  const classListTbody = document.getElementById('classListModel');
   const searchInput    = document.getElementById('searchClass');
   const selectAllBtn   = document.getElementById('toggleSelectAll');
   const saveBtn        = document.getElementById('saveAssign');
@@ -182,7 +182,7 @@
 
   /** 🎨 Render bảng lớp */
   function renderClassRows(list) {
-    if (!list.length) {
+    if (list.length==0) {
       classListTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Không có lớp</td></tr>';
       return;
     }
@@ -240,6 +240,7 @@
         document.getElementById('assignClassModal')
       ).hide();
       alert('Giao bài thành công!');
+      window.location.reload()
     } catch (err) {
       alert('Có lỗi khi lưu!');
       console.error(err);
@@ -299,9 +300,6 @@
             <hr>
             <h6>Menu</h6>
             <div class="menu-item py-2"><a href="${test.url_file}" target="_blank">Xem đề thi</a></div>
-            <div class="menu-item py-2"><i class="bi bi-gear"></i> Cài đặt</div>
-            <div class="menu-item py-2"><i class="bi bi-bar-chart"></i> Thống kê</div>
-            <div class="menu-item py-2"><i class="bi bi-trophy"></i> Bảng xếp hạng</div>
             <div onclick="deleteTest('${test._id}')" class="menu-item py-2 text-danger"><i class="bi bi-trash"></i> Xóa Đề thi</div>
 
             <hr>

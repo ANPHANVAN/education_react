@@ -26,8 +26,7 @@ class VideoStudentController {
     async createFinishVideo(req, res) {
         try {
             const {student_id, video_requirement_id} = req.body
-            console.log(" req.body",  req.body)
-            const videoProgress = VideoProgress.create({
+            const videoProgress = await VideoProgress.create({
                 student_id:student_id,
                 video_requirement_id:video_requirement_id,
                 completed: true
@@ -36,6 +35,14 @@ class VideoStudentController {
             if (!videoProgress) {
                 res.status(400).json({message: "An error occurred while create finish video"})
             }
+
+            const studentUpdateVideo = await Students.findByIdAndUpdate(
+                student_id,
+                { $push: { video: videoProgress._id } },
+                { new: true }
+            );
+            console.log("videoProgress",videoProgress)
+            console.log("studentUpdateVideo",studentUpdateVideo)
             res.status(200).json({videoProgress})
         } catch (error) {
             res.status(500).json({ message: 'An error occurred while render page', error: error });

@@ -12,6 +12,9 @@ router.get('/create-video', videoTeacherController.getCreateVideo)
 // [GET] /video-teacher/video-detail/:videoId
 router.get('/video-detail/:videoId', videoTeacherController.getDetailVideo)
 
+// [GET] /video-teacher/class-video-detail?video-id=videoId&class-id=classId
+router.get('/class-video-detail', videoTeacherController.videoClassDetail)
+
 
 ///////////////////////// API ROUTES /////////////////////////
 
@@ -32,5 +35,11 @@ router.delete('/api/delete-video/:videoId', videoTeacherController.deleteApiDeta
 
 //[PUT] /video-teacher/api/put-class-in-video // this api to put class to video
 router.put('/api/put-class-in-video', videoTeacherController.putClassInVideo)
+
+// [GET] /video-teacher/api/get-class-video?vieo-id=vieo-id
+router.get('/api/get-class-video', videoTeacherController.getClassVideo)
+
+// [GET] /video-teacher/api/class-video-detail?video-id=videoId&class-id=classId
+router.get('/api/class-video-detail', videoTeacherController.getVideoClassDetail)
 
 module.exports = router;

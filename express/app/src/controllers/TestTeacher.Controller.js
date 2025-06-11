@@ -219,7 +219,8 @@ class TestTeacherController {
                         select: 'fullname email'
                     }
                 })
-            res.status(200).json({submissionInfo, classInfo})
+            const testInfo = await Tests.findById(testId,{answers:0})
+            res.status(200).json({submissionInfo, classInfo, testInfo})
 
         } catch (err) {
             console.error("Failure with route // [GET] /test-teacher/api/test-class-detail?test-id=:testId&class-id=classId", err)

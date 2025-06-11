@@ -1,6 +1,6 @@
 const VideoRequirements = require('../models/videoRequirementModel.js');
 const Classes = require('../models/classModel.js');
-
+const Students = require('../models/studentModel.js')
 class VideoTeacherController {
     // [GET] /video-teacher/
     async index(req, res) {
@@ -16,6 +16,15 @@ class VideoTeacherController {
     async getDetailVideo(req, res) {
         try {
             res.render('videoTeacher/videoDetail');
+        } catch (error) {
+            res.status(500).json({ message: 'An error occurred while render page' });
+        }
+    }
+
+    // [GET] /video-teacher/class-video-detail?video-id=videoId&class-id=classId
+    async videoClassDetail(req, res) {
+        try {
+            res.render('videoTeacher/videoClassDetail');
         } catch (error) {
             res.status(500).json({ message: 'An error occurred while render page' });
         }
@@ -126,6 +135,49 @@ class VideoTeacherController {
         } catch (error) {
             console.error('Error putting class to video:', error);
             res.status(500).json({ message: 'An error occurred while putting class to video.' });
+        }
+    }
+
+    // [GET] /video-teacher/api/get-class-video?vieo-id=video-id
+    async getClassVideo(req,res) {
+        try {
+            const videoId = req.query['video-id']
+            console.log("videoId",videoId)
+            const videoInfo = await VideoRequirements.findById(videoId,)
+                .populate({
+                    path: 'class',
+                    select: '_id grade class_name number_student school_year'
+                })
+            if (!videoInfo) {
+                res.status(404).json({message: 'dont found class in this video, you need add class to video'})
+            }
+            res.status(200).json({videoInfo})
+        } catch (err) {
+            console.error('Error get data get-class-video:', error);
+            res.status(500).json({ message: 'An error occurred while get class video.' });
+        }
+    }
+    // [GET] /video-teacher/api/class-video-detail?video-id=videoId&class-id=classId
+    async getVideoClassDetail(req, res) {
+        try {
+            const videoId = req.query['video-id']
+            const classId = req.query['class-id']
+
+            const videoRequirementInfo = await VideoRequirements.findById(videoId)
+            const classInfo = await Classes.findById(classId, { announcement: 0 })
+                .populate({
+                    path: 'students',
+                    populate: [
+                        { path: 'student_user_id', select: '_id fullname email' },
+                        { path: 'student_id', populate: {
+                            path: 'video'
+                        } }
+                    ]
+                });
+            res.status(200).json({videoRequirementInfo, classInfo})
+        } catch (err) {
+            console.error('Error get data get-class-video:', err);
+            res.status(500).json({ message: 'An error occurred while get class video.' });            
         }
     }
 }

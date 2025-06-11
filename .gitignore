@@ -20,4 +20,5 @@ __pycache__/
 # *.xlsx
 
 # .database
+./express/app/src/uploads
 *.pem
