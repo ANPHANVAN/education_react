@@ -14,11 +14,11 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 
-# plan files
-# 0_plan/
-# 0_plan/task.xlsx
-# *.xlsx
+plan files
+0_plan/
+0_plan/task.xlsx
+*.xlsx
 
 # .database
-./express/app/src/uploads
+express/app/src/uploads/
 *.pem
