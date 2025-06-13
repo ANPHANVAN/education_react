@@ -6,27 +6,15 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="/home-student">Home for Student</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/class-teacher">Class Teacher</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/test-teacher">Test Teacher</a>
-            </li>    
-            <li class="nav-item">
-              <a class="nav-link" href="/video-teacher">Video Teacher</a>
-            </li>
+          <ul class="navbar-nav" id="navigation-button">
           </ul>
 
           <ul id="logout" class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a id="profile-user" class="nav-link" href="#">Profile</a>
+              <a id="profile-user" class="nav-link">Hồ Sơ Cá Nhân</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/auth/logout">Logout</a>
+              <a class="nav-link" href="/auth/logout">Đăng Xuất</a>
             </li>
           </ul>
         </div>
@@ -36,7 +24,53 @@
 
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
+  const navigation = document.getElementById('navigation-button')
+  const profileUser = document.getElementById('profile-user')
+
+  async function hideRolePage() {
+    const response = await fetch('/me/api/get-user-info')
+    const { userInfo } = await response.json()
+
+    // update href info
+    profileUser.href = `/me/${userInfo._id}`
+    if (userInfo.role == 'teacher') {
+      navigation.innerHTML = `
+        <li class="nav-item  teacher-page">
+          <a class="nav-link" href="/class-teacher">Lớp Học</a>
+        </li>
+        <li class="nav-item  teacher-page">
+          <a class="nav-link" href="/test-teacher">Đề Thi</a>
+        </li>    
+        <li class="nav-item  teacher-page">
+          <a class="nav-link" href="/video-teacher">Video</a>
+        </li>
+        <li class="nav-item  teacher-page">
+          <a class="nav-link" href="/essay-teacher">Đề Tự Luận</a>
+        </li>
+      `
+    } else if (userInfo.role=='admin') {
+      navigation.innerHTML = `
+        <li class="nav-item  student-page">
+          <a class="nav-link" href="/home-student">Home Student</a>
+        </li>
+        <li class="nav-item  teacher-page">
+          <a class="nav-link" href="/class-teacher">Lớp Học</a>
+        </li>
+        <li class="nav-item  teacher-page">
+          <a class="nav-link" href="/test-teacher">Đề Thi</a>
+        </li>    
+        <li class="nav-item  teacher-page">
+          <a class="nav-link" href="/video-teacher">Video</a>
+        </li>
+        <li class="nav-item  teacher-page">
+          <a class="nav-link" href="/essay-teacher">Đề Tự Luận</a>
+        </li>      
+      `
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", async function () {
+    await hideRolePage()
     // Ẩn nút logout ở những route nhất định
     if ((window.location.pathname === "/auth/logout") || (window.location.pathname === "/auth/login") || (window.location.pathname === "/auth/register")) {
       const logout = document.getElementById("logout");
@@ -63,7 +97,5 @@
         link.classList.add("active");
       }
     });
-
-
   });
 </script>

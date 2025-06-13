@@ -4,7 +4,18 @@ class HomeController {
     // [GET] /
     async index (req,res){
         try {
-            res.render('home/homeIndex');
+            const userId = req.user._id
+            const userInfo = await Users.findById(userId)
+
+            if (userInfo.role == 'teacher') {
+                res.status(200).redirect('/home-teacher')
+
+            } else if ( userInfo.role == 'student') {
+                res.status(200).redirect('/home-student')
+            } else {
+
+                res.status(200).render('home/homeIndex')
+            }
         } catch (err) {
             console.error('Error fetching data:', err);
             res.status(500).send('Internal Server Error');
@@ -14,7 +25,17 @@ class HomeController {
     // [GET] /home-student
     async homeStudent (req,res){
         try {
-            res.render('home/homeStudent')
+            res.status(200).render('home/homeStudent')
+        } catch (err) {
+            console.error('Error fetching data:', err);
+            res.status(500).send('Internal Server Error');
+        }
+    }
+
+    // [GET] /home-student
+    async homeTeacher (req,res){
+        try {
+            res.render('home/homeTeacher')
         } catch (err) {
             console.error('Error fetching data:', err);
             res.status(500).send('Internal Server Error');

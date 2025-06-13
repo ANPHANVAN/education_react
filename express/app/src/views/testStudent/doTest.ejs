@@ -180,7 +180,7 @@
         const data = await res.json();
         alert('Nộp bài thành công!');
         
-        // Redirect hoặc hiển thị kết quả...
+        window.location.replace(`/class-student/${class_id}`)
       } catch (err) {
         console.error(err);
         alert(err.message);

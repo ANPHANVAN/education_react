@@ -10,34 +10,9 @@
 
 
           <form id="profileForm" method="POST">
-            <!-- Ảnh bìa -->
-            <div>
-              <img id="coverPreview" src="" alt="Cover Picture" class="cover-preview">
-              <div class="input-group mb-4 px-3">
-                <input id="coverInput" name="cover_picture" type="url" class="form-control shadow-on-focus" placeholder="Enter new cover picture URL" readonly>
-                <button class="btn btn-outline-secondary" type="button" id="changeCoverBtn" disabled>
-                  <i class="bi bi-camera-fill"></i> Change
-                </button>
-              </div>
-            </div>
 
             <div class="card-body text-center">
-              <!-- Ảnh đại diện -->
-              <div class="mb-4">
-                <img id="avatarPreview" src="" alt="Avatar" class="rounded-circle avatar-preview">
-                <div class="input-group mt-3">
-                  <input id="avatarInput" name="avatar" type="url" class="form-control shadow-on-focus" placeholder="Enter new avatar URL" readonly>
-                  <button class="btn btn-outline-secondary" type="button" id="changeAvatarBtn" disabled>
-                    <i class="bi bi-camera-fill"></i> Change
-                  </button>
-                </div>
-              </div>
 
-              <!-- Bio -->
-              <div class="mb-3">
-                <label for="bioInput" class="form-label fw-bold">Bio</label>
-                <textarea id="bioInput" name="bio" class="form-control shadow-on-focus" rows="3" placeholder="Tell something about yourself..." readonly></textarea>
-              </div>
 
               <!-- Thông tin cá nhân -->
               <div class="mb-3">
@@ -80,13 +55,6 @@
 
     // Lấy các phần tử giao diện
     const profileForm = document.getElementById('profileForm');
-    const coverPreview = document.getElementById('coverPreview');
-    const coverInput = document.getElementById('coverInput');
-    const changeCoverBtn = document.getElementById('changeCoverBtn');
-    const avatarPreview = document.getElementById('avatarPreview');
-    const avatarInput = document.getElementById('avatarInput');
-    const changeAvatarBtn = document.getElementById('changeAvatarBtn');
-    const bioInput = document.getElementById('bioInput');
     const fullnameInput = document.getElementById('fullnameInput');
     const usernameInput = document.getElementById('usernameInput');
     const emailInput = document.getElementById('emailInput');
@@ -97,9 +65,9 @@
     // Hàm fetch thông tin user
     async function fetchUser(userId) {
       try {
-        const response = await fetch(`/api/users/${userId}`);
+        const response = await fetch(`/me/api/get-user-info`);
         const data = await response.json();
-        return data.user;
+        return data.userInfo;
       } catch (error) {
         console.error('Error fetching user:', error);
         alert('Failed to load user data.');
@@ -109,11 +77,6 @@
 
     // Hàm hiển thị thông tin user
     function displayUser(user) {
-      coverPreview.src = user.cover_picture || 'https://via.placeholder.com/800x200?text=No+Cover+Picture';
-      coverInput.value = user.cover_picture || '';
-      avatarPreview.src = user.avatar || 'https://via.placeholder.com/150?text=No+Avatar';
-      avatarInput.value = user.avatar || '';
-      bioInput.value = user.bio || '';
       fullnameInput.value = user.fullname;
       usernameInput.value = user.username;
       emailInput.value = user.email;
@@ -123,11 +86,6 @@
     // Hàm chuyển sang trạng thái chỉnh sửa
     function enableEditing() {
       isEditing = true;
-      coverInput.removeAttribute('readonly');
-      changeCoverBtn.removeAttribute('disabled');
-      avatarInput.removeAttribute('readonly');
-      changeAvatarBtn.removeAttribute('disabled');
-      bioInput.removeAttribute('readonly');
       fullnameInput.removeAttribute('readonly');
       // usernameInput.removeAttribute('readonly');
       // emailInput.removeAttribute('readonly');
@@ -139,11 +97,6 @@
     // Hàm hủy chỉnh sửa
     function cancelEditing() {
       isEditing = false;
-      coverInput.setAttribute('readonly', true);
-      changeCoverBtn.setAttribute('disabled', true);
-      avatarInput.setAttribute('readonly', true);
-      changeAvatarBtn.setAttribute('disabled', true);
-      bioInput.setAttribute('readonly', true);
       fullnameInput.setAttribute('readonly', true);
       usernameInput.setAttribute('readonly', true);
       emailInput.setAttribute('readonly', true);
@@ -175,20 +128,6 @@
           console.error('Error updating profile:', error);
           alert('Failed to update profile.');
         }
-      }
-    });
-
-    changeCoverBtn.addEventListener('click', () => {
-      const newCoverUrl = coverInput.value.trim();
-      if (newCoverUrl) {
-        coverPreview.src = newCoverUrl;
-      }
-    });
-
-    changeAvatarBtn.addEventListener('click', () => {
-      const newAvatarUrl = avatarInput.value.trim();
-      if (newAvatarUrl) {
-        avatarPreview.src = newAvatarUrl;
       }
     });
 

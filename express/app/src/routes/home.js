@@ -3,17 +3,20 @@ const router = express.Router();
 
 const homeController = require('../controllers/Home.Controller.js')
 
+//////////////// ROUTE //////////////
+// [GET] /home-student
+router.get('/home-student', homeController.homeStudent)
+
+// [GET] /home-teacher
+router.get('/home-teacher', homeController.homeTeacher)
+
 //////////////// API ////////////////
 
 // [GET] /home-student/get-user-student-classes
-router.use('/home-student/get-user-student-classes', homeController.getUserStudentClass)
+router.get('/home-student/get-user-student-classes', homeController.getUserStudentClass)
 
-
-//////////////// ROUTE //////////////
-// [GET] /home-student
-router.use('/home-student', homeController.homeStudent)
 
 // [GET] /
-router.use('/', homeController.index)
+router.get('/', homeController.index)
 
 module.exports = router;

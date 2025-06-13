@@ -11,6 +11,7 @@ function route(app){
     const videoTeacherRouter = require('./videoTeacher.js');
     const videoStudentRouter = require('./videoStudent.js');
     const testStudentRouter = require('./testStudent.js');
+    const essayTeacherRouter = require('./essayTeacher.js');
 
     // [GET] /health
     app.get('/health', (req, res) => {
@@ -18,6 +19,7 @@ function route(app){
     });
     app.use('/me', authMiddleware, meRouter)
     app.use('/auth', authRouter)
+    app.use('/essay-teacher', authMiddleware, essayTeacherRouter)
     app.use('/class-teacher', authMiddleware, classTeacherRouter)
     app.use('/class-student', authMiddleware, classStudentRouter)
     app.use('/test-teacher', authMiddleware, testTeacherRouter)

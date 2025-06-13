@@ -1,5 +1,6 @@
-  <div class="container mt-4">
-    <h2>Danh sách lớp học</h2>
+<link rel="stylesheet" href="/public/css/classStudent.css">
+<div class="container mt-4">
+    <h2>Danh sách lớp học (<span id="classCount">0</span> lớp)</h2>
     <div class="d-flex justify-content-between mb-3">
       <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createClassModal">+ Tạo lớp học</button>
       <!-- <div>
@@ -7,7 +8,6 @@
       </div> -->
     </div>
     <div class="class-list">
-      <h4>danh sách lớp của bạn (<span id="classCount">0</span> lớp)</h4>
       <div id="classItems" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div> <!-- Grid layout -->
     </div>
   </div>
@@ -77,10 +77,12 @@
           div.className = 'col'; // Bootstrap column
           div.innerHTML = `
             <div class="class-item">
-              <h5><a href="/class-teacher/classroom-details/${classItem._id}">${classItem.class_name}</a></h5>
-              <p>Sĩ số: ${classItem.number_student}</p>
-              <p>Năm học: ${classItem.school_year}</p>
-              <p>Khối: ${classItem.grade}</p>
+              <a href="/class-teacher/classroom-details/${classItem._id}">
+                <h5>${classItem.class_name}</h5>
+                <p>Sĩ số: ${classItem.number_student}</p>
+                <p>Năm học: ${classItem.school_year}</p>
+                <p>Khối: ${classItem.grade}</p>
+              </a>
             </div>
           `;
           classItemsDiv.appendChild(div);

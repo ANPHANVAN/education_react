@@ -2,10 +2,15 @@ const express = require('express');
 const router = express.Router();
 
 const meController = require('../controllers/MeController');
-const authMiddleware = require('../middleware/authMiddleware')
+
+// GET /me/api/get-user-info
+router.get('/api/get-user-info', meController.getRole)
+
+// GET /me/:userId
+router.get('/:userId', meController.userInformation)
 
 // GET /me
-router.use('/', meController.index)
+router.get('/', meController.index)
 
 
 module.exports = router;
