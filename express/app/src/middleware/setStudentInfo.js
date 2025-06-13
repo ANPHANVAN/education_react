@@ -4,10 +4,11 @@ const setStudentInfo = async (req, res, next) => {
     try {
         const userId = req.user._id;
         let classId;
+
         if (req.params.classId) {
             classId = req.params.classId;
         } else {
-            classId = req.query.class_id;
+            classId = req.query['class-id'];
         }
 
         console.log("classId", classId);

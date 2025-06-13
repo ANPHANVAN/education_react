@@ -1,0 +1,132 @@
+<style>
+  body { background: #f9fafb; }
+  #pdfViewer {
+    width: 100%;
+    height: 100vh;
+    border: 1px solid #dee2e6;
+    border-radius: .5rem;
+  }
+  .sticky-sidebar { position: sticky; top: 1rem; }
+  .timer { font-size: 1.5rem; font-weight: 600; }
+  .question-block {
+    padding: .75rem 0;
+    border-bottom: 1px dashed #e1e5e9;
+  }
+  .question-block:last-child { border-bottom: none; }
+</style>
+
+<div class="container-fluid p-3">
+  <div class="row g-3">
+    <!-- LEFT: PDF -->
+    <div class="col-lg-8">
+      <iframe id="pdfViewer" src="" title="Đề thi PDF"></iframe>
+    </div>
+
+    <!-- RIGHT: Form -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm sticky-sidebar">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="card-title mb-0">Bài làm</h5>
+            <span id="countdown" class="badge bg-warning text-dark timer">00:00</span>
+          </div>
+          <hr/>
+          <form id="answerForm" class="form-control overflow-auto" style="max-height: 70vh;" enctype="multipart/form-data">
+            <input type="file" name="submitEssay" required class="form-control mb-2" accept=".pdf, .png, .jpg, .jpeg, .docx, .xlsx">
+            <input type="hidden" name="classId" id="classId" required>
+            <input type="hidden" name="subject" id="subject" required>
+            <input type="hidden" name="grade" id="grade" required>
+            <input type="hidden" name="essayId" id="essayId" required>
+            <button type="submit" class="btn btn-success w-100 mt-3">
+              Nộp bài <i class="bi bi-check-lg"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const qs = new URLSearchParams(window.location.search);
+  const classIdParam = qs.get('class-id');
+  const essayId = window.location.pathname.split('/').pop();
+
+  let ESSAY_DATA = null;
+  let TIME_LEFT = 0;
+  let timerInterval;
+
+  function pad(n) {
+    return n.toString().padStart(2, '0');
+  }
+
+  function updateTimer() {
+    const min = Math.floor(TIME_LEFT / 60);
+    const sec = TIME_LEFT % 60;
+    document.getElementById('countdown').textContent = `${pad(min)}:${pad(sec)}`;
+  }
+
+  function startTimer(minutes) {
+    TIME_LEFT = minutes * 60;
+    updateTimer();
+    timerInterval = setInterval(() => {
+      TIME_LEFT -= 1;
+      updateTimer();
+      if (TIME_LEFT <= 0) {
+        clearInterval(timerInterval);
+        autoSubmit();
+      }
+    }, 1000);
+  }
+
+  async function autoSubmit() {
+    const form = document.getElementById('answerForm');
+    alert('Hết giờ! Bài sẽ được tự động nộp.');
+    form.submit();
+  }
+
+  async function init() {
+    try {
+      const res = await fetch(`/essay-student/api/essay-information/${essayId}?class-id=${classIdParam}`);
+      if (!res.ok) throw new Error('Không thể lấy dữ liệu đề thi');
+      ESSAY_DATA = await res.json();
+
+      document.getElementById('pdfViewer').src = ESSAY_DATA.url_file;
+      document.getElementById('classId').value = classIdParam;
+      document.getElementById('subject').value = ESSAY_DATA.subject;
+      document.getElementById('grade').value = ESSAY_DATA.grade;
+      document.getElementById('essayId').value = essayId;
+
+      startTimer(ESSAY_DATA.test_time || 60);
+
+      const form = document.getElementById('answerForm');
+      form.action = `/essay-student/api/essay/${essayId}?class-id=${classIdParam}`;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!confirm('Bạn chắc chắn muốn nộp bài?')) return;
+
+        const formData = new FormData(form);
+
+        try {
+          console.log("formData". formData)
+          const res = await fetch(form.action, {
+            method: 'POST',
+            body: formData
+          });
+
+          if (!res.ok) throw new Error('Nộp bài thất bại');
+          alert('Nộp bài thành công!');
+          window.location.replace(`/class-student/${classIdParam}`);
+        } catch (err) {
+          console.error(err);
+          alert(err.message);
+        }
+      });
+    } catch (err) {
+      console.error(err);
+      document.body.innerHTML = `<div class="container py-5"><div class="alert alert-danger">${err.message}</div></div>`;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+</script>

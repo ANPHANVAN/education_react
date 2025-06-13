@@ -12,14 +12,17 @@ function route(app){
     const videoStudentRouter = require('./videoStudent.js');
     const testStudentRouter = require('./testStudent.js');
     const essayTeacherRouter = require('./essayTeacher.js');
+    const essayStudentRouter = require('./essayStudent.js');
 
     // [GET] /health
     app.get('/health', (req, res) => {
         res.status(200).send('OK');
     });
+
     app.use('/me', authMiddleware, meRouter)
     app.use('/auth', authRouter)
     app.use('/essay-teacher', authMiddleware, essayTeacherRouter)
+    app.use('/essay-student', authMiddleware, essayStudentRouter)
     app.use('/class-teacher', authMiddleware, classTeacherRouter)
     app.use('/class-student', authMiddleware, classStudentRouter)
     app.use('/test-teacher', authMiddleware, testTeacherRouter)

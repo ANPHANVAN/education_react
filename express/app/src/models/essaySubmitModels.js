@@ -13,6 +13,7 @@ const essaySubmitSchema = new mongoose.Schema({
     },
     essay_id: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: 'Essay',
         required: true
     }, 
     grade: {
@@ -20,11 +21,15 @@ const essaySubmitSchema = new mongoose.Schema({
         required: true
     },
     subject: {
-        type: Number,
+        type: String,
         required: true
     },
     score:{ 
         type: Number,
+    },
+    url_file_submit :{
+        type: String,
+        required: true
     },
     comments: {
         type: String,

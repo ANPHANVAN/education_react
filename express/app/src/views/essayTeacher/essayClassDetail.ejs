@@ -122,7 +122,6 @@
 
       /* ---- Hiển thị ---- */
       spinner.classList.add('d-none');
-
       if (!merged.length) {
         emptyMsg.classList.remove('d-none');
         return;
@@ -145,7 +144,7 @@
           ? `/essay-teacher/api/teacher-give-evaluate?essay-submit-id=${student.submission?._id ?? ''}`
           : '';
         const time = student.submit_status
-          ? new Date(student.submission.createAt).toLocaleString('vi-VN')
+          ? new Date(student.submission.createdAt).toLocaleString('vi-VN')
           : '-';
         const linkFile = student.submit_status ? student.submission.url_file_submit : false;
 
@@ -169,7 +168,7 @@
             <input id="${commentsInputId}" type="text" name="comments" placeholder="${comments}" required>
           </td>
           <td>
-            <button class="btn btn-primary" ${(!student.submit_status || student.submission) ? 'disabled' : ''}>Gửi</button>
+            <button class="btn btn-primary" ${(!student.submit_status || student.submission.score) ? 'disabled' : ''}>Gửi</button>
           </td>
         `;
 

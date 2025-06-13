@@ -1,0 +1,109 @@
+  <style>
+    /* Tinh chỉnh nhỏ để giống ảnh prototype */
+    .essay-card {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .35rem 0;
+      font-size: 15px;
+      border-bottom: 1px dashed #e2e6ea;
+    }
+    .info-row:last-child {
+      border-bottom: none;
+    }
+    .info-row i {
+      margin-right: .5rem;
+    }
+  </style>
+  <div class="container my-4">
+    <div id="card" class="card shadow-sm essay-card">
+      <div class="card-body">
+        <!-- Tiêu đề -->
+        <h6 id="essayTitle" class="card-title fw-semibold text-wrap"></h6>
+
+        <!-- Mã đề & QR -->
+        <div class="d-flex gap-2 justify-content-center mb-3 small">
+          <span>Mã đề thi: <span id="essayCode" class="fw-semibold"></span></span>
+          <i class="bi bi-qr-code fs-6"></i>
+        </div>
+
+        <!-- Danh sách thông tin -->
+        <div id="infoList" class="mb-4"></div>
+
+        <!-- Nút bắt đầu -->
+        <button id="startBtn" class="btn btn-warning w-100">
+          Bắt đầu thi <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== Cấu hình icon & label cho từng dòng ===== */
+    const INFO_CONFIG = [
+      { icon: 'clock',       label: 'Thời gian làm bài',  value: (d) => 'Không Giới Hạn' },
+      { icon: 'clipboard-check', label: 'Môn', value: (d) => d.subject || 'Khác' },
+      { icon: 'clipboard-check', label: 'Khối', value: (d) => d.grade || 'None' },
+      { icon: 'check2-circle',   label: 'Tổng lượt đã làm của đề', value: (d) => d.totalAttempt ? d.totalAttempt + ' lượt' : '0 lượt' },
+      { icon: 'arrow-repeat',    label: 'Số lượt làm đề còn lại',  value: (d) => d.remainingAttempt ? `${d.remainingAttempt}/${d.limitAttempt} lượt` : 'Không giới hạn' },
+    ];
+
+    /* ===== Helper: tạo dòng thông tin ===== */
+    function makeInfoRow(icon, label, value) {
+      const row = document.createElement('div');
+      row.className = 'info-row';
+      row.innerHTML = `
+        <div class="d-flex align-items-center"><i class="bi bi-${icon}"></i>${label}</div>
+        <div class="fw-semibold">${value}</div>
+      `;
+      return row;
+    }
+
+    /* ===== Lấy essayId từ URL ===== */
+    function getEssayId() {
+      // URL pattern: /essay-student/essay-information/:essayId
+      const segments = window.location.pathname.split('/');
+      return segments[segments.length - 1] || segments[segments.length - 2];
+    }
+
+    /* ===== Gọi API và hiển thị ===== */
+    async function loadEssayInformation() {
+      const essayId = getEssayId();
+      try {
+        const urlParams = new URLSearchParams(window.location.search)
+        const class_id = urlParams.get('class_id')
+        const res = await fetch(`/essay-student/api/essay-information/${essayId}?class_id=${class_id}`);
+        if (!res.ok) throw new Error('Lỗi lấy dữ liệu');
+        const data = await res.json();
+
+        // Tiêu đề và mã đề
+        document.getElementById('essayTitle').textContent = data.title || 'Đề thi';
+        document.getElementById('essayCode').textContent  = essayId;
+
+        // Danh sách thông tin chi tiết
+        const infoList = document.getElementById('infoList');
+        console.log("infoList", infoList)
+        INFO_CONFIG.forEach(({icon, label, value}) => {
+          const val = typeof value === 'function' ? value(data) : value;
+          infoList.appendChild(makeInfoRow(icon, label, val));
+        });
+
+        // Nút bắt đầu thi
+        document.getElementById('startBtn').addEventListener('click', () => {
+        const urlParams = new URLSearchParams(window.location.search)
+        const class_id = urlParams.get('class_id')
+          window.location.href = `/essay-student/essay/${essayId}?class_id=${class_id}`;
+        });
+      } catch (err) {
+        console.error(err);
+        document.getElementById('card').innerHTML = '<div class="alert alert-danger m-0">Không thể tải thông tin đề thi.</div>';
+      }
+    }
+
+    // Khởi động
+    document.addEventListener('DOMContentLoaded', loadEssayInformation);
+  </script>
