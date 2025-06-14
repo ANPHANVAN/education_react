@@ -24,6 +24,9 @@
 
 
 <script>
+const partname = new URL(window.location.href).pathname.split('/')
+const mainPathName = partname[1];
+
   const navigation = document.getElementById('navigation-button')
   const profileUser = document.getElementById('profile-user')
 
@@ -94,9 +97,11 @@
     });
 
     navLinks.forEach(link => {
-      if (link.href === window.location.href) {
+      const linkPath = new URL(link.href).pathname.split('/')[1];
+      if (linkPath === mainPathName) {
         link.classList.add("active");
       }
     });
+
   });
 </script>

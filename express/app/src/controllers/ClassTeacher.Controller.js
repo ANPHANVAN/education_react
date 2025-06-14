@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const Submissions = require('../models/submissionModel.js')
 const Tests = require('../models/testModel.js')
 const VideoRequirements = require('../models/videoRequirementModel.js')
+const Essay = require('../models/essayModel.js')
 
 class ClassTeacherController {
     async index(req, res) {
@@ -266,6 +267,30 @@ class ClassTeacherController {
         } catch (err) {
             console.error('Error deleting student from class:', err);
             res.status(500).send('Internal Server Error');
+        }
+    }
+
+
+    // [GET] /class-teacher/classroom-details/:classId/essay
+    async classDetailsEssay(req, res) {
+        try {
+            res.status(200).render('classTeacher/classroomDetailsEssay')
+        } catch(error) {
+            console.error('Error fetching class details:', error);
+            res.status(500).send('Internal Server Error')
+        }
+    }
+    
+    // [GET] /class-teacher/api/classroom-details/:classId/essay
+    async getClassDetailsEssay(req, res) {
+        try {
+            const classId = req.params.classId
+            const essayLists = await Essay.find({class: classId})
+            
+            res.status(200).json({essayLists:essayLists})
+        } catch(error) {
+            console.error('Error fetching essay class details:', error);
+            res.status(500).send('Internal Server Error')
         }
     }
 

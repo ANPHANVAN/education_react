@@ -204,6 +204,7 @@
               if (!res.ok) throw new Error('Gửi đánh giá thất bại');
 
               alert('Đã gửi đánh giá thành công!');
+              window.location.reload();
             } catch (err) {
               console.error(err);
               alert('Lỗi khi gửi đánh giá. Vui lòng thử lại.');

@@ -26,6 +26,14 @@ router.get('/api/classroom-details/:classId/announce', classTeacherController.ge
 // [POST] /class-teacher/api/classroom-details/:classId/announce
 router.post('/api/classroom-details/:classId/announce', classTeacherController.postClassDetailsAnnounce )
 
+// [GET] /class-teacher/classroom-details/:classId/essay
+router.get('/classroom-details/:classId/essay', classTeacherController.classDetailsEssay )
+
+// [GET] /class-teacher/api/classroom-details/:classId/essay
+router.get('/api/classroom-details/:classId/essay', classTeacherController.getClassDetailsEssay )
+
+/////////////////////////////////////////////////////////////////
+
 // [GET] /class-teacher/classroom-details/:classId
 router.get('/classroom-details/:classId', classTeacherController.classDetails )
 
@@ -38,7 +46,6 @@ router.put('/api/classroom-details/:classId', classTeacherController.putClassDet
 // [POST] /class-teacher/api/classroom-details/:classId/add-student
 router.post('/api/classroom-details/:classId/add-student', classTeacherController.addStudentToClass )
 
-// dont finish, need to delete student more information
 // [DELETE] /class-teacher/api/classroom-details/:classId/delete-student
 router.delete('/api/classroom-details/:classId/delete-student', classTeacherController.deleteStudentFromClass )
 

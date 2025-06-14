@@ -13,22 +13,22 @@
   </div>
 
 
-  <!-- test content -->
+  <!-- essay content -->
   <!-- ===== KHU VỰC HIỂN THỊ DANH SÁCH ĐỀ THI ===== -->
   <div class="container mt-4">
     <h3 class="mb-3">Danh sách đề thi</h3>
 
     <!-- Thanh tải (hiện trong lúc gọi API) -->
-    <div id="testLoading" class="text-center my-5">
+    <div id="essayLoading" class="text-center my-5">
       <div class="spinner-border text-primary" role="status"></div>
       <p class="mt-2">Đang tải đề thi...</p>
     </div>
 
     <!-- Danh sách card -->
-    <div id="testListContainer" class="row g-3"></div>
+    <div id="essayListContainer" class="row g-3"></div>
 
     <!-- Thông báo rỗng -->
-    <p id="testEmpty" class="text-muted text-center d-none">
+    <p id="essayEmpty" class="text-muted text-center d-none">
       Chưa có đề thi nào cho lớp này.
     </p>
   </div>
@@ -51,10 +51,10 @@
       <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/">Học Sinh</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link active" href="/class-teacher/classroom-details/${CLASS_ID}/test">Đề Thi</a>
+      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/test">Đề Thi</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/essay">Đề Tự Luận</a>
+      <a class="nav-link active" href="/class-teacher/classroom-details/${CLASS_ID}/essay">Đề Tự Luận</a>
     </li>          
     <li class="nav-item">
       <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/video">Video</a>
@@ -89,50 +89,50 @@
   });
 </script>
 
-  <!-- script test render -->
+  <!-- script essay render -->
 <script>
-  document.addEventListener('DOMContentLoaded', loadTests);
+  document.addEventListener('DOMContentLoaded', loadEssays);
 
-  async function loadTests() {
-    const apiUrl   = `/class-teacher/api/classroom-details/${CLASS_ID}/test`;
+  async function loadEssays() {
+    const apiUrl   = `/class-teacher/api/classroom-details/${CLASS_ID}/essay`;
 
     // Hiện spinner
-    document.getElementById('testLoading').classList.remove('d-none');
+    document.getElementById('essayLoading').classList.remove('d-none');
 
     try {
       const res   = await fetch(apiUrl);
       if (!res.ok) throw new Error('Fetch failed');
-      const { testLists = [] } = await res.json();
+      const { essayLists = [] } = await res.json();
 
-      renderTestCards(testLists);
+      renderEssayCards(essayLists);
     } catch (err) {
       console.error(err);
       alert('Không thể tải danh sách đề thi. Vui lòng thử lại sau.');
     } finally {
       // Ẩn spinner
-      document.getElementById('testLoading').classList.add('d-none');
+      document.getElementById('essayLoading').classList.add('d-none');
     }
   }
 
-  function renderTestCards(tests) {
-    const container = document.getElementById('testListContainer');
-    const emptyMsg  = document.getElementById('testEmpty');
+  function renderEssayCards(essays) {
+    const container = document.getElementById('essayListContainer');
+    const emptyMsg  = document.getElementById('essayEmpty');
 
     container.innerHTML = '';
-    if (!tests.length) {
+    if (!essays.length) {
       emptyMsg.classList.remove('d-none');
       return;
     }
     emptyMsg.classList.add('d-none');
 
-    tests.forEach(t => {
+    essays.forEach(t => {
       container.insertAdjacentHTML('beforeend', `
         <div class="col-md-6 col-lg-4">
           <div class="card h-100 shadow-sm border-primary">
             <div class="card-body d-flex flex-column">
               <!-- Tiêu đề -->
               <h5 class="card-title mb-2">
-                <a href="/test-teacher/test-detail?test-id=${t._id}"
+                <a href="/essay-teacher/essay-detail?essay-id=${t._id}"
                    class="stretched-link text-decoration-none">
                   ${t.title}
                 </a>
@@ -144,12 +144,11 @@
                 • Lớp&nbsp;${t.grade}
               </p>
               <p class="card-text small text-muted mb-3">
-                Thời gian: <strong>${t.test_time}’</strong> —
-                Tổng điểm: <strong>${t.sum_score}</strong>
+                Tên File Đề: <strong>${t.file_origin_name}</strong>
               </p>
 
               <!-- Nút chi tiết (dự phòng nếu user không click tiêu đề) -->
-              <a href="/test-teacher/test-detail?test-id=${t._id}"
+              <a href="/essay-teacher/essay-detail?essay-id=${t._id}"
                  class="btn btn-outline-primary mt-auto w-100">
                 Xem chi tiết
               </a>

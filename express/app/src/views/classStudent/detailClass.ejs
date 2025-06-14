@@ -236,6 +236,8 @@
             subject: essay.subject,
             grade: essay.grade,
             url_file: essay.url_file,
+            score: submission?.score ?? null,
+            comments:submission?.comments ?? null,
             submit_status: !!submission,
             submission_file: submission?.url_file_submit ?? null,
             submitted_at: submission?.createdAt ?? null
@@ -249,6 +251,8 @@
             <p>Môn: ${status.subject} - Khối: ${status.grade}</p>
             <p>File đề: <a href="${status.url_file}" target="_blank">Xem PDF</a></p>
             <p>Trạng thái: ${status.submit_status ? 'Đã nộp ✅' : 'Chưa nộp ❌'}</p>
+            <p>${status.score ? 'Điểm: ' + status.score +" điểm" : ''}</p>
+            <p>${status.comments ? "Đánh Giá: " + status.comments : ""}</p>
             ${status.submit_status ? `
               <p>File bài làm: <a href="${status.submission_file}" target="_blank">Xem bài nộp</a></p>
               <p>Thời gian nộp: ${new Date(status.submitted_at).toLocaleString('vi-VN')}</p>
