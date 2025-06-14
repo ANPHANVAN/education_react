@@ -22,6 +22,11 @@ const studentSchema = new mongoose.Schema({
         type: [mongoose.Schema.Types.ObjectId],
         ref: 'VideoProgress',
         default: []
+    },
+    essay: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'EssaySubmits',
+        default: []
     }
 })
 

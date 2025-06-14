@@ -16,7 +16,7 @@ router.get('/test-detail', testTeacherController.testDetail)
 // [GET] /test-teacher/create-test?file=:filename
 router.get('/create-test', testTeacherController.createTest)
 
-// [GET] /test-teacher/test-class-detail?test-id=:testId&class-id=classId
+// [GET] /test-teacher/test-class-detail?test-id=:testId&class_id=classId
 router.get('/test-class-detail', testTeacherController.testClassDetail)
 
 
@@ -45,7 +45,7 @@ router.put('/api/put-class-in-test', testTeacherController.putClass)
 // [GET] /test-teacher/api/get-test-info-details?test-id=:testId
 router.get('/api/get-test-info-details', testTeacherController.getTestInfoDetails)
 
-// [GET] /test-teacher/api/test-class-detail?test-id=:testId&class-id=classId
+// [GET] /test-teacher/api/test-class-detail?test-id=:testId&class_id=classId
 router.get('/api/test-class-detail', testTeacherController.getTestClassDetail)
 
 module.exports = router;

@@ -13,7 +13,7 @@ router.get('/', essayTeacherController.index);
 // [GET] /essay-teacher/essay-detail?essay-id=:essayId
 router.get('/essay-detail', essayTeacherController.essayDetail)
 
-// [GET] /essay-teacher/essay-class-detail?essay-id=:essayId&class-id=classId
+// [GET] /essay-teacher/essay-class-detail?essay-id=:essayId&class_id=classId
 router.get('/essay-class-detail', essayTeacherController.essayClassDetail)
 
 // API //
@@ -33,7 +33,7 @@ router.put('/api/put-class-in-essay', essayTeacherController.putClass)
 // [DELETE] /essay-teacher/api/delete-essay/:essayId
 router.delete('/api/delete-essay/:essayId', essayTeacherController.deleteEssay)
 
-// [GET] /essay-teacher/api/essay-class-detail?essay-id=:essayId&class-id=classId
+// [GET] /essay-teacher/api/essay-class-detail?essay-id=:essayId&class_id=classId
 router.get('/api/essay-class-detail', essayTeacherController.getEssayClassDetail)
 
 // [POST] /essay-teacher/api/teacher-give-evaluate?essay-submit-id=

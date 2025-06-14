@@ -60,14 +60,14 @@
   document.addEventListener('DOMContentLoaded', () => {
     /* === Lấy classId & testId từ URL === */
     const urlParams = new URLSearchParams(window.location.search);
-    const CLASS_ID = urlParams.get('class-id');
+    const CLASS_ID = urlParams.get('class_id');
     const TEST_ID  = urlParams.get('test-id');
     if (!CLASS_ID || !TEST_ID) {
-      alert('Thiếu class-id hoặc test-id trên URL');
+      alert('Thiếu class_id hoặc test-id trên URL');
       return;
     }
 
-    const API = `/test-teacher/api/test-class-detail?class-id=${CLASS_ID}&test-id=${TEST_ID}`;
+    const API = `/test-teacher/api/test-class-detail?class_id=${CLASS_ID}&test-id=${TEST_ID}`;
 
     loadData(API);
   });

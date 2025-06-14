@@ -3,6 +3,7 @@ const Tests = require('../models/testModel.js')
 const Submissions = require('../models/submissionModel.js')
 const VideoRequirements = require('../models/videoRequirementModel.js')
 const Students = require('../models/studentModel.js')
+const Essay = require('../models/essayModel.js')
 
 class ClassTeacherController {
     async index(req, res) {
@@ -97,6 +98,25 @@ class ClassTeacherController {
                     path: 'video',
                 })
             res.status(200).json({videoClassInfo, studentVideoInfo, student_id})
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    }
+
+    // [GET] /class-student/student-essay?class_id=class_id   //get student status essay
+    async getStudentEssayStatus(req, res) {
+        try {
+            const class_id = req.student.class_id
+            const student_id = req.student.student_id
+
+            const essayClassInfo = await Essay.find({class: class_id})
+            const studentEssayInfo = await Students.findById(student_id)
+                .populate({
+                    path: 'essay'
+                })
+            res.status(200).json({essayClassInfo, studentEssayInfo, student_id})
 
         } catch (error) {
             console.error('Error fetching data:', error);

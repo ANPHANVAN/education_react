@@ -354,7 +354,7 @@
       classes.forEach(cls => {
 
         listGroup.insertAdjacentHTML('beforeend', `
-          <a href="/essay-teacher/essay-class-detail?essay-id=${essayId}&class-id=${cls._id}" class="list-group-item list-group-item-action">
+          <a href="/essay-teacher/essay-class-detail?essay-id=${essayId}&class_id=${cls._id}" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mb-1">${cls.class_name}</h5>
               <small class="text-muted">Sĩ số: ${cls.number_student}</small>

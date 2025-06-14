@@ -85,6 +85,19 @@ class TestStudentController {
             testSubmit.score = score
             
             const testSubmitInfo = await Submissions.create(testSubmit)
+            if (!testSubmitInfo) {
+                res.status(400).json({message: "Failure when submission test"})
+            }
+            const studentUpdate = await Students.findByIdAndUpdate(student_id, {
+                $push: {
+                    test: testSubmitInfo._id
+                }
+            },
+            {new:true})
+
+            if (!studentUpdate) {
+                res.status(400).json({message: "Dont update testsubmit in student"})
+            }
             res.status(200).json(testSubmitInfo)
 
         } catch (error) {

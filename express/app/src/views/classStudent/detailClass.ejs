@@ -24,6 +24,7 @@
     <!-- Sidebar -->
     <div class="col-2 sidebar p-3">
       <button class="btn tab-button active mb-2" id="btn-baitap">📅 Đề Thi</button>
+      <button class="btn tab-button" id="btn-essay">📋 Đề Thi Tự Luận</button>
       <button class="btn tab-button" id="btn-video">🎥 Video Watch</button>
       <button class="btn tab-button" id="btn-bangtin">📰 Bảng Tin</button>
     </div>
@@ -33,6 +34,11 @@
       <!-- Bài tập, đề thi -->
       <div id="content-baitap" class="tab-content">
       </div>
+
+      <!-- essay test -->
+      <div id="content-essay" class="tab-content d-none">
+      <h4>Bài Tự Luận sẽ được hiển thị tại đây.</h4>
+      </div>  
 
       <!-- Bảng tin -->
       <div id="content-bangtin" class="tab-content d-none">
@@ -50,19 +56,23 @@
 <script>
   const btnBaitap = document.getElementById("btn-baitap");
   const btnBangtin = document.getElementById("btn-bangtin");
+  const btnVideo = document.getElementById("btn-video");
+  const btnEssay = document.getElementById("btn-essay");
   const contentBaitap = document.getElementById("content-baitap");
   const contentBangtin = document.getElementById("content-bangtin");
-  const btnVideo = document.getElementById("btn-video");
   const contentVideo = document.getElementById("content-video");
+  const contentEssay = document.getElementById("content-essay");
 
   btnBaitap.addEventListener("click", () => {
     btnBaitap.classList.add("active");
     btnBangtin.classList.remove("active");
     btnVideo.classList.remove("active");
+    btnEssay.classList.remove("active");
 
     contentBaitap.classList.remove("d-none");
     contentBangtin.classList.add("d-none");
     contentVideo.classList.add("d-none");
+    contentEssay.classList.add("d-none");
 
   });
 
@@ -70,10 +80,12 @@
     btnBangtin.classList.add("active");
     btnBaitap.classList.remove("active");
     btnVideo.classList.remove("active");
+    btnEssay.classList.remove("active");
 
     contentBangtin.classList.remove("d-none");
     contentBaitap.classList.add("d-none");
     contentVideo.classList.add("d-none");
+    contentEssay.classList.add("d-none");
 
   });
 
@@ -81,8 +93,22 @@
     btnVideo.classList.add("active");
     btnBaitap.classList.remove("active");
     btnBangtin.classList.remove("active");
+    btnEssay.classList.remove("active");
 
     contentVideo.classList.remove("d-none");
+    contentBaitap.classList.add("d-none");
+    contentBangtin.classList.add("d-none");
+    contentEssay.classList.add("d-none");
+  });
+
+  btnEssay.addEventListener("click", () => {
+    btnEssay.classList.add("active");
+    btnVideo.classList.remove("active");
+    btnBaitap.classList.remove("active");
+    btnBangtin.classList.remove("active");
+
+    contentEssay.classList.remove("d-none");
+    contentVideo.classList.add("d-none");
     contentBaitap.classList.add("d-none");
     contentBangtin.classList.add("d-none");
   });
@@ -122,8 +148,8 @@
     async function renderTestInfo(){
         try {
             const res = await fetch(`/class-student/api/get-class-test?class_id=${CLASS_ID}`)
-            const testInfoStatus = await res.json()
-            const { student_id, tests} = testInfoStatus
+            const essayInfoStatus = await res.json()
+            const { student_id, tests} = essayInfoStatus
 
             contentBaitap.innerHTML = tests
             .map(test => `
@@ -194,10 +220,54 @@
         }
     }
 
+    async function renderEssayInfo() {
+      try {
+        const res = await fetch(`/class-student/student-essay?class_id=${CLASS_ID}`)
+        const { essayClassInfo, studentEssayInfo, student_id } = await res.json();
+
+        const essaySubmissions = studentEssayInfo.essay || [];
+        const essayStatus = essayClassInfo.map((essay) => {
+          // Tìm bài nộp tương ứng của học sinh (nếu có)
+          const submission = essaySubmissions.find(sub => sub.essay_id === essay._id);
+
+          return {
+            essay_id: essay._id,
+            title: essay.title,
+            subject: essay.subject,
+            grade: essay.grade,
+            url_file: essay.url_file,
+            submit_status: !!submission,
+            submission_file: submission?.url_file_submit ?? null,
+            submitted_at: submission?.createdAt ?? null
+          };
+        });
+
+        // Hiển thị
+        contentEssay.innerHTML = essayStatus.map(status => `
+          <div class="card mt-3 p-3">
+            <a href="/essay-student/essay-information/${status.essay_id}?class_id=${CLASS_ID}"><strong>Đề thi: ${status.title}</strong></a>
+            <p>Môn: ${status.subject} - Khối: ${status.grade}</p>
+            <p>File đề: <a href="${status.url_file}" target="_blank">Xem PDF</a></p>
+            <p>Trạng thái: ${status.submit_status ? 'Đã nộp ✅' : 'Chưa nộp ❌'}</p>
+            ${status.submit_status ? `
+              <p>File bài làm: <a href="${status.submission_file}" target="_blank">Xem bài nộp</a></p>
+              <p>Thời gian nộp: ${new Date(status.submitted_at).toLocaleString('vi-VN')}</p>
+            ` : ''}
+          </div>
+        `).join('');
+
+      } catch (err) {
+        console.error(err);
+        contentEssay.innerHTML = `<div class="alert alert-danger">Lỗi tải dữ liệu bài essay</div>`;
+      }
+    }
+
+
     document.addEventListener('DOMContentLoaded', ()=>{
         renderAnnounce()
         renderTestInfo()
         renderVideoInfo()
+        renderEssayInfo()
     })
 </script>
 

@@ -30,6 +30,7 @@
             <h5 class="card-title mb-0">Bài làm</h5>
             <span id="countdown" class="badge bg-warning text-dark timer">00:00</span>
           </div>
+          <h3 class="card-title mb-3">Học sinh làm bài vào giấy, làm xong thì chụp hình lại upload lên đây</h3>
           <hr/>
           <form id="answerForm" class="form-control overflow-auto" style="max-height: 70vh;" enctype="multipart/form-data">
             <input type="file" name="submitEssay" required class="form-control mb-2" accept=".pdf, .png, .jpg, .jpeg, .docx, .xlsx">
@@ -49,7 +50,7 @@
 
 <script>
   const qs = new URLSearchParams(window.location.search);
-  const classIdParam = qs.get('class-id');
+  const classIdParam = qs.get('class_id');
   const essayId = window.location.pathname.split('/').pop();
 
   let ESSAY_DATA = null;
@@ -87,7 +88,7 @@
 
   async function init() {
     try {
-      const res = await fetch(`/essay-student/api/essay-information/${essayId}?class-id=${classIdParam}`);
+      const res = await fetch(`/essay-student/api/essay-information/${essayId}?class_id=${classIdParam}`);
       if (!res.ok) throw new Error('Không thể lấy dữ liệu đề thi');
       ESSAY_DATA = await res.json();
 
@@ -100,7 +101,7 @@
       startTimer(ESSAY_DATA.test_time || 60);
 
       const form = document.getElementById('answerForm');
-      form.action = `/essay-student/api/essay/${essayId}?class-id=${classIdParam}`;
+      form.action = `/essay-student/api/essay/${essayId}?class_id=${classIdParam}`;
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!confirm('Bạn chắc chắn muốn nộp bài?')) return;

@@ -21,7 +21,7 @@ class VideoTeacherController {
         }
     }
 
-    // [GET] /video-teacher/class-video-detail?video-id=videoId&class-id=classId
+    // [GET] /video-teacher/class-video-detail?video-id=videoId&class_id=classId
     async videoClassDetail(req, res) {
         try {
             res.render('videoTeacher/videoClassDetail');
@@ -157,11 +157,11 @@ class VideoTeacherController {
             res.status(500).json({ message: 'An error occurred while get class video.' });
         }
     }
-    // [GET] /video-teacher/api/class-video-detail?video-id=videoId&class-id=classId
+    // [GET] /video-teacher/api/class-video-detail?video-id=videoId&class_id=classId
     async getVideoClassDetail(req, res) {
         try {
             const videoId = req.query['video-id']
-            const classId = req.query['class-id']
+            const classId = req.query['class_id']
 
             const videoRequirementInfo = await VideoRequirements.findById(videoId)
             const classInfo = await Classes.findById(classId, { announcement: 0 })

@@ -195,20 +195,20 @@ class TestTeacherController {
         }
     }
 
-    // [GET] /test-teacher/test-class-detail?test-id=:testId&class-id=classId
+    // [GET] /test-teacher/test-class-detail?test-id=:testId&class_id=classId
     async testClassDetail(req,res) {
         try {
             res.status(200).render('testTeacher/testClassDetail')
         } catch(err) {
-            console.error("Failure when render engine ejs with route /test-teacher/test-class-detail?test-id=:testId&class-id=classId:", err)
+            console.error("Failure when render engine ejs with route /test-teacher/test-class-detail?test-id=:testId&class_id=classId:", err)
             res.status(500).send("Internal Server Error")
         }
     }
 
-    // [GET] /test-teacher/api/test-class-detail?test-id=:testId&class-id=classId
+    // [GET] /test-teacher/api/test-class-detail?test-id=:testId&class_id=classId
     async getTestClassDetail(req,res) {
         try {
-            const classId = req.query['class-id']
+            const classId = req.query['class_id']
             const testId = req.query['test-id']
             const submissionInfo = await Submissions.find({class_id:classId, test_id: testId},{student_answers:0})
             const classInfo = await Classes.findById(classId,{announcement:0})
@@ -223,7 +223,7 @@ class TestTeacherController {
             res.status(200).json({submissionInfo, classInfo, testInfo})
 
         } catch (err) {
-            console.error("Failure with route // [GET] /test-teacher/api/test-class-detail?test-id=:testId&class-id=classId", err)
+            console.error("Failure with route // [GET] /test-teacher/api/test-class-detail?test-id=:testId&class_id=classId", err)
             res.status(500).send("Internal Server Error")
         }
     }

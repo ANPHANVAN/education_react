@@ -69,6 +69,20 @@ class EssayStudentController {
             }
             console.log("essaySubmit",essaySubmit)
             const essaySubmitInfo = await EssaySubmit.create(essaySubmit);
+            if (!essaySubmitInfo){
+                res.status(400).json("Failure in create a EssaySubmit");
+            }
+
+            const studentUpdate = await Students.findByIdAndUpdate(student_id, {
+                $push: {
+                    essay: essaySubmitInfo._id
+                }
+            },
+            {new:true})
+
+            if (!studentUpdate) {
+                res.status(400).json({message: "Dont update essaysubmit in student"})
+            }
             res.status(200).json(essaySubmitInfo);
 
         } catch (error) {

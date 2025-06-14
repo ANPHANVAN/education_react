@@ -64,14 +64,14 @@
   document.addEventListener('DOMContentLoaded', () => {
     /* === Lấy classId & essayId từ URL === */
     const urlParams = new URLSearchParams(window.location.search);
-    const CLASS_ID = urlParams.get('class-id');
+    const CLASS_ID = urlParams.get('class_id');
     const ESSAY_ID  = urlParams.get('essay-id');
     if (!CLASS_ID || !ESSAY_ID) {
-      alert('Thiếu class-id hoặc essay-id trên URL');
+      alert('Thiếu class_id hoặc essay-id trên URL');
       return;
     }
     
-    const API = `/essay-teacher/api/essay-class-detail?class-id=${CLASS_ID}&essay-id=${ESSAY_ID}`;
+    const API = `/essay-teacher/api/essay-class-detail?class_id=${CLASS_ID}&essay-id=${ESSAY_ID}`;
 
     loadData(API);
   });

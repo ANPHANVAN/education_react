@@ -7,8 +7,13 @@ const setStudentInfo = async (req, res, next) => {
 
         if (req.params.classId) {
             classId = req.params.classId;
-        } else {
+        } else if(req.query['class-id']) {
             classId = req.query['class-id'];
+        } else if (req.query['class_id']){
+            classId = req.query['class_id'];
+        } else {
+            res.status(400).json({message:"must have class-id or class_id or /:classId"})
+            
         }
 
         console.log("classId", classId);

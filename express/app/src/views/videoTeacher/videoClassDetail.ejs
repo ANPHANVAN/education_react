@@ -59,13 +59,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   /* ----------------- LẤY PARAM TỪ URL ----------------- */
   const params   = new URLSearchParams(window.location.search);
   const VIDEO_ID = params.get('video-id');
-  const CLASS_ID = params.get('class-id');
+  const CLASS_ID = params.get('class_id');
   if (!VIDEO_ID || !CLASS_ID){
-    alert('Thiếu video-id hoặc class-id trên URL'); return;
+    alert('Thiếu video-id hoặc class_id trên URL'); return;
   }
 
   /* ----------------- FETCH API ----------------- */
-  const API = `/video-teacher/api/class-video-detail?video-id=${VIDEO_ID}&class-id=${CLASS_ID}`;
+  const API = `/video-teacher/api/class-video-detail?video-id=${VIDEO_ID}&class_id=${CLASS_ID}`;
   const spinner   = document.getElementById('loading');
   const table     = document.getElementById('resultTable');
   const tbody     = table.querySelector('tbody');
