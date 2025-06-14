@@ -27,6 +27,7 @@
       <button class="btn tab-button" id="btn-essay">📋 Đề Thi Tự Luận</button>
       <button class="btn tab-button" id="btn-video">🎥 Video Watch</button>
       <button class="btn tab-button" id="btn-bangtin">📰 Bảng Tin</button>
+      <button class="btn tab-button" id="btn-class"><a id="navigationTeacher">🧑‍🏫 Thông Tin Giáo Viên</a></button>
     </div>
 
     <!-- Content -->
@@ -54,6 +55,8 @@
 </div>
 
 <script>
+  let TEACHER_ID;
+
   const btnBaitap = document.getElementById("btn-baitap");
   const btnBangtin = document.getElementById("btn-bangtin");
   const btnVideo = document.getElementById("btn-video");
@@ -117,31 +120,36 @@
 <script>
     const pathParts = window.location.pathname.split('/');
     const CLASS_ID = pathParts[pathParts.length - 1];
+    function navigationTeacherInfo(){
+      document.getElementById('navigationTeacher').href = `/me/teacher-info/${TEACHER_ID}`
+    }
 
     async function renderAnnounce(){
-        try {
-            const res = await fetch(`/class-student/api/${CLASS_ID}`)
-            const classInfo = await res.json()
+      try {
+        const res = await fetch(`/class-student/api/${CLASS_ID}`)
+        const classInfo = await res.json()
 
-            // change content Bang tin
-            let listAnnouncements = classInfo.announcement
-            listAnnouncements = (classInfo.announcement || []).sort((a, b) => {
-                return new Date(b.date) - new Date(a.date);
-            });
-            contentBangtin.innerHTML = listAnnouncements
-            .map(a => `
-                <div class="card p-3 mb-3">
-                <span class="text-muted">
-                    ${new Date(a.date).toLocaleDateString('vi-VN')}
-                </span>
-                <p class="mb-0">${a.content}</p>
-                </div>
-            `)
-            .join('');
-            
-        } catch(error) {
-            console.error('error fetch class info')
-        }
+        TEACHER_ID = classInfo.teacher_id[0]
+        navigationTeacherInfo()
+        // change content Bang tin
+        let listAnnouncements = classInfo.announcement
+        listAnnouncements = (classInfo.announcement || []).sort((a, b) => {
+          return new Date(b.date) - new Date(a.date);
+        });
+        contentBangtin.innerHTML = listAnnouncements
+        .map(a => `
+          <div class="card p-3 mb-3">
+          <span class="text-muted">
+              ${new Date(a.date).toLocaleDateString('vi-VN')}
+          </span>
+          <p class="mb-0">${a.content}</p>
+          </div>
+        `)
+        .join('');
+          
+      } catch(error) {
+          console.error('error fetch class info')
+      }
     }
 
 

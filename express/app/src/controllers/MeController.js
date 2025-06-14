@@ -21,6 +21,16 @@ class MeController {
         }
         res.status(200).json({userInfo})
     }
+
+    // [GET] /me/teacher-info/:teacherId
+    async teacherInfo(req,res) {
+        try {
+            res.status(200).render("mes/teacherInfo")
+        } catch(err) {
+            console.error("engine dont load with route /me/teacher-info")
+            res.status(500).send("Failure load teacher Info")
+        }
+    }
 }
 
 module.exports = new MeController();
