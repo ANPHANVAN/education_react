@@ -21,7 +21,8 @@ const setStudentInfo = async (req, res, next) => {
         const student = await Students.findOne({ student_user_id: userId, class_id: classId });
 
         if (!student) {
-            return res.status(404).json({ message: "middleware can't find studentId for this user in this class" });
+            res.status(404).json({ message: "middleware can't find studentId for this user in this class" });
+            return;
         }
 
         req.student = {

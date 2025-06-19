@@ -75,15 +75,8 @@
       updateTimer();
       if (TIME_LEFT <= 0) {
         clearInterval(timerInterval);
-        autoSubmit();
       }
     }, 1000);
-  }
-
-  async function autoSubmit() {
-    const form = document.getElementById('answerForm');
-    alert('Hết giờ! Bài sẽ được tự động nộp.');
-    form.submit();
   }
 
   async function init() {

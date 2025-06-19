@@ -1,5 +1,6 @@
 const Tests = require('../models/testModel.js')
 const Submissions = require('../models/submissionModel.js')
+const Students = require('../models/studentModel.js')
 
 class TestStudentController {
     // [GET] /test-student/
@@ -28,7 +29,7 @@ class TestStudentController {
     // [GET] /test-student/submit-info/:submissionId  // this page display score after do test page
     async getPageSubmission(req, res) {
         try {
-
+            res.status(200).render('testStudent/scoreTest')
         } catch (error) {
             res.status(500).json({message: "An error in server", error: error})
         }
@@ -98,9 +99,12 @@ class TestStudentController {
             if (!studentUpdate) {
                 res.status(400).json({message: "Dont update testsubmit in student"})
             }
+
+            console.log("testSubmitInfo",testSubmitInfo);
             res.status(200).json(testSubmitInfo)
 
         } catch (error) {
+            console.error("error when submit test", error);
             res.status(500).json({message: "An error in server", error: error})
         }
     }
@@ -108,8 +112,18 @@ class TestStudentController {
     // [GET] /test-student/api/submit-info/:submissionId  // take submission info for 
     async getInfoSubmission(req, res) {
         try {
-
+            const submissionId = req.params.submissionId
+            const testSubmitInfo = await Submissions.findById(submissionId)
+            .populate({
+                path: 'student_id',
+                populate: {
+                    path: 'student_user_id',
+                    select: 'fullname email'
+                }
+            })
+            res.status(200).json(testSubmitInfo)
         } catch (error) {
+            console.error("Error take data", error)
             res.status(500).json({message: "An error in server", error: error})
         }
     }

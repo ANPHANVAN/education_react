@@ -64,7 +64,16 @@
 
     let TEST_DATA   = null;
     let TIME_LEFT   = 0;  // seconds
-    let timeBegin   = new Date();
+    let timeBegin;
+
+    const savedStart = localStorage.getItem(`startTime_${testId}_${class_id}`);
+    if (savedStart) {
+      timeBegin = new Date(savedStart);
+    } else {
+      timeBegin = new Date();
+      localStorage.setItem(`startTime_${testId}_${class_id}`, timeBegin.toISOString());
+    }
+
     let timerInterval;
 
     /* -------------------- Build question inputs -------------------- */
@@ -112,8 +121,8 @@
     }
 
     /* -------------------- Countdown timer -------------------- */
-    function startTimer(minutes) {
-      TIME_LEFT = minutes * 60;
+    function startTimer(seconds) {
+      TIME_LEFT = seconds;
       updateTimer();
       timerInterval = setInterval(() => {
         TIME_LEFT -= 1;
@@ -169,7 +178,7 @@
         class_id:       class_id,
         test_id: test_id
       };
-
+      
       try {
         const res = await fetch(`/test-student/api/test/${testId}?class_id=${class_id}`, {
           method: 'POST',
@@ -177,10 +186,15 @@
           body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error('Nộp bài thất bại');
-        const data = await res.json();
+        const testSubmitInfo = await res.json();
+        console.log("testSubmitInfo", testSubmitInfo)
         alert('Nộp bài thành công!');
+
+        // Delete time statt and draftAnswers
+        localStorage.removeItem(`startTime_${testId}_${class_id}`);
+        localStorage.removeItem(`draftAnswers_${testId}_${class_id}`);
         
-        window.location.replace(`/class-student/${class_id}`)
+        window.location.replace(`/test-student/submit-info/${testSubmitInfo._id}?class_id=${class_id}`)
       } catch (err) {
         console.error(err);
         alert(err.message);
@@ -207,8 +221,32 @@
         // Build form câu hỏi
         buildQuestions(TEST_DATA.answers || []);
 
+        // 🔁 Restore answers sau khi build xong
+        const saved = localStorage.getItem(`draftAnswers_${testId}_${class_id}`);
+        if (saved) {
+          const draft = JSON.parse(saved);
+          draft.forEach((ans, idx) => {
+            const name = `q_${idx}`;
+            if (ans.type === 'value') {
+              document.querySelector(`input[name="${name}"]`).value = ans.answer;
+            } else {
+              const selector = `input[name="${name}"][value="${ans.answer}"]`;
+              const input = document.querySelector(selector);
+              if (input) input.checked = true;
+            }
+          });
+        }
+
         // Khởi tạo timer
-        startTimer(TEST_DATA.test_time || 60);
+        const totalTime = (TEST_DATA.test_time || 60) * 60; // tổng số giây
+        const elapsed = Math.floor((Date.now() - timeBegin.getTime()) / 1000); // thời gian đã trôi qua
+        TIME_LEFT = totalTime - elapsed;
+        if (TIME_LEFT <= 0) {
+          autoSubmit();
+        } else {
+          startTimer(TIME_LEFT);
+        }
+
 
         // Bắt sự kiện nộp bài
         document.getElementById('submitBtn').addEventListener('click', (e) => {
@@ -221,5 +259,11 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', ()=>{init();
+      document.getElementById('answerForm').addEventListener('change', () => {
+        const answers = collectAnswers(); // ← lấy dữ liệu từ các ô
+        localStorage.setItem(`draftAnswers_${testId}_${class_id}`, JSON.stringify(answers));
+      });
+    });
+
   </script>

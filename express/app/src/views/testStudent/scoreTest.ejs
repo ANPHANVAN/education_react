@@ -1,0 +1,78 @@
+  <style>
+    body { background-color: #f8f9fa; padding: 2rem; }
+    .score-box {
+      max-width: 700px;
+      margin: auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+    .answer-card {
+      padding: 1rem;
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      background-color: #fefefe;
+      margin-bottom: 1rem;
+    }
+  </style>
+  <div class="score-box">
+    <h3 class="mb-4 text-center">Kết Quả Bài Làm</h3>
+    <div id="infoArea" class="mb-4">
+      <p><strong>Họ tên:</strong> <span id="studentName"></span></p>
+      <p><strong>Email:</strong> <span id="studentEmail"></span></p>
+      <p><strong>Môn:</strong> <span id="subject"></span></p>
+      <p><strong>Lớp:</strong> <span id="grade"></span></p>
+      <p><strong>Thời gian bắt đầu:</strong> <span id="beginTime"></span></p>
+      <p><strong>Thời gian kết thúc:</strong> <span id="endTime"></span></p>
+      <p><strong>Điểm số:</strong> <span class="badge bg-success" id="score"></span></p>
+    </div>
+
+    <h5 class="mb-3">Danh sách câu đã làm</h5>
+    <div id="answersArea"></div>
+  </div>
+
+  <script>
+    const url = new URL(window.location.href);
+    const urlParams = new URLSearchParams(window.location.search)
+    const submissionId = url.pathname.split('/')[3] // Giả sử URL: /result/submit/6853bc...
+    const CLASS_ID = urlParams.get('class_id')
+    console.log("submissionId",submissionId)
+    console.log("CLASS_ID",CLASS_ID)
+    // /test-student/submit-info/:submissionId?class_id=classId
+    async function fetchSubmission() {
+      try {
+        const res = await fetch(`/test-student/api/submit-info/${submissionId}?class_id=${CLASS_ID}`);
+        if (!res.ok) throw new Error('Không thể lấy dữ liệu');
+
+        const data = await res.json();
+
+        // Hiển thị thông tin cơ bản
+        document.getElementById('studentName').textContent = data.student_id.student_user_id?.fullname || 'Không rõ';
+        document.getElementById('studentEmail').textContent = data.student_id.student_user_id?.email || 'Không rõ';
+        document.getElementById('subject').textContent = data.subject || 'Không rõ';
+        document.getElementById('grade').textContent = data.grade || 'Không rõ';
+        document.getElementById('beginTime').textContent = new Date(data.time_begin).toLocaleString();
+        document.getElementById('endTime').textContent = new Date(data.time_end).toLocaleString();
+        document.getElementById('score').textContent = data.score ?? '0';
+
+        // Hiển thị danh sách câu trả lời
+        const answerList = document.getElementById('answersArea');
+        data.student_answers.forEach((item, idx) => {
+          const div = document.createElement('div');
+          div.className = 'answer-card';
+          div.innerHTML = `
+            <p><strong>Phần:</strong> ${item.part} - <strong>Câu:</strong> ${item.number}</p>
+            <p><strong>Loại:</strong> ${item.type.toUpperCase()}</p>
+            <p><strong>Đáp án:</strong> ${item.answer}</p>
+          `;
+          answerList.appendChild(div);
+        });
+      } catch (err) {
+        console.error(err);
+        document.body.innerHTML = `<div class="container text-center mt-5"><div class="alert alert-danger">${err.message}</div></div>`;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchSubmission);
+  </script>

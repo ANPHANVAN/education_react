@@ -25,10 +25,10 @@
     <div class="col-2 sidebar p-3">
       <button class="btn tab-button active mb-2" id="btn-baitap">📅 Đề Thi</button>
       <button class="btn tab-button" id="btn-essay">📋 Đề Thi Tự Luận</button>
-      <button class="btn tab-button" id="btn-video">🎥 Video Watch</button>
+      <button class="btn tab-button" id="btn-video">🎥 Xem Video</button>
+      <button class="btn tab-button" id="btn-folder">📁 Tài Liệu</button>
       <button class="btn tab-button" id="btn-bangtin">📰 Bảng Tin</button>
-      <button class="btn tab-button" id="btn-folder">📁 Folder</button>
-      <button class="btn tab-button" id="btn-class">🧑‍🏫 Thông Tin Giáo Viên</button>
+      <button class="btn tab-button" id="btn-class">🧑‍🏫 Giáo Viên</button>
     </div>
 
     <!-- Content -->
@@ -190,24 +190,24 @@
 
 
     async function renderTestInfo(){
-        try {
-            const res = await fetch(`/class-student/api/get-class-test?class_id=${CLASS_ID}`)
-            const essayInfoStatus = await res.json()
-            const { student_id, tests} = essayInfoStatus
+      try {
+        const res = await fetch(`/class-student/api/get-class-test?class_id=${CLASS_ID}`)
+        const essayInfoStatus = await res.json()
+        const { student_id, tests} = essayInfoStatus
 
-            contentBaitap.innerHTML = tests
-            .map(test => `
-                <div class="card mt-3 p-3">
-                    <strong><a href="/test-student/test-information/${test.test_id}?class_id=${CLASS_ID}">${test.test_title}</a></strong>
-                    <p>Trạng Thái: ${test.test_status_submit?'Đã nộp ✅' : 'Chưa Nộp ❌'}</p>
-                    <p>${test.test_status_submit ? 'Điểm Số : ' + test.score + ' / ' + test.sum_score : ''}</p>
-                </div>
-            `)
-            .join('');
-            
-        } catch(error) {
-            console.error('error fetch class info')
-        }
+        contentBaitap.innerHTML = tests
+        .map(test => `
+            <div class="card mt-3 p-3">
+                <strong><a href="/test-student/test-information/${test.test_id}?class_id=${CLASS_ID}">${test.test_title}</a></strong>
+                <p>Trạng Thái: ${test.test_status_submit?'Đã nộp ✅' : 'Chưa Nộp ❌'}</p>
+                <p>${test.test_status_submit ? 'Điểm Số  Thi Lần Đầu: ' + test.score + ' / ' + test.sum_score : ''}</p>
+            </div>
+        `)
+        .join('');
+          
+      } catch(error) {
+        console.error('error fetch class info')
+      }
     }
 
     async function renderVideoInfo(){

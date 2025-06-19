@@ -48,8 +48,8 @@
       { icon: 'clock',       label: 'Thời gian làm bài',  value: (d) => 'Không Giới Hạn' },
       { icon: 'clipboard-check', label: 'Môn', value: (d) => d.subject || 'Khác' },
       { icon: 'clipboard-check', label: 'Khối', value: (d) => d.grade || 'None' },
-      { icon: 'check2-circle',   label: 'Tổng lượt đã làm của đề', value: (d) => d.totalAttempt ? d.totalAttempt + ' lượt' : '0 lượt' },
-      { icon: 'arrow-repeat',    label: 'Số lượt làm đề còn lại',  value: (d) => d.remainingAttempt ? `${d.remainingAttempt}/${d.limitAttempt} lượt` : 'Không giới hạn' },
+      // { icon: 'check2-circle',   label: 'Tổng lượt đã làm của đề', value: (d) => d.totalAttempt ? d.totalAttempt + ' lượt' : '0 lượt' },
+      { icon: 'arrow-repeat',    label: 'Số lượt làm đề còn lại',  value: (d) => d.remainingAttempt ? `${d.remainingAttempt}/${d.limitAttempt} lượt` : 'Không giới hạn Nhưng Giáo Viên Sẽ Chấm Điểm Bài Nộp Đầu Tiên' },
     ];
 
     /* ===== Helper: tạo dòng thông tin ===== */

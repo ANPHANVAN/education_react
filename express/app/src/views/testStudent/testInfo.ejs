@@ -28,7 +28,7 @@
         <!-- Mã đề & QR -->
         <div class="d-flex gap-2 justify-content-center mb-3 small">
           <span>Mã đề thi: <span id="testCode" class="fw-semibold"></span></span>
-          <i class="bi bi-qr-code fs-6"></i>
+          <!-- <i class="bi bi-qr-code fs-6"></i> -->
         </div>
 
         <!-- Danh sách thông tin -->
@@ -50,8 +50,7 @@
       { icon: 'question-circle', label: 'Số lượng câu hỏi', value: (d) => d.answers?.length || 0 },
       { icon: 'clipboard-check', label: 'Môn', value: (d) => d.subject || 'Khác' },
       { icon: 'clipboard-check', label: 'Khối', value: (d) => d.grade || 'None' },
-      { icon: 'check2-circle',   label: 'Tổng lượt đã làm của đề', value: (d) => d.totalAttempt ? d.totalAttempt + ' lượt' : '0 lượt' },
-      { icon: 'arrow-repeat',    label: 'Số lượt làm đề còn lại',  value: (d) => d.remainingAttempt ? `${d.remainingAttempt}/${d.limitAttempt} lượt` : 'Không giới hạn' },
+      { icon: 'arrow-repeat',    label: 'Số lượt làm đề còn lại',  value: (d) => d.remainingAttempt ? `${d.remainingAttempt}/${d.limitAttempt} lượt` : 'Không giới hạn Nhưng lấy điểm lần đầu tiên thi' },
     ];
 
     /* ===== Helper: tạo dòng thông tin ===== */
