@@ -39,34 +39,34 @@ const mainPathName = partname[1];
     if (userInfo.role == 'teacher') {
       navigation.innerHTML = `
         <li class="nav-item  teacher-page">
-          <a class="nav-link" href="/class-teacher">Lớp Học</a>
+          <a class="nav-link nav-link-header" href="/class-teacher">Lớp Học</a>
         </li>
         <li class="nav-item  teacher-page">
-          <a class="nav-link" href="/test-teacher">Đề Thi</a>
+          <a class="nav-link nav-link-header" href="/test-teacher">Đề Thi</a>
         </li>    
         <li class="nav-item  teacher-page">
-          <a class="nav-link" href="/essay-teacher">Đề Tự Luận</a>
+          <a class="nav-link nav-link-header" href="/essay-teacher">Đề Tự Luận</a>
         </li>        
         <li class="nav-item  teacher-page">
-          <a class="nav-link" href="/video-teacher">Video</a>
+          <a class="nav-link nav-link-header" href="/video-teacher">Video</a>
         </li>
       `
     } else if (userInfo.role=='admin') {
       navigation.innerHTML = `
         <li class="nav-item  student-page">
-          <a class="nav-link" href="/home-student">Home Student</a>
+          <a class="nav-link nav-link-header" href="/home-student">Home Student</a>
         </li>
         <li class="nav-item  teacher-page">
-          <a class="nav-link" href="/class-teacher">Lớp Học</a>
+          <a class="nav-link nav-link-header" href="/class-teacher">Lớp Học</a>
         </li>
         <li class="nav-item  teacher-page">
-          <a class="nav-link" href="/test-teacher">Đề Thi</a>
+          <a class="nav-link nav-link-header" href="/test-teacher">Đề Thi</a>
         </li>    
         <li class="nav-item  teacher-page">
-          <a class="nav-link" href="/essay-teacher">Đề Tự Luận</a>
+          <a class="nav-link nav-link-header" href="/essay-teacher">Đề Tự Luận</a>
         </li>      
         <li class="nav-item  teacher-page">
-          <a class="nav-link" href="/video-teacher">Video</a>
+          <a class="nav-link nav-link-header" href="/video-teacher">Video</a>
         </li>
 
       `
@@ -84,7 +84,7 @@ const mainPathName = partname[1];
     }
 
     // Thêm chức năng đổi active khi click nav-link
-    const navLinks = document.querySelectorAll(".nav-link");
+    const navLinks = document.querySelectorAll(".nav-link-header");
 
     navLinks.forEach(link => {
       link.addEventListener("click", function () {

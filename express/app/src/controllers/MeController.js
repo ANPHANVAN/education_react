@@ -31,6 +31,19 @@ class MeController {
             res.status(500).send("Failure load teacher Info")
         }
     }
+
+    // PUT /me/api/:id/edit
+    async mePutEdit(req,res,next){
+        const updatedUser = await Users.findOneAndUpdate(
+            { _id: req.user._id },
+            { $set: req.body },     // chỉ update các trường có trong req.body
+            { new: true }           // trả về document đã được cập nhật
+          );
+        if (!updatedUser){
+            res.status(400).json({message:"update failure"})
+        }
+        res.status(200).redirect(`/me/${req.user._id}`)
+    }
 }
 
 module.exports = new MeController();

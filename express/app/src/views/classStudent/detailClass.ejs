@@ -27,7 +27,8 @@
       <button class="btn tab-button" id="btn-essay">📋 Đề Thi Tự Luận</button>
       <button class="btn tab-button" id="btn-video">🎥 Video Watch</button>
       <button class="btn tab-button" id="btn-bangtin">📰 Bảng Tin</button>
-      <button class="btn tab-button" id="btn-class"><a id="navigationTeacher">🧑‍🏫 Thông Tin Giáo Viên</a></button>
+      <button class="btn tab-button" id="btn-folder">📁 Folder</button>
+      <button class="btn tab-button" id="btn-class">🧑‍🏫 Thông Tin Giáo Viên</button>
     </div>
 
     <!-- Content -->
@@ -50,6 +51,11 @@
       <h4>Video sẽ được hiển thị tại đây.</h4>
       </div>  
 
+      <!-- Folder -->
+      <div id="content-folder" class="tab-content d-none">
+        <h4>Thư mục lưu trữ tài liệu sẽ hiển thị ở đây.</h4>
+      </div>
+
     </div>
   </div>
 </div>
@@ -65,17 +71,22 @@
   const contentBangtin = document.getElementById("content-bangtin");
   const contentVideo = document.getElementById("content-video");
   const contentEssay = document.getElementById("content-essay");
+  const btnFolder = document.getElementById("btn-folder");
+  const contentFolder = document.getElementById("content-folder");
+
 
   btnBaitap.addEventListener("click", () => {
     btnBaitap.classList.add("active");
     btnBangtin.classList.remove("active");
     btnVideo.classList.remove("active");
     btnEssay.classList.remove("active");
+    btnFolder.classList.remove("active");
 
     contentBaitap.classList.remove("d-none");
     contentBangtin.classList.add("d-none");
     contentVideo.classList.add("d-none");
     contentEssay.classList.add("d-none");
+    contentFolder.classList.add("d-none");
 
   });
 
@@ -84,11 +95,13 @@
     btnBaitap.classList.remove("active");
     btnVideo.classList.remove("active");
     btnEssay.classList.remove("active");
+    btnFolder.classList.remove("active");
 
     contentBangtin.classList.remove("d-none");
     contentBaitap.classList.add("d-none");
     contentVideo.classList.add("d-none");
     contentEssay.classList.add("d-none");
+    contentFolder.classList.add("d-none");
 
   });
 
@@ -97,11 +110,13 @@
     btnBaitap.classList.remove("active");
     btnBangtin.classList.remove("active");
     btnEssay.classList.remove("active");
+    btnFolder.classList.remove("active");
 
     contentVideo.classList.remove("d-none");
     contentBaitap.classList.add("d-none");
     contentBangtin.classList.add("d-none");
     contentEssay.classList.add("d-none");
+    contentFolder.classList.add("d-none");
   });
 
   btnEssay.addEventListener("click", () => {
@@ -109,19 +124,40 @@
     btnVideo.classList.remove("active");
     btnBaitap.classList.remove("active");
     btnBangtin.classList.remove("active");
+    btnFolder.classList.remove("active");
 
     contentEssay.classList.remove("d-none");
     contentVideo.classList.add("d-none");
     contentBaitap.classList.add("d-none");
     contentBangtin.classList.add("d-none");
+    contentFolder.classList.add("d-none");
   });
+
+  btnFolder.addEventListener("click", () => {
+    // Active class
+    btnFolder.classList.add("active");
+    btnBaitap.classList.remove("active");
+    btnBangtin.classList.remove("active");
+    btnVideo.classList.remove("active");
+    btnEssay.classList.remove("active");
+
+    // Toggle nội dung
+    contentFolder.classList.remove("d-none");
+    contentBaitap.classList.add("d-none");
+    contentBangtin.classList.add("d-none");
+    contentVideo.classList.add("d-none");
+    contentEssay.classList.add("d-none");
+  });
+
 </script>
 
 <script>
     const pathParts = window.location.pathname.split('/');
     const CLASS_ID = pathParts[pathParts.length - 1];
+
     function navigationTeacherInfo(){
-      document.getElementById('navigationTeacher').href = `/me/teacher-info/${TEACHER_ID}`
+      const teacherInfo = document.getElementById('btn-class')
+      teacherInfo.addEventListener('click',()=>{window.location.href = `/me/teacher-info/${TEACHER_ID}`})
     }
 
     async function renderAnnounce(){
@@ -274,12 +310,67 @@
       }
     }
 
+    function renderFileHeader() {
+      contentFolder.innerHTML =`
+      <div class="container mt-4">
 
-    document.addEventListener('DOMContentLoaded', ()=>{
+        <!-- Danh sách tất cả -->
+        <h5 class="mb-3">Tất cả</h5>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Tên Gợi Nhớ</th>
+                <th>Tên Files</th>
+                <th>Xem File</th>
+                <th>Ngày Upload</th>
+              </tr>
+            </thead>
+            <tbody class="file-teacher-list">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      `
+    }
+
+    async function renderFileInfo(){
+      try {
+        const response = await fetch(`/folder/api/folder-teacher/${CLASS_ID}/get-files`);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const files = await response.json();
+        console.log(files);
+        const listItems = document.querySelector('.file-teacher-list');
+        listItems.innerHTML = ''; // Clear existing items
+        files.forEach(file => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+              <td>${file.title || 'no data'}</td>
+              <td>${file.file_origin_name || 'no data'}</td>
+              <td><a href="${file.url_file}" target="_blank">Xem File</a></td>
+              <td>${new Date(file.updatedAt).toLocaleString() || 'no data'}</td>
+          `;
+
+          row.style.cursor = 'pointer'
+          listItems.appendChild(row);
+        });
+
+      } catch (error) {
+        console.error('Error fetching files:', error);
+      }
+    }
+
+
+    document.addEventListener('DOMContentLoaded',async ()=>{
         renderAnnounce()
         renderTestInfo()
         renderVideoInfo()
         renderEssayInfo()
+        await renderFileHeader()
+        renderFileInfo()
     })
 </script>
 

@@ -1,0 +1,247 @@
+<style>
+    .btn-custom { min-width: 180px; }
+    .doc-card {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 1rem;
+      background-color: #fff;
+      height: 100%;
+    }
+    .tag-badge {
+      background-color: #0d6efd;
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+    }
+  </style>
+
+
+<link rel="stylesheet" href="/public/css/classroomDetail.css">
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">  
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 id="classTitle"></h2>
+  </div>
+
+  <!-- folder content -->
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3 class="mb-0">Danh sách folder của lớp</h3>
+      <!-- Nút mở modal -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
+          Upload Tài Liệu
+      </button>      
+    </div>
+        <!-- Tìm kiếm + nút tạo -->
+        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
+          <!-- <input type="text" class="form-control w-auto" placeholder="Tìm kiếm" style="max-width: 300px;" hidden> -->
+
+        </div>
+
+        <!-- Danh sách tất cả -->
+        <h5 class="mb-3">Tất cả</h5>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Tên Gợi Nhớ</th>
+                <th>Tên Files</th>
+                <th>Xem File</th>
+                <th>Ngày Upload</th>
+                <th>Hành Động</th>
+              </tr>
+            </thead>
+            <tbody class="file-teacher-list">
+            </tbody>
+          </table>
+        </div>
+      </div>      
+  </div>
+</div>
+
+<!-- this is list sidebar script render -->
+<script>
+  function renderSidebar() {
+    const sidebar = document.getElementById('sidebar')
+    sidebar.innerHTML = `
+  <br><br>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/">Học Sinh</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/test">Đề Thi</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/essay">Đề Tự Luận</a>
+    </li>          
+    <li class="nav-item">
+      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/video">Video</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/announce">Bảng Tin</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" href="/folder/folder-teacher/${CLASS_ID}">Tài Liệu</a>
+    </li>        
+  </ul>
+    `
+    return
+  }
+
+  // Fetch class details from API
+    async function fetchClassDetails() {
+      try {
+        const response = await fetch(`/class-teacher/api/classroom-details/${CLASS_ID}`);
+        if (!response.ok) throw new Error('Failed to fetch class details');
+        const data = await response.json();
+
+        // Update class title
+        document.getElementById('classTitle').textContent = `${data.class_name} (${data.school_year})`;
+
+      } catch (error) {
+        console.error('Error fetching class details:', error);
+        alert('Không thể tải chi tiết lớp học. Vui lòng thử lại sau.');
+      }
+    }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderSidebar()
+    fetchClassDetails()
+  });
+</script>
+
+
+
+<div class="container mt-5">
+  <!-- Modal -->
+  <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="formId" method="POST" enctype="multipart/form-data">
+          <div class="modal-header">
+            <h5 class="modal-title" id="uploadModalLabel">Tải lên tài liệu</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Tên gợi nhớ -->
+            <div class="mb-3">
+              <label for="documentName" class="form-label">Tên gợi nhớ cho tài liệu</label>
+              <input type="text" class="form-control" id="documentName" name="title" placeholder="VD: Đề thi giữa kỳ Toán">
+            </div>
+
+            <!-- File upload -->
+            <div class="mb-3">
+              <label for="file" class="form-label">Chọn file</label>
+              <input class="form-control" type="file" id="file" name="file" accept=".pdf,.docx,.pptx">
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            <button type="submit" class="btn btn-primary">Tải lên</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+    const url = window.location.pathname
+    const CLASS_ID = url.split("/")[3]
+    
+  async function fetchFiles() {
+    try {
+      const response = await fetch(`/folder/api/folder-teacher/${CLASS_ID}/get-files`, {
+        method: 'GET',
+        headers: { 'Content-Type':'application/json' },
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const files = await response.json();
+      console.log(files);
+      const listItems = document.querySelector('.file-teacher-list');
+      listItems.innerHTML = ''; // Clear existing items
+      files.forEach(file => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${file.title || 'no data'}</td>
+            <td>${file.file_origin_name || 'no data'}</td>
+            <td><a href="${file.url_file}" target="_blank">Xem File</a></td>
+            <td>${new Date(file.updatedAt).toLocaleString() || 'no data'}</td>
+            <td><button type="button" class="btn btn-danger" onclick="deleteFiles('${file._id}')">Xóa File</button></td>
+        `;
+
+        listItems.appendChild(row);
+      });
+
+
+    } catch (error) {
+      console.error('Error fetching files:', error);
+    }
+  }
+
+  async function deleteFiles(file_id){
+    try {
+      const res = await fetch(`/folder/api/folder-teacher/${CLASS_ID}/delete-file`,{
+        method: 'DELETE',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ fileId:file_id })
+      });
+      if (!res.ok){
+        throw new Error("Error when delete file");
+        alert("Delete File Failure");
+      }
+      alert("Delete Success");
+      window.location.reload();
+
+    } catch(err){
+
+    }
+  }
+
+  function navigationForm(){
+    const formElement = document.getElementById('formId');
+    formElement.action = action=`/folder/api/folder-teacher/${CLASS_ID}`
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    fetchFiles()
+    
+    const formElement = document.getElementById('formId');
+    formElement.addEventListener('submit', async function (event) {
+      event.preventDefault(); // 🚫 chặn form submit mặc định
+
+      const formData = new FormData(formElement);
+
+      try {
+        const response = await fetch(`/folder/api/folder-teacher/${CLASS_ID}`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) throw new Error('Upload failed');
+        
+        alert('Tải lên thành công!');
+        window.location.reload(); // hoặc fetchFiles() nếu muốn reload dữ liệu mới
+
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('Lỗi khi tải lên. Vui lòng thử lại.');
+      }
+    });
+
+
+  });
+</script>

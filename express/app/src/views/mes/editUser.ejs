@@ -9,7 +9,7 @@
         <div class="card shadow-sm border-0">
 
 
-          <form id="profileForm" method="POST">
+          <form id="profileForm">
 
             <div class="card-body text-center">
 
@@ -118,18 +118,35 @@
     saveBtn.addEventListener('click', async (event) => {
       event.preventDefault();
       if (isEditing) {
-          const form = document.querySelector('#profileForm');
-          try {
-        const user = await takeUser()
-        form.setAttribute('action', `/me/api/${user._id}/edit`);
-        form.submit()
-     
+        const updatedData = {
+          fullname: fullnameInput.value,
+        };
+
+        try {
+          const user = await takeUser();
+          const response = await fetch(`/me/api/${user._id}/edit`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            alert('Profile updated successfully!');
+            displayUser(result.updatedUser || updatedData);
+            cancelEditing();
+          } else {
+            throw new Error('Failed to update profile');
+          }
         } catch (error) {
           console.error('Error updating profile:', error);
           alert('Failed to update profile.');
         }
       }
     });
+
 
 
     // Hàm khởi tạo trang
