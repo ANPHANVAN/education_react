@@ -134,11 +134,12 @@
 
           if (response.ok) {
             const result = await response.json();
-            alert('Profile updated successfully!');
+            alert('Chỉnh sửa Thành công!');
             displayUser(result.updatedUser || updatedData);
             cancelEditing();
+            window.location.reload();
           } else {
-            throw new Error('Failed to update profile');
+            throw new Error('Chỉnh sửa Thất bại');
           }
         } catch (error) {
           console.error('Error updating profile:', error);

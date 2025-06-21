@@ -11,7 +11,7 @@
 
           <ul id="logout" class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a id="profile-user" class="nav-link">Hồ Sơ Cá Nhân</a>
+              <a id="profile-user" class="nav-link"></a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/auth/logout">Đăng Xuất</a>
@@ -33,6 +33,9 @@ const mainPathName = partname[1];
   async function hideRolePage() {
     const response = await fetch('/me/api/get-user-info')
     const { userInfo } = await response.json()
+
+    // upload user FullName
+    document.getElementById('profile-user').innerHTML = `${userInfo.fullname || "Hồ Sơ Cá Nhân"}`
 
     // update href info
     profileUser.href = `/me/${userInfo._id}`

@@ -207,6 +207,7 @@
                                         <input
                                             type="text"
                                             className="w-full p-2 border rounded"
+                                            placeholder="VD:1, 1a"
                                             value={answer.number}
                                             onChange={(e) => updateAnswer(index, 'number', e.target.value)}
                                             required
@@ -236,6 +237,7 @@
                                         min="0"
                                         className="w-full p-2 border rounded"
                                         value={answer.score}
+                                        placeholder="VD:0.25"
                                         onChange={(e) => updateAnswer(index, 'score', e.target.value)}
                                         required
                                         />
@@ -303,6 +305,7 @@
                                                 className="w-full p-2 border rounded"
                                                 value={answer.answer}
                                                 onChange={(e) => updateAnswer(index, 'answer', e.target.value)}
+                                                placeholder="10.10"
                                                 required
                                             />
                                         </div>

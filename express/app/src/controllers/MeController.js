@@ -42,7 +42,7 @@ class MeController {
         if (!updatedUser){
             res.status(400).json({message:"update failure"})
         }
-        res.status(200).redirect(`/me/${req.user._id}`)
+        res.status(200).json(updatedUser);
     }
 }
 
