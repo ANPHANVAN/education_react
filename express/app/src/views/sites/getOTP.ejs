@@ -1,41 +1,56 @@
-<div class="container py-5">
-  <h3 class="mb-4">Khôi phục mật khẩu</h3>
+<link rel="stylesheet" href="/public/css/auth.css">
 
-  <!-- Form Gửi OTP -->
-  <form id="requestOtpForm" class="needs-validation" novalidate>
-    <div class="mb-3">
-      <label class="form-label">Email</label>
-      <input type="email" name="email" class="form-control" placeholder="Nhập email đã đăng ký" required>
-      <div class="invalid-feedback">Vui lòng nhập email hợp lệ</div>
-    </div>
-    <button type="submit" class="btn btn-primary">Gửi OTP</button>
-  </form>
+<div class="container mt-5 d-flex justify-content-center">
+  <div class="col-md-4 border rounded p-4 bg-light">
+    <h2 class="text-center">Khôi Phục Mật Khẩu</h2>
 
-  <!-- Form Nhập OTP và Mật khẩu mới -->
-  <form id="resetForm" class="needs-validation d-none" novalidate>
-    <div class="mb-3">
-      <label class="form-label">Email</label>
-      <input type="email" name="email" class="form-control" required readonly>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Mã OTP</label>
-      <input type="text" name="otp" class="form-control" required>
-      <div class="invalid-feedback">Vui lòng nhập mã OTP</div>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Mật khẩu mới</label>
-      <input type="password" name="newPassword" class="form-control" required minlength="6">
-      <div class="invalid-feedback">Mật khẩu ít nhất 6 ký tự</div>
-    </div>
-    <button type="submit" class="btn btn-success">Đặt lại mật khẩu</button>
-  </form>
+    <!-- Form Gửi OTP -->
+    <form id="requestOtpForm" class="needs-validation" novalidate>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control shadow-on-focus" placeholder="Nhập email đã đăng ký" required>
+        <div class="invalid-feedback">Vui lòng nhập email hợp lệ</div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Gửi OTP</button>
+    </form>
+
+    <!-- Form Nhập OTP và Mật khẩu mới -->
+    <form id="resetForm" class="needs-validation d-none mt-3" novalidate>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control shadow-on-focus" required readonly>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Mã OTP</label>
+        <input type="text" name="otp" class="form-control shadow-on-focus" required>
+        <div class="invalid-feedback">Vui lòng nhập mã OTP</div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Mật khẩu mới</label>
+        <input type="password" name="newPassword" class="form-control shadow-on-focus" required minlength="6">
+        <div class="invalid-feedback">Mật khẩu ít nhất 6 ký tự</div>
+      </div>
+      <button type="submit" class="btn btn-success w-100">Đặt lại mật khẩu</button>
+    </form>
+
+    <p class="mt-3 text-center">
+      <a href="/auth/login">Quay lại trang đăng nhập</a>
+    </p>
+  </div>
 </div>
+
+<style>
+  .shadow-on-focus:focus {
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5) !important;
+    border-color: #007bff !important;
+  }
+</style>
 
 <script>
   const requestForm = document.getElementById('requestOtpForm');
   const resetForm = document.getElementById('resetForm');
 
-  // Validate Bootstrap
+  // Bootstrap validation
   (function () {
     'use strict';
     const forms = document.querySelectorAll('.needs-validation');
@@ -69,7 +84,7 @@
       alert('OTP đã được gửi tới email.');
       requestForm.classList.add('d-none');
       resetForm.classList.remove('d-none');
-      resetForm.email.value = email; // gán lại vào form reset
+      resetForm.email.value = email;
 
     } catch (err) {
       alert(err.message);
@@ -98,7 +113,7 @@
       if (!res.ok) throw new Error(data.message || 'Lỗi đặt lại mật khẩu');
 
       alert('Mật khẩu đã được cập nhật thành công!');
-      window.location.replace('/auth/login'); // Chuyển về trang login
+      window.location.replace('/auth/login');
 
     } catch (err) {
       alert(err.message);
