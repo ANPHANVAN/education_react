@@ -1,0 +1,61 @@
+<br><br><br>
+<a href="/admin/find-user"><button type="button" class="btn btn-primary">Trang Tìm User</button></a>
+<div class="container">
+    <div class="card shadow-sm mx-auto" style="max-width: 500px;">
+      <div class="card-body">
+        <h4 class="card-title mb-4 text-center">Set User Role</h4>
+        <form id="setRoleForm">
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" id="username" name="username" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="role" class="form-label">Role</label>
+            <select id="role" name="role" class="form-select" required>
+              <option value="" disabled selected>-- Chọn role --</option>
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Set Role</button>
+        </form>
+        <div id="responseMessage" class="mt-3 text-center"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('setRoleForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const role = document.getElementById('role').value;
+
+      if (!username || !email || !role) {
+        alert('Vui lòng nhập đầy đủ thông tin.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/admin/api/set-role', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, role })
+        });
+
+        const data = await res.json();
+        const messageDiv = document.getElementById('responseMessage');
+        messageDiv.textContent = data.message;
+        messageDiv.className = res.ok ? 'text-success' : 'text-danger';
+      } catch (err) {
+        alert('Đã xảy ra lỗi khi gửi request.');
+        console.error(err);
+      }
+    });
+  </script>

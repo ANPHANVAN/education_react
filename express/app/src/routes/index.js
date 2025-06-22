@@ -14,6 +14,7 @@ function route(app){
     const essayTeacherRouter = require('./essayTeacher.js');
     const folderRouter = require('./folder.js');
     const essayStudentRouter = require('./essayStudent.js');
+    const adminRouter = require('./admin.js');
 
     // [GET] /health
     app.get('/health', (req, res) => {
@@ -22,6 +23,7 @@ function route(app){
 
     app.use('/me', authMiddleware, meRouter)
     app.use('/auth', authRouter)
+    app.use('/admin', authMiddleware, adminRouter)
     app.use('/folder', authMiddleware, folderRouter)
     app.use('/essay-teacher', authMiddleware, essayTeacherRouter)
     app.use('/essay-student', authMiddleware, essayStudentRouter)
