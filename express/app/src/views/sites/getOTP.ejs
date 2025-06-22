@@ -1,0 +1,107 @@
+<div class="container py-5">
+  <h3 class="mb-4">Khôi phục mật khẩu</h3>
+
+  <!-- Form Gửi OTP -->
+  <form id="requestOtpForm" class="needs-validation" novalidate>
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" name="email" class="form-control" placeholder="Nhập email đã đăng ký" required>
+      <div class="invalid-feedback">Vui lòng nhập email hợp lệ</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Gửi OTP</button>
+  </form>
+
+  <!-- Form Nhập OTP và Mật khẩu mới -->
+  <form id="resetForm" class="needs-validation d-none" novalidate>
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" name="email" class="form-control" required readonly>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Mã OTP</label>
+      <input type="text" name="otp" class="form-control" required>
+      <div class="invalid-feedback">Vui lòng nhập mã OTP</div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Mật khẩu mới</label>
+      <input type="password" name="newPassword" class="form-control" required minlength="6">
+      <div class="invalid-feedback">Mật khẩu ít nhất 6 ký tự</div>
+    </div>
+    <button type="submit" class="btn btn-success">Đặt lại mật khẩu</button>
+  </form>
+</div>
+
+<script>
+  const requestForm = document.getElementById('requestOtpForm');
+  const resetForm = document.getElementById('resetForm');
+
+  // Validate Bootstrap
+  (function () {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', e => {
+        if (!form.checkValidity()) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
+
+  // Submit gửi OTP
+  requestForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!requestForm.checkValidity()) return;
+
+    const email = requestForm.email.value.trim();
+    try {
+      const res = await fetch('/auth/api/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Lỗi gửi OTP');
+
+      alert('OTP đã được gửi tới email.');
+      requestForm.classList.add('d-none');
+      resetForm.classList.remove('d-none');
+      resetForm.email.value = email; // gán lại vào form reset
+
+    } catch (err) {
+      alert(err.message);
+    }
+  });
+
+  // Submit đặt lại mật khẩu
+  resetForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!resetForm.checkValidity()) return;
+
+    const payload = {
+      email: resetForm.email.value.trim(),
+      otp: resetForm.otp.value.trim(),
+      newPassword: resetForm.newPassword.value
+    };
+
+    try {
+      const res = await fetch('/auth/api/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Lỗi đặt lại mật khẩu');
+
+      alert('Mật khẩu đã được cập nhật thành công!');
+      window.location.replace('/auth/login'); // Chuyển về trang login
+
+    } catch (err) {
+      alert(err.message);
+    }
+  });
+</script>
