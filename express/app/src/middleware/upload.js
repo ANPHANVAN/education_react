@@ -1,11 +1,14 @@
 // middlewares/upload.js
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 // Cấu hình nơi lưu file và tên file
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, '/app/src/uploads/');
+    const dest = `/app/src/uploads/`
+    fs.mkdirSync(dest, { recursive: true }); // Tạo thư mục nếu chưa có
+    cb(null, dest);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
