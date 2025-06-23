@@ -4,8 +4,10 @@ const path = require('path');
 
 // Cấu hình nơi lưu file và tên file
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, '/app/src/uploads/essay/student');
+  destination: function (req, file, cb) {    
+    const dest = `/app/src/uploads/essay/student`
+    fs.mkdirSync(dest, { recursive: true }); // Tạo thư mục nếu chưa có
+    cb(null, dest);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
