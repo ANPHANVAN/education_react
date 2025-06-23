@@ -3,7 +3,7 @@ services:
     image: mongo:7.0
     volumes:
       - mongo-data:/data/db
-      # - ./.database/mongo_backup:/data/backup  # take backup files
+      - ./.database/mongo_backup:/data/backup  # take backup files
     healthcheck:
       test: ["CMD-SHELL", "mongosh", "db.adminCommand('ping')"]
       interval: 10s
