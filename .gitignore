@@ -19,6 +19,6 @@ plan files
 0_plan/task.xlsx
 *.xlsx
 
-# .database
-# express/app/src/uploads/
+.database
+express/app/src/uploads/
 *.pem
