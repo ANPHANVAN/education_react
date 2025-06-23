@@ -71,6 +71,7 @@ class AuthController {
         try {
             let registerInformation = req.body
             const { confirmPassword, ...userData } = registerInformation;
+            registerInformation.username = registerInformation.username.trim().toLowerCase()
             let result = await Users.find({username: registerInformation.username})
             if (result.length > 0) {
                 res.render('sites/apology', {message: `Username already exists`});
@@ -95,6 +96,7 @@ class AuthController {
     async authentication(req,res,next) {
         try {
             let loginInformation = req.body
+            loginInformation.username = loginInformation.username.trim().toLowerCase();
             let result = await UserSecurity.find({username: loginInformation.username})
             if (result.length === 0) {
                 res.status(404).render('sites/apology', {message: `Username does not exist`});
@@ -144,11 +146,15 @@ class AuthController {
             from: `"Education App 👩‍🎓" <${GMAIL}>`,
             to: email,
             subject: '🔐 Yêu cầu đặt lại mật khẩu - OTP của bạn',
-            text: `Mã OTP của bạn là: ${otp} (hết hạn sau 15 phút)`, // fallback nếu không đọc được HTML
+            text: `Username của bạn là: ${user.username} \nMã OTP của bạn là: ${otp} (hết hạn sau 15 phút)`, // fallback nếu không đọc được HTML
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
                 <h2 style="color: #007bff;">👋 Xin chào,</h2>
                 <p>Bạn (hoặc ai đó) đã yêu cầu đặt lại mật khẩu cho tài khoản trên <strong>Education App</strong>.</p>
+                <p style="font-size: 16px;">Username của bạn là:</p>
+                <div style="font-size: 28px; font-weight: bold; background: #f8f9fa; padding: 12px 20px; border-radius: 5px; text-align: center; letter-spacing: 2px;">
+                    ${user.username}
+                </div>
                 <p style="font-size: 16px;">Mã OTP của bạn là:</p>
                 <div style="font-size: 28px; font-weight: bold; background: #f8f9fa; padding: 12px 20px; border-radius: 5px; text-align: center; letter-spacing: 2px;">
                     ${otp}

@@ -14,6 +14,7 @@ class AdminController {
     async setRole(req,res){
         try {
             const { username, email, role } = req.body;
+            username = username.trim().toLowerCase();
             const user = await Users.findOneAndUpdate({username, email},{
                 $set: {
                     role: role
