@@ -20,5 +20,5 @@ plan files
 *.xlsx
 
 # .database
-express/app/src/uploads/
+# express/app/src/uploads/
 *.pem
