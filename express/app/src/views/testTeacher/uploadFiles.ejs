@@ -14,15 +14,30 @@
       background-color: #f0f8ff;
     }
   </style>
-<div class="container mt-5">
-  <h3 class="mb-4">Tải lên file đề thi (PDF không có đáp án)</h3>
+    <div class="container mt-5">
+      <h3 class="mb-4">Tải lên file đề thi (PDF không có đáp án)</h3>
 
-  <form action="/test-teacher/api/upload-files-test" method="post" enctype="multipart/form-data">
-    <div class="upload-box mb-4">
-      <input class="form-control" type="file" name="testFile" accept=".pdf" required>
-      <p class="mt-3 text-muted">Chỉ chấp nhận file .pdf</p>
-    </div>
+      <form id="uploadForm" action="/test-teacher/api/upload-files-test" method="POST" enctype="multipart/form-data">
+      <div class="upload-box mb-4">
+        <input id="testFileInput" class="form-control" type="file" name="testFile" accept=".pdf" required>
+        <p class="mt-3 text-muted">Chỉ chấp nhận file .pdf</p>
+      </div>
+      <button type="submit" class="btn btn-primary">Tải lên và tạo đề</button>
+    </form>
 
-    <button type="submit" class="btn btn-primary">Tải lên và tạo đề</button>
-  </form>
+    <script>
+      document.getElementById('uploadForm').addEventListener('submit', function (e) {
+        const fileInput = document.getElementById('testFileInput');
+        const file = fileInput.files[0];
+        if (file) {
+          const ext = file.name.toLowerCase().slice(-4);
+          if (ext !== '.pdf') {
+            e.preventDefault(); // Ngăn submit
+            alert('❌ Chỉ chấp nhận file PDF!');
+            window.location.reload(); // Reload lại trang
+          }
+        }
+      });
+    </script>
+
 </div>

@@ -13,7 +13,7 @@ class AdminController {
     // [POST] /admin/api/set-role
     async setRole(req,res){
         try {
-            const { username, email, role } = req.body;
+            let { username, email, role } = req.body;
             username = username.trim().toLowerCase();
             const user = await Users.findOneAndUpdate({username, email},{
                 $set: {
