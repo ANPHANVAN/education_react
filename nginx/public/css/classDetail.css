@@ -1,10 +1,22 @@
-/* General Body Styling */
-body {
-  font-family: 'Montserrat', sans-serif;
-  background-color: #f2f4f8;
-  margin: 0;
-  padding: 0;
-}
+    /* body {
+      background-color: #f2f4f8;
+    }
+    .sidebar {
+      height: 100vh;
+      background-color: #f8f9fa;
+    }
+    .tab-button {
+      width: 100%;
+      text-align: left;
+    }
+    .tab-button.active {
+      background-color: #00547a;
+      color: white;
+    }
+    .tab-content {
+      padding: 2rem;
+    } */
+    /* General Body Styling */
 
 /* Sidebar Styling */
 .sidebar {
@@ -34,7 +46,7 @@ body {
 
 .tab-button:hover {
   background-color: #e0e7f0;
-  color: #00547a;
+  color: #2c3e50;
 }
 
 /* Tab Content Styling */
@@ -45,17 +57,50 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   min-height: 400px;
 } */
-a {
-  text-decoration: none;        /* Xóa gạch chân mặc định */
-  color: #0172a7;               /* Dùng màu chữ của phần tử cha */
-  cursor: pointer;              /* Hiện con trỏ tay khi hover */
-  transition: all 0.2s ease;    /* Mượt khi hover */
+
+/* Card Styling */
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+a{
+  color: #2b5783;
+  text-decoration: none;
 }
 
 a:hover {
-  color: #007bff;               /* Màu khi hover (Bootstrap blue) */
-  text-decoration: underline;   /* Gạch chân khi hover (nếu muốn) */
+  color: #0d98d8 !important;
 }
+
+.card-title a strong:hover {
+  color: #0c7db1;
+}
+
+.card-body {
+  font-family: 'Montserrat', sans-serif;
+  color: #34495e;
+}
+
+.card-subtitle {
+  font-family: 'Montserrat', sans-serif;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.text-success {
+  color: #28a745;
+}
+
+.text-danger {
+  color: #dc3545;
+}
+
+.text-primary {
+  color: #00547a;
+}
+
 /* Table Styling */
 .table {
   font-family: 'Montserrat', sans-serif;
@@ -76,48 +121,13 @@ a:hover {
   cursor: pointer;
 }
 
-/* Card Styling */
-.card {
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.card-title a {
-  color: #2c3e50;
-  text-decoration: none;
-}
-
-.card-title a:hover {
-  color: #6200ea;
-}
-
-.card-text {
+/* Alert Styling */
+.alert {
   font-family: 'Montserrat', sans-serif;
-  color: #34495e;
+  border-radius: 10px;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .sidebar {
-    height: auto;
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #ddd;
-  }
 
-  .col-2, .col-10 {
-    width: 100%;
-  }
-
-  .tab-button {
-    padding: 8px;
-  }
-
-  /* .tab-content {
-    padding: 1rem;
-  } */
-}
 
 /* Messenger Icon Styling */
 .fa-facebook-messenger {
@@ -137,4 +147,26 @@ a:hover {
 
 .fa-facebook-messenger:hover {
   transform: scale(1.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    height: 35vh;
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .col-2, .col-10 {
+    width: 100%;
+  }
+
+  .tab-button {
+    padding: 8px;
+  }
+
+  /* .tab-content {
+    padding: 1rem;
+  } */
 }

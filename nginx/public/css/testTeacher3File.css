@@ -236,4 +236,8 @@ h3, h5 {
   .input-group .form-control, .input-group .input-group-text {
     font-size: 0.9rem;
   }
+
+  .status-pill{
+    font-size: 10px;
+  }
 }

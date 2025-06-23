@@ -1,36 +1,29 @@
 <link rel="stylesheet" href="/public/css/classDetail.css">
-<style>
-    body {
-      background-color: #f2f4f8;
-    }
-    .sidebar {
-      height: 100vh;
-      background-color: #f8f9fa;
-    }
-    .tab-button {
-      width: 100%;
-      text-align: left;
-    }
-    .tab-button.active {
-      background-color: #00547a;
-      color: white;
-    }
-    .tab-content {
-      padding: 2rem;
-    }
-  </style>
 
 <div class="container-fluid">
   <div class="row">
     <!-- Sidebar -->
     <div class="col-2 sidebar p-3">
-      <button class="btn tab-button active mb-2" id="btn-baitap">📅 Đề Thi</button>
-      <button class="btn tab-button" id="btn-essay">📋 Đề Thi Tự Luận</button>
-      <button class="btn tab-button" id="btn-video">🎥 Xem Video</button>
-      <button class="btn tab-button" id="btn-folder">📁 Tài Liệu</button>
-      <button class="btn tab-button" id="btn-bangtin">📰 Bảng Tin</button>
-      <button class="btn tab-button" id="btn-class">🧑‍🏫 Giáo Viên</button>
+      <button class="btn tab-button active mb-2" id="btn-baitap">
+        <i class="fas fa-calendar-alt me-2"></i>Đề Thi
+      </button>
+      <button class="btn tab-button mb-2" id="btn-essay">
+        <i class="fas fa-file-alt me-2"></i>Đề Thi Tự Luận
+      </button>
+      <button class="btn tab-button mb-2" id="btn-video">
+        <i class="fas fa-video me-2"></i>Xem Video
+      </button>
+      <button class="btn tab-button mb-2" id="btn-folder">
+        <i class="fas fa-folder-open me-2"></i>Tài Liệu
+      </button>
+      <button class="btn tab-button mb-2" id="btn-bangtin">
+        <i class="fas fa-newspaper me-2"></i>Bảng Tin
+      </button>
+      <button class="btn tab-button" id="btn-class">
+        <i class="fas fa-chalkboard-teacher me-2"></i>Giáo Viên
+      </button>
     </div>
+
 
     <!-- Content -->
     <div class="col-10">
@@ -197,14 +190,40 @@
         const { student_id, tests} = essayInfoStatus
 
         contentBaitap.innerHTML = tests
-        .map(test => `
-            <div class="card mt-3 p-3">
-                <strong><a href="/test-student/test-information/${test.test_id}?class_id=${CLASS_ID}">${test.test_title}</a></strong>
-                <p>Trạng Thái: ${test.test_status_submit?'Đã nộp ✅' : 'Chưa Nộp ❌'}</p>
-                <p>${test.test_status_submit ? 'Điểm Số  Thi Lần Đầu: ' + test.score + ' / ' + test.sum_score : ''}</p>
+          .map(test => `
+            <div class="card mt-3 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <a href="/test-student/test-information/${test.test_id}?class_id=${CLASS_ID}" class="text-decoration-none text-dark">
+                    <strong>${test.test_title}</strong>
+                  </a>
+                </h5>
+
+                <div class="mb-1">
+                  <strong>Trạng thái:</strong>
+                  <span class="${test.test_status_submit ? 'text-success' : 'text-danger'}">
+                    ${test.test_status_submit ? 'Đã nộp' : 'Chưa nộp'}
+                  </span>
+                </div>
+
+                <div class="mb-1">
+                  ${test.test_status_submit 
+                    ? `<strong>Điểm số thi lần đầu:</strong> ${test.score} / ${test.sum_score}` 
+                    : '<strong>Chưa có điểm</strong>'}
+                </div>
+
+                ${test.time_test 
+                  ? `<div class="mb-1"><strong>Thời gian làm bài:</strong> ${test.time_test} phút</div>` 
+                  : ''}
+
+                ${test.time_end 
+                  ? `<div class="text-muted"><small>Thời gian nộp: ${new Date(test.time_end).toLocaleString('vi-VN')}</small></div>` 
+                  : ''}
+              </div>
             </div>
-        `)
-        .join('');
+          `)
+          .join('');
+        
           
       } catch(error) {
         console.error('error fetch class info')
@@ -250,15 +269,34 @@
             }
 
             contentVideo.innerHTML = videoStatus
-            .map(video_Status => `
-                <div class="card mt-3 p-3">
-                    <strong><a href="/video-student/watch-video/${video_Status.video_requirement_id}?student_id=${student_id}">${video_Status.video_requirement_name}</a></strong>
-                    <p>Thời gian xem: ${video_Status.video_duration}</p>
-                    <p>Ghi chú: ${video_Status.note}</p>
-                    <p>Trạng Thái: ${ video_Status.completedStatus ? ' Đã hoàn thành ✅' : ' Chưa hoàn thành ❌' }</p>
+              .map(video_Status => `
+                <div class="card mt-3 shadow-sm">
+                  <div class="card-body">
+                    <h5 class="card-title">
+                      <a href="/video-student/watch-video/${video_Status.video_requirement_id}?student_id=${student_id}" class="text-decoration-none text-dark">
+                        <strong>${video_Status.video_requirement_name}</strong>
+                      </a>
+                    </h5>
+
+                    <div class="mb-1">
+                      <strong>Thời gian xem:</strong> ${video_Status.video_duration}
+                    </div>
+
+                    ${video_Status.note 
+                      ? `<div class="mb-1"><strong>Ghi chú:</strong> ${video_Status.note}</div>` 
+                      : ''}
+
+                    <div>
+                      <strong>Trạng thái:</strong>
+                      <span class="${video_Status.completedStatus ? 'text-success' : 'text-danger'}">
+                        ${video_Status.completedStatus ? 'Đã hoàn thành' : 'Chưa hoàn thành'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-            `)
-            .join('');
+              `)
+              .join('');
+
             
         } catch(error) {
             console.error('error fetch class info')
@@ -289,21 +327,42 @@
           };
         });
 
-        // Hiển thị
         contentEssay.innerHTML = essayStatus.map(status => `
-          <div class="card mt-3 p-3">
-            <a href="/essay-student/essay-information/${status.essay_id}?class_id=${CLASS_ID}"><strong>Đề thi: ${status.title}</strong></a>
-            <p>Môn: ${status.subject} - Khối: ${status.grade}</p>
-            <p>File đề: <a href="${status.url_file}" target="_blank">Xem PDF</a></p>
-            <p>Trạng thái: ${status.submit_status ? 'Đã nộp ✅' : 'Chưa nộp ❌'}</p>
-            <p>${status.score ? 'Điểm: ' + status.score +" điểm" : ''}</p>
-            <p>${status.comments ? "Đánh Giá: " + status.comments : ""}</p>
-            ${status.submit_status ? `
-              <p>File bài làm: <a href="${status.submission_file}" target="_blank">Xem bài nộp</a></p>
-              <p>Thời gian nộp: ${new Date(status.submitted_at).toLocaleString('vi-VN')}</p>
-            ` : ''}
+          <div class="card mt-3 shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">
+                <a href="/essay-student/essay-information/${status.essay_id}?class_id=${CLASS_ID}" class="text-decoration-none text-dark">
+                  <strong>Đề thi: ${status.title}</strong>
+                </a>
+              </h5>
+              <h6 class="card-subtitle mb-2 text-muted">Môn: ${status.subject} - Khối: ${status.grade}</h6>
+
+              <div class="mb-2">
+                <strong>File đề:</strong>
+                <a href="${status.url_file}" target="_blank" class="text-primary">Xem PDF</a>
+              </div>
+
+              <div class="mb-1">
+                <strong>Trạng thái:</strong>
+                <span class="${status.submit_status ? 'text-success' : 'text-danger'}">
+                  ${status.submit_status ? 'Đã nộp' : 'Chưa nộp'}
+                </span>
+              </div>
+
+              ${status.score ? `<div class="mb-1"><strong>Điểm:</strong> ${status.score} điểm</div>` : ''}
+              ${status.comments ? `<div class="mb-1"><strong>Đánh giá:</strong> ${status.comments}</div>` : ''}
+
+              ${status.submit_status ? `
+                <div class="mb-1">
+                  <strong>File bài làm:</strong>
+                  <a href="${status.submission_file}" target="_blank" class="text-primary">Xem bài nộp</a>
+                </div>
+                <div class="text-muted"><small>Thời gian nộp: ${new Date(status.submitted_at).toLocaleString('vi-VN')}</small></div>
+              ` : ''}
+            </div>
           </div>
         `).join('');
+
 
       } catch (err) {
         console.error(err);

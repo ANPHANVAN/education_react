@@ -51,31 +51,40 @@ class ClassTeacherController {
             const userId = req.user._id
             const testDocs = await Tests.find({ class: class_id })
 
-            const submitList = await Submissions.find({class_id:class_id, student_id:student_id})
+            const submitList = await Submissions.find({class_id:class_id, student_id:student_id},{student_answers:0})
             
             let studentTest = { 
                 student_id:student_id,
                 tests:[]
             }
-
             for (let i = 0; i < testDocs.length; i++) {
                 let found = false;
                 for (let j = 0; j < submitList.length; j++) {
                     if ( testDocs[i]._id.toString() === submitList[j].test_id.toString() ) {
-                        studentTest.tests.push({test_id:testDocs[i]._id, 
+                        studentTest.tests.push({
+                            test_id:testDocs[i]._id, 
                             test_title: testDocs[i].title,
+                            test_status_submit:true,
                             score: submitList[j].score,
                             sum_score: testDocs[j].sum_score,
-                            test_status_submit:true})
+                            time_end:submitList[j].time_end,
+                            time_test:submitList[j].time_test
+                        })
 
                         found = true
                         break
                     }
                 }
                 if ( !found ) {
-                    studentTest.tests.push({test_id:testDocs[i]._id, 
-                    test_title: testDocs[i].title,
-                    test_status_submit:false})
+                    studentTest.tests.push({
+                        test_id:testDocs[i]._id, 
+                        test_title: testDocs[i].title,
+                        test_status_submit:false,
+                        score: null,
+                        sum_score: null, 
+                        time_end: null,
+                        time_test: null
+                    })
                 }
             }
             res.json(studentTest)

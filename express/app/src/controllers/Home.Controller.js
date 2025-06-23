@@ -60,6 +60,15 @@ class HomeController {
             if (!userAndClassInfo) {
                 res.status(404).json({message: "server dont find any class in this users"})
             }
+            // Sort announcement trong từng class
+            if (Array.isArray(userAndClassInfo.class_id)) {
+            userAndClassInfo.class_id.forEach(classItem => {
+                if (Array.isArray(classItem.announcement)) {
+                classItem.announcement.sort((a, b) => new Date(b.date) - new Date(a.date));
+                }
+            });
+            }
+
             res.status(200).json(userAndClassInfo)
 
         } catch (err) {

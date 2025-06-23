@@ -1,6 +1,12 @@
 <link rel="stylesheet" href="/public/css/classroomDetail.css">
 
 <script src="/public/js/teacherDetail/deleteStudent.js"></script>
+<!-- button stogle sidebar -->
+<button id="sidebarToggle" class="btn btn-outline-secondary me-3 d-md-none">
+  <i class="fas fa-bars"></i>
+</button>
+
+<div id="mobileBreak"></div>
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     
@@ -37,9 +43,7 @@
         <tr>
           <th id="studentCount">Sĩ số: 0</th>
           <th>Họ và tên</th>
-          <th>Số báo danh</th>
-          <th>Bài tập đã làm</th>
-          <th>Đề thi đã làm</th>
+          <th>Số Báo Danh</th>
           <th>Hành động</th>
         </tr>
       </thead>
@@ -81,7 +85,6 @@
     function renderSidebar() {
       const sidebar = document.getElementById('sidebar')
       sidebar.innerHTML = `
-        <br><br>
         <ul class="nav flex-column">
           <li class="nav-item">
             <a class="nav-link active" href="/class-teacher/classroom-details/${CLASS_ID}/">Học Sinh</a>
@@ -137,15 +140,13 @@
         const registrationNumber = student.student_id.registration_number;
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td>${index + 1}</td>
-          <td>
-            ${studentData.fullname} <br><small class="text-muted">${studentData.email}</small><br>
-          </td>
-          <td>${String(registrationNumber).padStart(6, '0')}</td>
-          <td>0/0</td>
-          <td>0/0</td>
-          <td class="action-btns">
-            <button class="btn btn-outline-danger btn-sm delete-student" onclick="deleteStudent('${student.student_id._id}')">Xóa</button>
+            <td>${index + 1}</td>
+            <td>
+              ${studentData.fullname} <br><small class="text-muted">${studentData.email}</small><br>
+            </td>
+            <td>${String(registrationNumber).padStart(6, '0')}</td>
+            <td class="action-btns align-middle text-center">
+              <button class="btn btn-outline-danger btn-sm delete-student" onclick="deleteStudent('${student.student_id._id}')">Xóa</button>
             </td>
             `;
             // <button class="btn btn-outline-primary btn-sm change-student">Sửa</button>
@@ -182,3 +183,21 @@
 
   <!-- Add Student Modal -->
   <script src="/public/js/teacherDetail/addStudent.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", ()=>{
+      document.getElementById('sidebarToggle').addEventListener('click', () => {
+        const sidebar = document.getElementById('sidebar');
+
+        const isShowing = sidebar.classList.contains('show');
+        if (isShowing) {
+          sidebar.classList.remove('show');
+          sidebar.classList.add('hide');
+        } else {
+          sidebar.classList.add('show');
+          sidebar.classList.remove('hide');
+        }
+      });
+
+    })
+  </script>

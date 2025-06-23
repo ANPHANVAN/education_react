@@ -71,7 +71,8 @@ class TestStudentController {
             let score = 0
             for (let i = 0; i < answerTestInfo.length; i++) {
                 for (let j = 0; j < answersStudent.length; j++) {
-                    if ( answerTestInfo[i].number == answersStudent[j].number ) {
+                    if ( answerTestInfo[i].number == answersStudent[j].number &&  
+                        answerTestInfo[i].part == answersStudent[j].part  ) {
                         if ( answerTestInfo[i].answer == answersStudent[j].answer ) {
                             score += answerTestInfo[i].score
                             break

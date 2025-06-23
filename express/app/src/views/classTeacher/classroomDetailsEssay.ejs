@@ -1,5 +1,9 @@
 <link rel="stylesheet" href="/public/css/classroomDetail.css">
-
+<!-- button stogle sidebar -->
+<button id="sidebarToggle" class="btn btn-outline-secondary me-3 d-md-none">
+  <i class="fas fa-bars"></i>
+  </button>
+  <div id="mobileBreak"></div>
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
   
@@ -45,7 +49,6 @@
   function renderSidebar() {
     const sidebar = document.getElementById('sidebar')
     sidebar.innerHTML = `
-  <br><br>
   <ul class="nav flex-column">
     <li class="nav-item">
       <a class="nav-link" href="/class-teacher/classroom-details/${CLASS_ID}/">Học Sinh</a>
@@ -156,3 +159,22 @@
     });
   }
 </script>
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", ()=>{
+      document.getElementById('sidebarToggle').addEventListener('click', () => {
+        const sidebar = document.getElementById('sidebar');
+
+        const isShowing = sidebar.classList.contains('show');
+        if (isShowing) {
+          sidebar.classList.remove('show');
+          sidebar.classList.add('hide');
+        } else {
+          sidebar.classList.add('show');
+          sidebar.classList.remove('hide');
+        }
+      });
+
+    })
+  </script>
