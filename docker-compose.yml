@@ -30,6 +30,8 @@ services:
       - HASH_SALT=${HASH_SALT}
       - JWT_SECRET=${JWT_SECRET}
       - FINAL_HOST=${FINAL_HOST}
+      - GMAIL=${GMAIL}
+      - GMAIL_PASSWORD=${GMAIL_PASSWORD}
     expose:
       - "3000"
     volumes:
