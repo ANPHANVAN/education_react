@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="/public/css/homeStudent.css">
 <style>
     body { background:#f5f7fb; }
     .class-card { max-width: 430px; }
@@ -23,6 +24,7 @@
 
     <!-- List of class cards -->
     <div id="classList" class="d-flex flex-column gap-4"></div>
+    <div id="dont-have-class" class="d-none"><h3>Bạn Đang Không Tham Gia Lớp Nào, Liên Hệ Giáo Viên Để Thêm Bạn Vào Lớp</h3></div>
 </div>
 
 <script>
@@ -103,6 +105,10 @@
         if (!res.ok) throw new Error('Không thể tải danh sách lớp');
         const user = await res.json();
         const classes = user.class_id || [];
+        if (classes.length == 0) {
+            document.getElementById('dont-have-class').classList.remove('d-none')
+            return
+        }
         renderClasses(classes);
         } catch (err) {
         console.error(err);

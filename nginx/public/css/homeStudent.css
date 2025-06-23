@@ -1,0 +1,136 @@
+/* General Body Styling */
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f5f7fb;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header Styling */
+h4 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  color: #2c3e50;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  margin: 0;
+}
+
+/* Class Card Styling */
+.class-card {
+  max-width: 430px;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.class-card:hover {
+  transform: translateY(-5px);
+}
+
+.class-card a {
+  text-decoration: none;
+  color: #2c3e50;
+}
+
+.class-card a:hover {
+  color: #0754a7;
+}
+
+.class-avatar {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Accordion Styling */
+.accordion-button {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  color: #34495e;
+  background-color: #fff;
+  border: none;
+  transition: transform 0.2s ease;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #f1f1f1;
+}
+
+.accordion-button:not(.collapsed):after {
+  transform: rotate(-180deg);
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+  border-color: #ddd;
+}
+
+.accordion-body {
+  font-family: 'Montserrat', sans-serif;
+  color: #34495e;
+  background-color: #fff;
+  padding: 10px;
+}
+
+/* Form and Input Styling */
+.form-control {
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+.input-group-text {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+}
+
+/* Button Styling */
+.btn-primary {
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 20px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #0754a7 0%, #011763 100%);
+  border: none;
+  font-weight: 500;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #0754a7 0%, #021c79 100%);
+}
+
+/* Container Styling */
+.container {
+  padding: 20px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .class-card {
+    max-width: 100%;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .btn-primary {
+    padding: 8px 15px;
+  }
+
+  .form-control {
+    padding: 8px;
+  }
+}

@@ -1,40 +1,4 @@
-  <style>
-    body {
-      background-color: #f8f9fa;
-    }
-    .sidebar {
-      background: white;
-      border-right: 1px solid #ddd;
-      height: 100vh;
-      padding: 1rem;
-    }
-    .menu-item:hover {
-      background-color: #f1f1f1;
-      cursor: pointer;
-    }
-    .menu-item i {
-      margin-right: 8px;
-    }
-    .user-card {
-      background: #f1f1f1;
-      padding: 10px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .avatar {
-      width: 40px;
-      height: 40px;
-      background: #ccc;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      margin-right: 10px;
-    }
-  </style>
+<link rel="stylesheet" href="/public/css/testTeacher3File.css">
 
 <div class="container-fluid">
   <div class="row">
@@ -263,7 +227,8 @@
         }
         const sidebar = document.querySelector('.sidebar');
         sidebar.innerHTML = `
-            <h6 class="text-truncate">Tên Đề Thi: ${test.title}</h6>
+        <h6 class="text-truncate"><i class="bi bi-file-earmark-text"></i>${test.title}</h6>
+        <small class="text-muted">Người tạo: ${test.teacher_owner_id.fullname}</small><br>
             <small class="text-muted">
             Ngày tạo: ${new Date(test.createdAt).toLocaleString('vi-VN', {
                 day: '2-digit',
@@ -274,15 +239,14 @@
                 hour12: false
             })}
             </small><br>
-            <small class="text-muted">Người tạo: ${test.teacher_owner_id.fullname}</small><br>
-            <small class="text-muted">Khối: ${test.grade}</small><br>
             <small class="text-muted">Thời gian làm bài: ${test.test_time} phút</small><br>
             <small class="text-muted">Môn học: ${test.subject}</small><br>
+            <small class="text-muted">Khối: ${test.grade}</small><br>
 
             <hr>
             <h6>Menu</h6>
-            <div class="menu-item py-2"><a href="${test.url_file}" target="_blank">Xem đề thi</a></div>
-            <div onclick="deleteTest('${test._id}')" class="menu-item py-2 text-danger"><i class="bi bi-trash"></i> Xóa Đề thi</div>
+            <div class="menu-item py-2"><a href="${test.url_file}" target="_blank"><i class="bi bi-file-earmark-pdf"></i> Xem Đề Thi</a></div>
+            <div onclick="deleteTest('${test._id}')" class="menu-item py-2 text-danger"><i class="bi bi-trash"></i> Xóa Đề Thi</div>
 
             <hr>
             <div class="d-flex justify-content-between align-items-center">

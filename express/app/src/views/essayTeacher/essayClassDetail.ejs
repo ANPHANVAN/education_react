@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="/public/css/essayTeacher3File.css">
   <style>
     .status-pill {padding: .25rem .6rem; border-radius: 50px;}
   </style>
@@ -41,7 +42,7 @@
           <th>Họ&nbsp;tên&nbsp;/&nbsp;Email</th>
           <th>Trạng&nbsp;thái</th>
           <th>Thời&nbsp;gian&nbsp;nộp</th>
-          <th>Link bài nộp</th> <!-- NEW -->
+          <th>Bài Nộp</th> <!-- NEW -->
           <th>Điểm</th>
           <th>Phản hồi</th>      <!-- NEW -->
           <th>Gửi</th>           <!-- NEW -->
@@ -160,12 +161,12 @@
           </td>
           <td>${statusHtml}</td>
           <td>${time}</td>
-          <td><a href="${linkFile}" target="_blank">${linkFile ? 'Link Bài Nộp': ''}</a></td>
+          <td><a href="${linkFile}" target="_blank">${linkFile ? 'Link': ''}</a></td>
           <td>
-            <input id="${scoreInputId}" type="number" name="score" placeholder="${score}" required>
+            <input id="${scoreInputId}" type="number" name="score" placeholder="${score}" required style="width: 60px;">
           </td>
           <td>
-            <input id="${commentsInputId}" type="text" name="comments" placeholder="${comments}" required>
+            <input id="${commentsInputId}" type="text" name="comments" placeholder="${comments}" required style="width: 300px;">
           </td>
           <td>
             <button class="btn btn-primary" ${(!student.submit_status || student.submission.score) ? 'disabled' : ''}>Gửi</button>

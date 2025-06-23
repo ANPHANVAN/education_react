@@ -1,4 +1,6 @@
-  <style>
+  <link rel="stylesheet" href="/public/css/videoTeacherDetail.css">
+
+<style>
     body {
       background-color: #f8f9fa;
     }
@@ -43,9 +45,26 @@
     </div> 
 
     <!-- Content -->
-    <div class="col-md-9 p-4">
+    <!-- <div class="col-md-9 p-4">
       <h1 class="mb-4 text-center">Các lớp sử dụng video này</h1>
       <div id="classListVideo" class="row"></div>
+    </div> -->
+    <!-- Content -->
+    <div class="col-md-9 p-4" id="class-info">
+      <!-- ======================= DANH SÁCH LỚP SỬ DỤNG ĐỀ THI ======================= -->
+      <div class="col-md-9 p-4">
+        <h3 class="mb-3">Các lớp sử dụng đề thi này</h3>
+
+        <!-- Danh sách lớp -->
+        <div id="classList" class="list-group"></div>
+
+        <!-- Thông báo khi trống -->
+        <!-- <p id="classEmpty" class="text-muted text-center d-none">
+          Đề thi này chưa được giao cho lớp nào.
+        </p> -->
+      </div>
+
+
     </div>
   </div>
 </div>
@@ -251,7 +270,7 @@
         return;
       }
       sidebarList.innerHTML = `
-        <h6 class="text-truncate"><i class="bi bi-file-earmark-text"></i>Tên Video: ${videoInfo.video_requirement_name}</h6>
+        <h6 class="text-truncate"><i class="bi bi-file-earmark-text"></i>${videoInfo.video_requirement_name}</h6>
         <small class="text-muted">Ngày tạo: ${new Date(videoInfo.createdAt).toLocaleDateString(
           'vi-VN', {
             year: 'numeric', month: '2-digit', day: '2-digit'
@@ -265,13 +284,12 @@
         <hr>
         <h6>Menu</h6>
         <div class="menu-item py-2">
-          <a href="https://www.youtube.com/watch?v=${videoInfo.video_embed}" target="_blank" class="btn">
+          <a href="https://www.youtube.com/watch?v=${videoInfo.video_embed}" target="_blank">
             <i class="fa-brands fa-youtube"></i>
             Xem video
           </a>
         </div>
 
-        <div class="menu-item py-2"><i class="bi bi-bar-chart"></i> Thống kê</div>
         <div onclick="deleteVideo('${videoInfo._id}')" class="menu-item py-2 text-danger"><i class="bi bi-trash"></i> Xóa Video</div>
 
         <hr>
@@ -307,23 +325,25 @@
     
 // Hàm hiển thị danh sách lớp
     function renderClassList() {
-      const classListContainer = document.getElementById('classListVideo');
-      classListContainer.innerHTML = ''; // Xóa nội dung cũ
+      const classListContainer = document.getElementById('classList');
+      // classListContainer.innerHTML = ''; // Xóa nội dung cũ
 
-      videoClassList.class.forEach(classInfo => {
-        const classCard = document.createElement('div');
-        classCard.className = 'col-md-4 mb-3';
-        classCard.innerHTML = `
 
-          <a href="/video-teacher/class-video-detail?video-id=${videoId}&class_id=${classInfo._id}" class="list-group-item list-group-item-action">
+            // Render từng lớp
+      videoClassList.class.forEach(cls => {
+
+        classListContainer.insertAdjacentHTML('beforeend', `
+          <a href="/test-teacher/test-class-detail?test-id=${videoId}&class_id=${cls._id}" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">${classInfo.class_name}</h5>
-              <small class="text-muted">Sĩ số: ${classInfo.number_student}</small>
+              <h5 class="mb-1">${cls.class_name}</h5>
+              <small class="text-muted">Sĩ số: ${cls.number_student}</small>
             </div>
-            <p class="mb-1">Khối ${classInfo.grade} • Năm học ${classInfo.school_year}</p>
+            <p class="mb-1">Khối ${cls.grade} • Năm học ${cls.school_year}</p>
+            <small class="text-muted">
+              Tạo ngày ${new Date(cls.createdAt).toLocaleDateString('vi-VN')}
+            </small>
           </a>
-        `;
-        classListContainer.appendChild(classCard);
+        `);
       });
     }
 
