@@ -35,7 +35,7 @@ class HomeController {
     // [GET] /home-student
     async homeTeacher (req,res){
         try {
-            res.render('home/homeTeacher')
+            res.status(200).redirect('/class-teacher')
         } catch (err) {
             console.error('Error fetching data:', err);
             res.status(500).send('Internal Server Error');
