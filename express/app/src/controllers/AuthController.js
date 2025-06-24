@@ -70,13 +70,14 @@ class AuthController {
     async registerNew(req,res,next){
         try {
             let registerInformation = req.body
-            const { confirmPassword, ...userData } = registerInformation;
-            registerInformation.username = registerInformation.username.trim().toLowerCase()
-            let result = await Users.find({username: registerInformation.username})
+            let { confirmPassword, ...userData } = registerInformation;
+
+            userData.username = userData.username.trim().toLowerCase()
+            let result = await Users.find({username: userData.username})
             if (result.length > 0) {
                 res.render('sites/apology', {message: `Username already exists`});
             } else {
-                const hashPassword = await bcrypt.hash(registerInformation.password, HASH_SALT);
+                const hashPassword = await bcrypt.hash(userData.password, HASH_SALT);
                 let user = await Users.create(userData)
                 await UserSecurity.create({
                     _id: user._id,
@@ -129,6 +130,7 @@ class AuthController {
                 res.status(404).json({message: "Dont Exit this email"});
                 return;
             }
+            console.log('user:', user);
             const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6 số
             const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 phút
             await OtpReset.deleteMany({ email }); 
