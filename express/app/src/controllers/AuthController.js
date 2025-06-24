@@ -125,12 +125,11 @@ class AuthController {
     async forgotPassword(req,res){
         try {
             const { email } = req.body;
-            const user = await Users.find({email: email})
+            const user = await Users.findOne({email: email})
             if (!user){
                 res.status(404).json({message: "Dont Exit this email"});
                 return;
             }
-            console.log('user:', user);
             const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6 số
             const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 phút
             await OtpReset.deleteMany({ email }); 

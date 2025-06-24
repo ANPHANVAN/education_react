@@ -133,3 +133,22 @@
 
   document.addEventListener('DOMContentLoaded', init);
 </script>
+
+<!-- Check valid input file -->
+<script>
+  // Danh sách các định dạng hợp lệ
+  const allowedExtensions = ['.pdf', '.png', '.jpeg', '.jpg', '.docx', '.xlsx'];
+
+  document.querySelector('input[name="submitEssay"]').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const fileName = file.name.toLowerCase();
+    const isValid = allowedExtensions.some(ext => fileName.endsWith(ext));
+
+    if (!isValid) {
+      alert("Chỉ chấp nhận các định dạng: PDF, PNG, JPEG, JPG, DOCX, XLSX");
+      event.target.value = ""; // Reset input nếu không hợp lệ
+    }
+  });
+</script>
