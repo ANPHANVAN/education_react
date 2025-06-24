@@ -65,6 +65,8 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/public:/public:ro
       - ./express/app/src/uploads:/uploads:ro
+      - ./nginx/certbot/www:/var/www/certbot:ro
+      - ./nginx/certbot/conf:/etc/letsencrypt:ro
     depends_on:
       express:
         condition: service_healthy
@@ -83,6 +85,13 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+  certbot:
+    image: certbot/certbot
+    container_name: education-certbot
+    volumes:
+      - ./nginx/certbot/www:/var/www/certbot
+      - ./nginx/certbot/conf:/etc/letsencrypt
+    entrypoint: /bin/sh -c "sleep 10"  # tạo container rồi bạn sẽ run lệnh sau
 
 networks:
   app-network:
