@@ -37,7 +37,7 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <h5 class="card-title mb-0">Bài làm</h5>
-            <span id="countdown" class="badge bg-warning text-dark timer">00:00</span>
+            <!-- <span id="countdown" class="badge bg-warning text-dark timer">00:00</span> -->
           </div>
           <h3 class="card-title mb-3">Học sinh làm bài vào giấy, làm xong thì chụp hình lại upload lên đây</h3>
           <hr/>
@@ -66,27 +66,27 @@
   let TIME_LEFT = 0;
   let timerInterval;
 
-  function pad(n) {
-    return n.toString().padStart(2, '0');
-  }
+  // function pad(n) {
+  //   return n.toString().padStart(2, '0');
+  // }
 
-  function updateTimer() {
-    const min = Math.floor(TIME_LEFT / 60);
-    const sec = TIME_LEFT % 60;
-    document.getElementById('countdown').textContent = `${pad(min)}:${pad(sec)}`;
-  }
+  // function updateTimer() {
+  //   const min = Math.floor(TIME_LEFT / 60);
+  //   const sec = TIME_LEFT % 60;
+  //   document.getElementById('countdown').textContent = `${pad(min)}:${pad(sec)}`;
+  // }
 
-  function startTimer(minutes) {
-    TIME_LEFT = minutes * 60;
-    updateTimer();
-    timerInterval = setInterval(() => {
-      TIME_LEFT -= 1;
-      updateTimer();
-      if (TIME_LEFT <= 0) {
-        clearInterval(timerInterval);
-      }
-    }, 1000);
-  }
+  // function startTimer(minutes) {
+  //   TIME_LEFT = minutes * 60;
+  //   updateTimer();
+  //   timerInterval = setInterval(() => {
+  //     TIME_LEFT -= 1;
+  //     updateTimer();
+  //     if (TIME_LEFT <= 0) {
+  //       clearInterval(timerInterval);
+  //     }
+  //   }, 1000);
+  // }
 
   async function init() {
     try {
@@ -100,7 +100,7 @@
       document.getElementById('grade').value = ESSAY_DATA.grade;
       document.getElementById('essayId').value = essayId;
 
-      startTimer(ESSAY_DATA.test_time || 60);
+      // startTimer(ESSAY_DATA.test_time || 60);
 
       const form = document.getElementById('answerForm');
       form.action = `/essay-student/api/essay/${essayId}?class_id=${classIdParam}`;

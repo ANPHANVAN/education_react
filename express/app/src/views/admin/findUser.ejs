@@ -1,11 +1,24 @@
-<br><br><br>
-  <div class="container">
+<br>
+<br><br>
+<a href="/admin"><button class="btn btn-primary w-20 ">Về Trang Chủ Admin</button></a>
+  <!-- <div class="container">
     <h2 class="mb-4">Tìm kiếm người dùng</h2>
     <div class="mb-3">
       <input type="text" id="searchInput" class="form-control" placeholder="Nhập username hoặc email">
     </div>
     <ul class="list-group" id="userList"></ul>
-  </div>
+  </div> -->
+
+  <div class="card shadow-sm mx-auto" style="max-width: 500px;">
+      <div class="card-body">
+        <h4 class="card-title mb-4 text-center">Tìm Kiếm User bằng username</h4>
+        <div class="mb-3">
+          <label for="username" class="form-label">Username & Email</label>
+          <input type="text" id="searchInput" class="form-control" placeholder="Nhập username hoặc email">
+        </div>
+        <ul class="list-group" id="userList"></ul>
+      </div>
+    </div>
 
   <script>
     document.getElementById('searchInput').addEventListener('input', async function () {
