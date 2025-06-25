@@ -57,6 +57,12 @@ router.post('/api/create-class', classTeacherController.createClass);
 // [GET] /class-teacher/api/get-teacher-class
 router.get('/api/get-teacher-class', classTeacherController.getClassTeacher);
 
+// [DELETE] /class-teacher/api/delete-class
+router.delete('/api/delete-class', classTeacherController.deleteClassTeacher);
+
+// [PUT] /class-teacher/api/rename-class
+router.put('/api/rename-class', classTeacherController.renameClassTeacher);
+
 // [GET] /class-teacher
 router.get('/', classTeacherController.index);
 

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongooseDelete = require('mongoose-delete');
 
 const studentSchema = new mongoose.Schema({
   student_id: { type: mongoose.Schema.Types.ObjectId, 
@@ -31,5 +32,7 @@ const classesSchema = new mongoose.Schema({
     ref: 'Assignments' }],
   announcement: [announcementSchema],
 },{ timestamps: true });
+
+classesSchema.plugin(mongooseDelete, { overrideMethods: 'all', deletedAt: true });
 
 module.exports = mongoose.model('Classes', classesSchema);

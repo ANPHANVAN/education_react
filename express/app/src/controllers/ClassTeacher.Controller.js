@@ -48,6 +48,42 @@ class ClassTeacherController {
         }
     }
 
+    // [DELETE] /class-teacher/api/delete-class
+    async deleteClassTeacher(req, res) {
+        try {
+            const { classId } = req.body;
+            const teacherId = req.user._id;
+            const classToDelete = await Class.delete({ _id: classId, teacher_id: teacherId });
+            if (!classToDelete) {
+                return res.status(404).json({ message: 'Class not found or you do not have permission to delete this class'});
+            }
+            res.status(200).json({ message: 'Class deleted successfully', classToDelete });
+        } catch (err) {
+            console.error('Error fetching classes:', err);
+            res.status(500).send('Internal Server Error\n', err);
+        }        
+    }
+
+    // [PUT] /class-teacher/api/rename-class
+    async renameClassTeacher(req, res) {
+        try {
+            const { classId, newClassName } = req.body;
+            const teacherId = req.user._id;
+            const classToRename = await Class.findOneAndUpdate({ _id: classId, teacher_id: teacherId },
+                { class_name: newClassName },
+                { new: true }
+            );
+            if (!classToRename) {
+                return res.status(404).json({ message: 'Class not found or you do not have permission to rename this class'});
+            }
+            return res.status(200).json({ message: 'Class renamed successfully', classToRename });
+
+        } catch (err) {
+            console.error('Error fetching classes:', err);
+            res.status(500).send('Internal Server Error\n', err);
+        }          
+    }
+
     ///////////////////////////////////// Classroom Details /////////////////////////////////////
 
     // [GET] /class-teacher/classroom-details/:classId
