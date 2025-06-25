@@ -189,7 +189,8 @@ class ClassTeacherController {
     // [POST] /class-teacher/api/classroom-details/:classId/add-student  // add student from studentUserId
     async addStudentToClass(req, res) {
         try {
-            const { studentEmail } = req.body;
+            let { studentEmail } = req.body;
+            studentEmail = studentEmail.trim().toLowerCase();
             const classId = req.params.classId;
             const student_id = new mongoose.Types.ObjectId();
 
