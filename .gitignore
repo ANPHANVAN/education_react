@@ -22,3 +22,6 @@ plan files
 .database
 express/app/src/uploads/
 *.pem
+
+# certificates ssl
+nginx/certbot/
