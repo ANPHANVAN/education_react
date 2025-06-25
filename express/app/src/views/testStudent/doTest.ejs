@@ -1,271 +1,288 @@
-<link rel="stylesheet" href="/public/css/doTestStudent.css">
+<link rel="stylesheet" href="/public/css/doTestStudent.css" />
 
 <style>
-    body {
-      background: #f9fafb;
-    }
-    #pdfViewer {
-      width: 100%;
-      height: 100vh;
-      border: 1px solid #dee2e6;
-      border-radius: .5rem;
-    }
-    .sticky-sidebar {
-      position: sticky;
-      top: 1rem;
-    }
-    .timer {
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
-    .question-block {
-      padding: .75rem 0;
-      border-bottom: 1px dashed #e1e5e9;
-    }
-    .question-block:last-child { border-bottom: none; }
-  </style>
-  <div class="container-fluid p-3">
-    <div class="row g-3">
-      <!-- LEFT: PDF đề thi -->
-      <div class="col-lg-8">
-        <iframe id="pdfViewer" src="" title="Đề thi PDF"></iframe>
-      </div>
+  body {
+    background: #f9fafb;
+  }
+  #pdfViewer {
+    width: 100%;
+    height: 100vh;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+  }
+  .sticky-sidebar {
+    position: sticky;
+    top: 1rem;
+  }
+  .timer {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  .question-block {
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed #e1e5e9;
+  }
+  .question-block:last-child {
+    border-bottom: none;
+  }
+</style>
+<div class="container-fluid p-3">
+  <div class="row g-3">
+    <!-- LEFT: PDF đề thi -->
+    <div class="col-lg-8">
+      <iframe id="pdfViewer" src="" title="Đề thi PDF"></iframe>
+    </div>
 
-      <!-- RIGHT: Đồng hồ + form đáp án -->
-      <div class="col-lg-4">
-        <div class="card shadow-sm sticky-sidebar">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h5 class="card-title mb-0">Bài làm</h5>
-              <span id="countdown" class="badge bg-warning text-dark timer">00:00</span>
-            </div>
-            <hr/>
-            <form id="answerForm" class="overflow-auto" style="max-height: 70vh;"></form>
-            <button id="submitBtn" class="btn btn-success w-100 mt-3">
-              Nộp bài <i class="bi bi-check-lg"></i>
-            </button>
+    <!-- RIGHT: Đồng hồ + form đáp án -->
+    <div class="col-lg-4">
+      <div class="card shadow-sm sticky-sidebar">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="card-title mb-0">Bài làm</h5>
+            <span id="countdown" class="badge bg-warning text-dark timer">00:00</span>
           </div>
+          <hr />
+          <form id="answerForm" class="overflow-auto" style="max-height: 70vh"></form>
+          <button id="submitBtn" class="btn btn-success w-100 mt-3">
+            Nộp bài <i class="bi bi-check-lg"></i>
+          </button>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <script>
-    /* -------------------- Helper functions -------------------- */
-    const qs = new URLSearchParams(window.location.search);
-    const class_id   = qs.get('class_id');
-    const url = new URL(window.location.href);
-    const test_id = url.pathname.split('/')[3]
+<script>
+  /* -------------------- Helper functions -------------------- */
+  const qs = new URLSearchParams(window.location.search);
+  const class_id = qs.get('class_id');
+  const url = new URL(window.location.href);
+  const test_id = url.pathname.split('/')[3];
 
-    const testId     = (() => {
-      const parts = window.location.pathname.split('/');
-      return parts[parts.length - 1] || parts[parts.length - 2];
-    })();
+  const testId = (() => {
+    const parts = window.location.pathname.split('/');
+    return parts[parts.length - 1] || parts[parts.length - 2];
+  })();
 
-    const pad = (n) => n.toString().padStart(2, '0');
+  const pad = (n) => n.toString().padStart(2, '0');
 
-    let TEST_DATA   = null;
-    let TIME_LEFT   = 0;  // seconds
-    let timeBegin;
+  let TEST_DATA = null;
+  let TIME_LEFT = 0; // seconds
+  let timeBegin;
 
-    const savedStart = localStorage.getItem(`startTime_${testId}_${class_id}`);
-    if (savedStart) {
-      timeBegin = new Date(savedStart);
-    } else {
-      timeBegin = new Date();
-      localStorage.setItem(`startTime_${testId}_${class_id}`, timeBegin.toISOString());
-    }
+  const savedStart = localStorage.getItem(`startTime_${testId}_${class_id}`);
+  if (savedStart) {
+    timeBegin = new Date(savedStart);
+  } else {
+    timeBegin = new Date();
+    localStorage.setItem(`startTime_${testId}_${class_id}`, timeBegin.toISOString());
+  }
 
-    let timerInterval;
+  let timerInterval;
 
-    /* -------------------- Build question inputs -------------------- */
-    function buildQuestions(answers) {
-      const container = document.getElementById('answerForm');
+  /* -------------------- Build question inputs -------------------- */
+  function buildQuestions(answers) {
+    const container = document.getElementById('answerForm');
 
-      answers.forEach((ans, idx) => {
-        const block = document.createElement('div');
-        block.className = 'question-block';
+    answers.forEach((ans, idx) => {
+      const block = document.createElement('div');
+      block.className = 'question-block';
 
-        const qLabel = document.createElement('p');
-        qLabel.className = 'mb-1 fw-semibold';
-        qLabel.textContent = `Phần ${ans.part} - Câu ${ans.number}`;
-        block.appendChild(qLabel);
+      const qLabel = document.createElement('p');
+      qLabel.className = 'mb-1 fw-semibold';
+      qLabel.textContent = `Phần ${ans.part} - Câu ${ans.number}`;
+      block.appendChild(qLabel);
 
-        // Name attribute so các input cùng câu có chung name
-        const name = `q_${idx}`;
+      // Name attribute so các input cùng câu có chung name
+      const name = `q_${idx}`;
 
-        if (ans.type === 'abcd') {
-          ['A','B','C','D'].forEach(letter => {
-            const id = `${name}_${letter}`;
-            block.insertAdjacentHTML('beforeend', `<div class="form-check">
+      if (ans.type === 'abcd') {
+        ['A', 'B', 'C', 'D'].forEach((letter) => {
+          const id = `${name}_${letter}`;
+          block.insertAdjacentHTML(
+            'beforeend',
+            `<div class="form-check">
               <input class="form-check-input" type="radio" name="${name}" id="${id}" value="${letter}">
               <label class="form-check-label" for="${id}">${letter}</label>
-            </div>`);
-          });
-        } else if (ans.type === 'truefalse') {
-          ['true','false'].forEach(val => {
-            const id = `${name}_${val}`;
-            block.insertAdjacentHTML('beforeend', `<div class="form-check">
+            </div>`
+          );
+        });
+      } else if (ans.type === 'truefalse') {
+        ['true', 'false'].forEach((val) => {
+          const id = `${name}_${val}`;
+          block.insertAdjacentHTML(
+            'beforeend',
+            `<div class="form-check">
               <input class="form-check-input" type="radio" name="${name}" id="${id}" value="${val}">
               <label class="form-check-label text-capitalize" for="${id}">${val}</label>
-            </div>`);
-          });
-        } else if (ans.type === 'value') {
-          block.insertAdjacentHTML('beforeend', `
-            <input type="text" class="form-control" name="${name}" placeholder="Nhập đáp án">`);
-        }
+            </div>`
+          );
+        });
+      } else if (ans.type === 'value') {
+        block.insertAdjacentHTML(
+          'beforeend',
+          `
+            <input type="text" class="form-control" name="${name}" placeholder="Nhập đáp án">`
+        );
+      }
 
-        // Lưu meta để mapping khi gửi bài
-        block.dataset.meta = JSON.stringify({ part: ans.part, number: ans.number, type: ans.type, score: ans.score });
-
-        container.appendChild(block);
+      // Lưu meta để mapping khi gửi bài
+      block.dataset.meta = JSON.stringify({
+        part: ans.part,
+        number: ans.number,
+        type: ans.type,
+        score: ans.score,
       });
-    }
 
-    /* -------------------- Countdown timer -------------------- */
-    function startTimer(seconds) {
-      TIME_LEFT = seconds;
+      container.appendChild(block);
+    });
+  }
+
+  /* -------------------- Countdown timer -------------------- */
+  function startTimer(seconds) {
+    TIME_LEFT = seconds;
+    updateTimer();
+    timerInterval = setInterval(() => {
+      TIME_LEFT -= 1;
       updateTimer();
-      timerInterval = setInterval(() => {
-        TIME_LEFT -= 1;
-        updateTimer();
-        if (TIME_LEFT <= 0) {
-          clearInterval(timerInterval);
-          autoSubmit();
-        }
-      }, 1000);
-    }
-
-    function updateTimer() {
-      const min = Math.floor(TIME_LEFT / 60);
-      const sec = TIME_LEFT % 60;
-      document.getElementById('countdown').textContent = `${pad(min)}:${pad(sec)}`;
-    }
-
-    /* -------------------- Submit logic -------------------- */
-    function collectAnswers() {
-      const form = document.getElementById('answerForm');
-      const blocks = form.querySelectorAll('.question-block');
-      const result = [];
-
-      blocks.forEach((blk, idx) => {
-        const meta = JSON.parse(blk.dataset.meta);
-        const name = `q_${idx}`;
-        let value = '';
-
-        if (meta.type === 'value') {
-          value = form.elements[name].value.trim();
-        } else {
-          const checked = form.querySelector(`input[name="${name}"]:checked`);
-          value = checked ? checked.value : '';
-        }
-
-        result.push({
-          type:   meta.type,
-          part:   meta.part,
-          number: meta.number,
-          answer: value,
-        });
-      });
-      return result;
-    }
-
-    async function submitTest() {
-      const payload = {
-        subject:        TEST_DATA.subject,
-        grade:          TEST_DATA.grade,
-        student_answers: collectAnswers(),
-        time_begin:     timeBegin.toISOString(),
-        time_end:       new Date().toISOString(),
-        class_id:       class_id,
-        test_id: test_id
-      };
-      
-      try {
-        const res = await fetch(`/test-student/api/test/${testId}?class_id=${class_id}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) throw new Error('Nộp bài thất bại');
-        const testSubmitInfo = await res.json();
-        console.log("testSubmitInfo", testSubmitInfo)
-        alert('Nộp bài thành công!');
-
-        // Delete time statt and draftAnswers
-        localStorage.removeItem(`startTime_${testId}_${class_id}`);
-        localStorage.removeItem(`draftAnswers_${testId}_${class_id}`);
-        
-        window.location.replace(`/test-student/submit-info/${testSubmitInfo._id}?class_id=${class_id}`)
-      } catch (err) {
-        console.error(err);
-        alert(err.message);
+      if (TIME_LEFT <= 0) {
+        clearInterval(timerInterval);
+        autoSubmit();
       }
-    }
+    }, 1000);
+  }
 
-    function autoSubmit() {
-      alert('Hết thời gian! Bài của bạn sẽ được nộp tự động.');
-      submitTest();
-    }
+  function updateTimer() {
+    const min = Math.floor(TIME_LEFT / 60);
+    const sec = TIME_LEFT % 60;
+    document.getElementById('countdown').textContent = `${pad(min)}:${pad(sec)}`;
+  }
 
-    /* -------------------- Init -------------------- */
-    async function init() {
-      try {
-        const urlParams = new URLSearchParams(window.location.search)
-        const class_id = urlParams.get('class_id')
-        const res = await fetch(`/test-student/api/test-information/${testId}?class_id=${class_id}`);
-        if (!res.ok) throw new Error('Không thể lấy dữ liệu đề thi');
-        TEST_DATA = await res.json();
+  /* -------------------- Submit logic -------------------- */
+  function collectAnswers() {
+    const form = document.getElementById('answerForm');
+    const blocks = form.querySelectorAll('.question-block');
+    const result = [];
 
-        // Hiển thị PDF
-        document.getElementById('pdfViewer').src = TEST_DATA.url_file;
+    blocks.forEach((blk, idx) => {
+      const meta = JSON.parse(blk.dataset.meta);
+      const name = `q_${idx}`;
+      let value = '';
 
-        // Build form câu hỏi
-        buildQuestions(TEST_DATA.answers || []);
-
-        // 🔁 Restore answers sau khi build xong
-        const saved = localStorage.getItem(`draftAnswers_${testId}_${class_id}`);
-        if (saved) {
-          const draft = JSON.parse(saved);
-          draft.forEach((ans, idx) => {
-            const name = `q_${idx}`;
-            if (ans.type === 'value') {
-              document.querySelector(`input[name="${name}"]`).value = ans.answer;
-            } else {
-              const selector = `input[name="${name}"][value="${ans.answer}"]`;
-              const input = document.querySelector(selector);
-              if (input) input.checked = true;
-            }
-          });
-        }
-
-        // Khởi tạo timer
-        const totalTime = (TEST_DATA.test_time || 60) * 60; // tổng số giây
-        const elapsed = Math.floor((Date.now() - timeBegin.getTime()) / 1000); // thời gian đã trôi qua
-        TIME_LEFT = totalTime - elapsed;
-        if (TIME_LEFT <= 0) {
-          autoSubmit();
-        } else {
-          startTimer(TIME_LEFT);
-        }
-
-
-        // Bắt sự kiện nộp bài
-        document.getElementById('submitBtn').addEventListener('click', (e) => {
-          e.preventDefault();
-          if (confirm('Bạn chắc chắn muốn nộp bài?')) submitTest();
-        });
-      } catch (err) {
-        console.error(err);
-        document.body.innerHTML = `<div class="container py-5"><div class="alert alert-danger">${err.message}</div></div>`;
+      if (meta.type === 'value') {
+        value = form.elements[name].value.trim();
+      } else {
+        const checked = form.querySelector(`input[name="${name}"]:checked`);
+        value = checked ? checked.value : '';
       }
-    }
 
-    document.addEventListener('DOMContentLoaded', ()=>{init();
-      document.getElementById('answerForm').addEventListener('change', () => {
-        const answers = collectAnswers(); // ← lấy dữ liệu từ các ô
-        localStorage.setItem(`draftAnswers_${testId}_${class_id}`, JSON.stringify(answers));
+      result.push({
+        type: meta.type,
+        part: meta.part,
+        number: meta.number,
+        answer: value,
       });
     });
+    return result;
+  }
 
-  </script>
+  async function submitTest() {
+    const payload = {
+      subject: TEST_DATA.subject,
+      grade: TEST_DATA.grade,
+      student_answers: collectAnswers(),
+      time_begin: timeBegin.toISOString(),
+      time_end: new Date().toISOString(),
+      class_id: class_id,
+      test_id: test_id,
+    };
+
+    try {
+      const res = await fetch(`/test-student/api/test/${testId}?class_id=${class_id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('Nộp bài thất bại');
+      const testSubmitInfo = await res.json();
+      console.log('testSubmitInfo', testSubmitInfo);
+      alert('Nộp bài thành công!');
+
+      // Delete time statt and draftAnswers
+      localStorage.removeItem(`startTime_${testId}_${class_id}`);
+      localStorage.removeItem(`draftAnswers_${testId}_${class_id}`);
+
+      window.location.replace(
+        `/test-student/submit-info/${testSubmitInfo._id}?class_id=${class_id}`
+      );
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  }
+
+  function autoSubmit() {
+    alert('Hết thời gian! Bài của bạn sẽ được nộp tự động.');
+    submitTest();
+  }
+
+  /* -------------------- Init -------------------- */
+  async function init() {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const class_id = urlParams.get('class_id');
+      const res = await fetch(`/test-student/api/test-information/${testId}?class_id=${class_id}`);
+      if (!res.ok) throw new Error('Không thể lấy dữ liệu đề thi');
+      TEST_DATA = await res.json();
+
+      // Hiển thị PDF
+      document.getElementById('pdfViewer').src = TEST_DATA.url_file;
+
+      // Build form câu hỏi
+      buildQuestions(TEST_DATA.answers || []);
+
+      // 🔁 Restore answers sau khi build xong
+      const saved = localStorage.getItem(`draftAnswers_${testId}_${class_id}`);
+      if (saved) {
+        const draft = JSON.parse(saved);
+        draft.forEach((ans, idx) => {
+          const name = `q_${idx}`;
+          if (ans.type === 'value') {
+            document.querySelector(`input[name="${name}"]`).value = ans.answer;
+          } else {
+            const selector = `input[name="${name}"][value="${ans.answer}"]`;
+            const input = document.querySelector(selector);
+            if (input) input.checked = true;
+          }
+        });
+      }
+
+      // Khởi tạo timer
+      const totalTime = (TEST_DATA.test_time || 60) * 60; // tổng số giây
+      const elapsed = Math.floor((Date.now() - timeBegin.getTime()) / 1000); // thời gian đã trôi qua
+      TIME_LEFT = totalTime - elapsed;
+      if (TIME_LEFT <= 0) {
+        autoSubmit();
+      } else {
+        startTimer(TIME_LEFT);
+      }
+
+      // Bắt sự kiện nộp bài
+      document.getElementById('submitBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (confirm('Bạn chắc chắn muốn nộp bài?')) submitTest();
+      });
+    } catch (err) {
+      console.error(err);
+      document.body.innerHTML = `<div class="container py-5"><div class="alert alert-danger">${err.message}</div></div>`;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    init();
+    document.getElementById('answerForm').addEventListener('change', () => {
+      const answers = collectAnswers(); // ← lấy dữ liệu từ các ô
+      localStorage.setItem(`draftAnswers_${testId}_${class_id}`, JSON.stringify(answers));
+    });
+  });
+</script>

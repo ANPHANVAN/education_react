@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const classStudentController = require('../controllers/ClassStudent.Controller.js');
-const setStudentInfo = require('../middleware/setStudentInfo.js')
+const setStudentInfo = require('../middleware/setStudentInfo.js');
 
 /////////// API ///////////////
 // [GET] /class-student/api/get-class-test?class_id=class_id

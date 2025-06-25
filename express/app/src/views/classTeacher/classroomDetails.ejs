@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/public/css/classroomDetail.css">
+<link rel="stylesheet" href="/public/css/classroomDetail.css" />
 
 <script src="/public/js/teacherDetail/deleteStudent.js"></script>
 <!-- button stogle sidebar -->
@@ -7,65 +7,82 @@
 </button>
 
 <div id="mobileBreak"></div>
-  <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
-    
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar"></div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 id="classTitle"></h2>
   </div>
 
-
-  <!-- Main Content -->
-  <div class="main-content">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2 id="classTitle"></h2>
+  <div class="d-flex justify-content-between mb-5">
+    <!-- Ô tìm kiếm nhỏ gọn -->
+    <div class="input-group flex-grow-0 w-auto me-3">
+      <input
+        type="text"
+        class="form-control"
+        id="searchInput"
+        placeholder="Tìm học sinh theo tên, email"
+      />
+      <button class="btn btn-outline-secondary" type="button" onclick="searchStudents()">
+        <i class="bi bi-search"></i>
+      </button>
     </div>
 
-    <div class="d-flex justify-content-between mb-5">
-      <!-- Ô tìm kiếm nhỏ gọn -->
-      <div class="input-group flex-grow-0 w-auto me-3">
-        <input type="text" class="form-control" id="searchInput" placeholder="Tìm học sinh theo tên, email">
-        <button class="btn btn-outline-secondary" type="button" onclick="searchStudents()">
-          <i class="bi bi-search"></i>
-        </button>
-      </div>
-
-      <!-- Các nút bên phải -->
-      <div class="d-flex">
-        <!-- Button để mở modal -->
+    <!-- Các nút bên phải -->
+    <div class="d-flex">
+      <!-- Button để mở modal -->
       <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
         + Thêm học sinh
       </button>
-      </div>
     </div>
-
-    <!-- Student Table -->
-    <table class="table student-table">
-      <thead>
-        <tr>
-          <th id="studentCount">Sĩ số: 0</th>
-          <th>Họ và tên</th>
-          <th>Số Báo Danh</th>
-          <th>Hành động</th>
-        </tr>
-      </thead>
-      <tbody id="studentTableBody"></tbody>
-    </table>
   </div>
 
-
+  <!-- Student Table -->
+  <table class="table student-table">
+    <thead>
+      <tr>
+        <th id="studentCount">Sĩ số: 0</th>
+        <th>Họ và tên</th>
+        <th>Số Báo Danh</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody id="studentTableBody"></tbody>
+  </table>
+</div>
 
 <!-- Modal add Student -->
-<div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="addStudentModal"
+  tabindex="-1"
+  aria-labelledby="addStudentModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog">
     <form id="addStudentForm">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="addStudentModalLabel">Thêm học sinh</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Đóng"
+          ></button>
         </div>
         <div class="modal-body">
           <div class="mb-3">
             <label for="studentEmail" class="form-label">Email học sinh</label>
-            <input type="email" class="form-control" id="studentEmail" name="studentEmail" required />
+            <input
+              type="email"
+              class="form-control"
+              id="studentEmail"
+              name="studentEmail"
+              required
+            />
           </div>
         </div>
         <div class="modal-footer">
@@ -76,15 +93,15 @@
   </div>
 </div>
 
-  <!-- this is list student script -->
-  <script>
-    let allStudents = [];
-    const url = new URL(window.location.href)
-    const CLASS_ID = url.pathname.split('/')[3]
+<!-- this is list student script -->
+<script>
+  let allStudents = [];
+  const url = new URL(window.location.href);
+  const CLASS_ID = url.pathname.split('/')[3];
 
-    function renderSidebar() {
-      const sidebar = document.getElementById('sidebar')
-      sidebar.innerHTML = `
+  function renderSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.innerHTML = `
         <ul class="nav flex-column">
           <li class="nav-item">
             <a class="nav-link active" href="/class-teacher/classroom-details/${CLASS_ID}/">Học Sinh</a>
@@ -105,99 +122,100 @@
             <a class="nav-link" href="/folder/folder-teacher/${CLASS_ID}">Tài Liệu</a>
           </li>          
         </ul>
-      `
-      return
+      `;
+    return;
+  }
+  // Fetch class details from API
+  async function fetchClassDetails() {
+    try {
+      const response = await fetch(`/class-teacher/api/classroom-details/${CLASS_ID}`);
+      if (!response.ok) throw new Error('Failed to fetch class details');
+      const data = await response.json();
+
+      // Update class title
+      document.getElementById(
+        'classTitle'
+      ).textContent = `${data.class_name} (${data.school_year})`;
+
+      // Update student count
+      allStudents = data.students || [];
+      document.getElementById('studentCount').textContent = `Sĩ số: ${allStudents.length}`;
+
+      // Render students
+      renderStudents(allStudents);
+    } catch (error) {
+      console.error('Error fetching class details:', error);
+      alert('Không thể tải chi tiết lớp học. Vui lòng thử lại sau.');
     }
-    // Fetch class details from API
-    async function fetchClassDetails() {
-      try {
-        const response = await fetch(`/class-teacher/api/classroom-details/${CLASS_ID}`);
-        if (!response.ok) throw new Error('Failed to fetch class details');
-        const data = await response.json();
+  }
 
-        // Update class title
-        document.getElementById('classTitle').textContent = `${data.class_name} (${data.school_year})`;
+  // Render students to the table
+  function renderStudents(students) {
+    const tbody = document.getElementById('studentTableBody');
+    tbody.innerHTML = '';
 
-        // Update student count
-        allStudents = data.students || [];
-        document.getElementById('studentCount').textContent = `Sĩ số: ${allStudents.length}`;
-
-        // Render students
-        renderStudents(allStudents);
-      } catch (error) {
-        console.error('Error fetching class details:', error);
-        alert('Không thể tải chi tiết lớp học. Vui lòng thử lại sau.');
-      }
-    }
-
-    // Render students to the table
-    function renderStudents(students) {
-      const tbody = document.getElementById('studentTableBody');
-      tbody.innerHTML = '';
-
-      students.forEach((student, index) => {
-        const studentData = student.student_user_id;
-        const registrationNumber = student.student_id.registration_number;
-        const row = document.createElement('tr');
-        row.innerHTML = `
+    students.forEach((student, index) => {
+      const studentData = student.student_user_id;
+      const registrationNumber = student.student_id.registration_number;
+      const row = document.createElement('tr');
+      row.innerHTML = `
             <td>${index + 1}</td>
             <td>
               ${studentData.fullname} <br><small class="text-muted">${studentData.email}</small><br>
             </td>
             <td>${String(registrationNumber).padStart(6, '0')}</td>
             <td class="action-btns align-middle text-center">
-              <button class="btn btn-outline-danger btn-sm delete-student" onclick="deleteStudent('${student.student_id._id}')">Xóa</button>
+              <button class="btn btn-outline-danger btn-sm delete-student" onclick="deleteStudent('${
+                student.student_id._id
+              }')">Xóa</button>
             </td>
             `;
-            // <button class="btn btn-outline-primary btn-sm change-student">Sửa</button>
-        tbody.appendChild(row);
-      });
-
-    }
-
-    // Search students by name or email
-    function searchStudents() {
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-      const filteredStudents = allStudents.filter(student => {
-        const studentData = student.student_user_id;
-        console.log("go in searchStudents");
-        return (
-          studentData.fullname.toLowerCase().includes(searchTerm) ||
-          studentData.email.toLowerCase().includes(searchTerm)
-        );
-      });
-      renderStudents(filteredStudents);
-    }  
-
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchClassDetails();
-      renderSidebar()
-
-      // Add search on Enter key
-      document.getElementById('searchInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') searchStudents();
-      });
-
+      // <button class="btn btn-outline-primary btn-sm change-student">Sửa</button>
+      tbody.appendChild(row);
     });
-  </script>
+  }
 
-  <!-- Add Student Modal -->
-  <script src="/public/js/teacherDetail/addStudent.js"></script>
+  // Search students by name or email
+  function searchStudents() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const filteredStudents = allStudents.filter((student) => {
+      const studentData = student.student_user_id;
+      console.log('go in searchStudents');
+      return (
+        studentData.fullname.toLowerCase().includes(searchTerm) ||
+        studentData.email.toLowerCase().includes(searchTerm)
+      );
+    });
+    renderStudents(filteredStudents);
+  }
 
-  <script>
-    document.addEventListener("DOMContentLoaded", ()=>{
-      document.getElementById('sidebarToggle').addEventListener('click', () => {
-        const sidebar = document.getElementById('sidebar');
+  document.addEventListener('DOMContentLoaded', () => {
+    fetchClassDetails();
+    renderSidebar();
 
-        const isShowing = sidebar.classList.contains('show');
-        if (isShowing) {
-          sidebar.classList.remove('show');
-          sidebar.classList.add('hide');
-        } else {
-          sidebar.classList.add('show');
-          sidebar.classList.remove('hide');
-        }
-      });
+    // Add search on Enter key
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') searchStudents();
+    });
+  });
+</script>
 
-    })
-  </script>
+<!-- Add Student Modal -->
+<script src="/public/js/teacherDetail/addStudent.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+      const sidebar = document.getElementById('sidebar');
+
+      const isShowing = sidebar.classList.contains('show');
+      if (isShowing) {
+        sidebar.classList.remove('show');
+        sidebar.classList.add('hide');
+      } else {
+        sidebar.classList.add('show');
+        sidebar.classList.remove('hide');
+      }
+    });
+  });
+</script>

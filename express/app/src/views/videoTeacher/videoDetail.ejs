@@ -1,39 +1,38 @@
-<link rel="stylesheet" href="/public/css/videoTeacherDetail.css">
+<link rel="stylesheet" href="/public/css/videoTeacherDetail.css" />
 
 <style>
-    .menu-item:hover {
-      background-color: #f1f1f1;
-      cursor: pointer;
-    }
-    .menu-item i {
-      margin-right: 8px;
-    }
-    .user-card {
-      background: #f1f1f1;
-      padding: 10px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .avatar {
-      width: 40px;
-      height: 40px;
-      background: #ccc;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      margin-right: 10px;
-    }
-  </style>
+  .menu-item:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+  }
+  .menu-item i {
+    margin-right: 8px;
+  }
+  .user-card {
+    background: #f1f1f1;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .avatar {
+    width: 40px;
+    height: 40px;
+    background: #ccc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+</style>
 
 <div class="container-fluid">
   <div class="row">
     <!-- Sidebar is hear -->
-    <div class="col-md-3 sidebar" id="sidebar-list">
-    </div> 
+    <div class="col-md-3 sidebar" id="sidebar-list"></div>
 
     <!-- Content -->
     <!-- <div class="col-md-9 p-4">
@@ -54,15 +53,18 @@
           Đề thi này chưa được giao cho lớp nào.
         </p> -->
       </div>
-
-
     </div>
   </div>
 </div>
 
-
 <!-- ✅ Modal -->
-<div class="modal fade" id="assignClassModal" tabindex="-1" aria-labelledby="assignClassLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="assignClassModal"
+  tabindex="-1"
+  aria-labelledby="assignClassLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
@@ -73,20 +75,26 @@
       <div class="modal-body">
         <!-- Thanh công cụ -->
         <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
-          <button id="toggleSelectAll" class="btn btn-outline-secondary btn-sm">Chọn tất cả lớp</button>
+          <button id="toggleSelectAll" class="btn btn-outline-secondary btn-sm">
+            Chọn tất cả lớp
+          </button>
 
           <div class="input-group w-auto">
-            <input id="searchClass" class="form-control form-control-sm" placeholder="Tìm kiếm lớp">
+            <input
+              id="searchClass"
+              class="form-control form-control-sm"
+              placeholder="Tìm kiếm lớp"
+            />
             <span class="input-group-text"><i class="bi bi-search"></i></span>
           </div>
         </div>
 
         <!-- Danh sách lớp -->
-        <div class="table-responsive border rounded" style="max-height:55vh;overflow:auto;">
+        <div class="table-responsive border rounded" style="max-height: 55vh; overflow: auto">
           <table class="table table-hover mb-0">
             <thead class="table-light">
               <tr>
-                <th style="width:40px"></th>
+                <th style="width: 40px"></th>
                 <th>Tên lớp</th>
                 <th>Khối</th>
                 <th>Sĩ số</th>
@@ -106,18 +114,17 @@
 </div>
 
 <script>
-  const videoId = window.location.href.split('video-detail/')[1]
+  const videoId = window.location.href.split('video-detail/')[1];
 
-  let videoInformation = {}
-  fetchVideodata()
-    .then(data => {
-      if (data) {
-        videoInformation = data
-        console.log('Video videoInformation:', videoInformation);
-      } else {
-        console.error('Không tìm thấy thông tin video');
-      }
-    })
+  let videoInformation = {};
+  fetchVideodata().then((data) => {
+    if (data) {
+      videoInformation = data;
+      console.log('Video videoInformation:', videoInformation);
+    } else {
+      console.error('Không tìm thấy thông tin video');
+    }
+  });
 
   async function fetchVideodata() {
     if (!videoId) {
@@ -133,26 +140,27 @@
       alert('Không thể tải thông tin video. Vui lòng thử lại sau.');
     }
   }
-  
+
   const classListTbody = document.getElementById('classListModel');
-  const searchInput    = document.getElementById('searchClass');
-  const selectAllBtn   = document.getElementById('toggleSelectAll');
-  const saveBtn        = document.getElementById('saveAssign');
-  let classesData      = [];  // lưu toàn bộ lớp
-  let allSelected      = false;
+  const searchInput = document.getElementById('searchClass');
+  const selectAllBtn = document.getElementById('toggleSelectAll');
+  const saveBtn = document.getElementById('saveAssign');
+  let classesData = []; // lưu toàn bộ lớp
+  let allSelected = false;
 
   /** ⛳ Fetch danh sách lớp khi mở modal */
   document.getElementById('assignClassModal').addEventListener('show.bs.modal', fetchClasses);
 
-  async function fetchClasses () {
+  async function fetchClasses() {
     classListTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Đang tải...</td></tr>';
     try {
-      const res  = await fetch('/video-teacher/api/get-classes');
+      const res = await fetch('/video-teacher/api/get-classes');
       const data = await res.json();
       classesData = data;
-      renderClassRows(classesData);    
+      renderClassRows(classesData);
     } catch (err) {
-      classListTbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger py-4">Lỗi tải lớp!</td></tr>';
+      classListTbody.innerHTML =
+        '<tr><td colspan="4" class="text-center text-danger py-4">Lỗi tải lớp!</td></tr>';
       console.error(err);
     }
   }
@@ -160,12 +168,14 @@
   /** 🎨 Render bảng lớp */
   function renderClassRows(list) {
     if (!list.length) {
-      classListTbody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Không có lớp</td></tr>';
+      classListTbody.innerHTML =
+        '<tr><td colspan="4" class="text-center py-4">Không có lớp</td></tr>';
       return;
     }
-    classListTbody.innerHTML = list.map(classItem => {
-      const checked = videoInformation.class.includes(classItem._id) ? 'checked' : '';
-      return `
+    classListTbody.innerHTML = list
+      .map((classItem) => {
+        const checked = videoInformation.class.includes(classItem._id) ? 'checked' : '';
+        return `
         <tr>
           <td>
             <input type="checkbox" class="form-check-input class-check"
@@ -175,29 +185,29 @@
           <td>${classItem.grade}</td>
           <td>${classItem.number_student}</td>
         </tr>`;
-    }).join('');
+      })
+      .join('');
   }
 
   /** 🔍 Tìm kiếm lớp */
   searchInput.addEventListener('input', () => {
     const keyword = searchInput.value.trim().toLowerCase();
-    const filtered = classesData.filter(c =>
-      c.class_name.toLowerCase().includes(keyword)
-    );
+    const filtered = classesData.filter((c) => c.class_name.toLowerCase().includes(keyword));
     renderClassRows(filtered);
   });
 
   /** 🗹 Chọn / bỏ chọn tất cả */
   selectAllBtn.addEventListener('click', () => {
     allSelected = !allSelected;
-    document.querySelectorAll('.class-check').forEach(cb => cb.checked = allSelected);
+    document.querySelectorAll('.class-check').forEach((cb) => (cb.checked = allSelected));
     selectAllBtn.textContent = allSelected ? 'Bỏ chọn tất cả' : 'Chọn tất cả lớp';
   });
 
   /** 💾 Submit */
   saveBtn.addEventListener('click', async () => {
-    const selectedIds = [...document.querySelectorAll('.class-check:checked')]
-      .map(cb => cb.dataset.id);
+    const selectedIds = [...document.querySelectorAll('.class-check:checked')].map(
+      (cb) => cb.dataset.id
+    );
 
     if (!selectedIds.length) {
       alert('Vui lòng chọn ít nhất 1 lớp!');
@@ -207,20 +217,17 @@
     saveBtn.disabled = true;
     try {
       const res = await fetch(`/video-teacher/api/put-class-in-video`, {
-        method : 'PUT',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body   : JSON.stringify({ class_id: selectedIds, videoId:videoId })
+        body: JSON.stringify({ class_id: selectedIds, videoId: videoId }),
       });
       if (!res.ok) throw new Error('Lưu thất bại');
-      bootstrap.Modal.getInstance(
-        document.getElementById('assignClassModal')
-      ).hide();
-      
+      bootstrap.Modal.getInstance(document.getElementById('assignClassModal')).hide();
+
       setTimeout(() => {
         alert('Giao bài thành công!');
-        window.location.reload()
+        window.location.reload();
       }, 1000);
-
     } catch (err) {
       alert('Có lỗi khi lưu!');
       console.error(err);
@@ -235,7 +242,7 @@
     if (confirm('Bạn có chắc chắn muốn xóa video này?')) {
       try {
         const response = await fetch(`/video-teacher/api/delete-video/${videoId}`, {
-          method: 'DELETE'
+          method: 'DELETE',
         });
         if (!response.ok) throw new Error('Network response was not ok');
         alert('Video đã được xóa thành công!');
@@ -250,7 +257,7 @@
   async function fetchVideo() {
     try {
       // i want take video info from href window.location.href
-      const videoId = window.location.href.split('video-detail/')[1]
+      const videoId = window.location.href.split('video-detail/')[1];
       const response = await fetch(`/video-teacher/api/video-detail/${videoId}`);
       if (!response.ok) throw new Error('Network response was not ok');
       const videoInfo = await response.json();
@@ -261,10 +268,15 @@
         return;
       }
       sidebarList.innerHTML = `
-        <h6 class="text-truncate"><i class="bi bi-file-earmark-text"></i>${videoInfo.video_requirement_name}</h6>
+        <h6 class="text-truncate"><i class="bi bi-file-earmark-text"></i>${
+          videoInfo.video_requirement_name
+        }</h6>
         <small class="text-muted">Ngày tạo: ${new Date(videoInfo.createdAt).toLocaleDateString(
-          'vi-VN', {
-            year: 'numeric', month: '2-digit', day: '2-digit'
+          'vi-VN',
+          {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
           }
         )}</small><br>
         <small class="text-muted">Người tạo: ${videoInfo.teacher_owner_id.fullname}</small><br>
@@ -281,7 +293,9 @@
           </a>
         </div>
 
-        <div onclick="deleteVideo('${videoInfo._id}')" class="menu-item py-2 text-danger"><i class="bi bi-trash"></i> Xóa Video</div>
+        <div onclick="deleteVideo('${
+          videoInfo._id
+        }')" class="menu-item py-2 text-danger"><i class="bi bi-trash"></i> Xóa Video</div>
 
         <hr>
         <div class="d-flex justify-content-between align-items-center">
@@ -289,42 +303,43 @@
             Giao Cho Lớp
           </button>
         </div>
-      `
-
+      `;
     } catch (error) {
       console.error('Error fetching video:', error);
     }
   }
-  document.addEventListener('DOMContentLoaded', ()=>{
+  document.addEventListener('DOMContentLoaded', () => {
     fetchVideo();
-  })
+  });
 </script>
 
 <script>
   // Gọi API thực tế (thay thế đoạn này bằng fetch nếu cần)
   let videoClassList;
-    async function fetchClassList() {
-      try {
-        const response = await fetch(`/video-teacher/api/get-class-video?video-id=${videoId}`);
-        const data = await response.json();
-        videoClassList = data.videoInfo;
-        renderClassList();
-      } catch (error) {
-        console.error('Error fetching class list:', error);
-      }
+  async function fetchClassList() {
+    try {
+      const response = await fetch(`/video-teacher/api/get-class-video?video-id=${videoId}`);
+      const data = await response.json();
+      videoClassList = data.videoInfo;
+      renderClassList();
+    } catch (error) {
+      console.error('Error fetching class list:', error);
     }
-    
-// Hàm hiển thị danh sách lớp
-    function renderClassList() {
-      const classListContainer = document.getElementById('classList');
-      // classListContainer.innerHTML = ''; // Xóa nội dung cũ
+  }
 
+  // Hàm hiển thị danh sách lớp
+  function renderClassList() {
+    const classListContainer = document.getElementById('classList');
+    // classListContainer.innerHTML = ''; // Xóa nội dung cũ
 
-            // Render từng lớp
-      videoClassList.class.forEach(cls => {
-
-        classListContainer.insertAdjacentHTML('beforeend', `
-          <a href="/video-teacher/class-video-detail?video-id=${videoId}&class_id=${cls._id}" class="list-group-item list-group-item-action">
+    // Render từng lớp
+    videoClassList.class.forEach((cls) => {
+      classListContainer.insertAdjacentHTML(
+        'beforeend',
+        `
+          <a href="/video-teacher/class-video-detail?video-id=${videoId}&class_id=${
+          cls._id
+        }" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mb-1">${cls.class_name}</h5>
               <small class="text-muted">Sĩ số: ${cls.number_student}</small>
@@ -334,10 +349,11 @@
               Tạo ngày ${new Date(cls.createdAt).toLocaleDateString('vi-VN')}
             </small>
           </a>
-        `);
-      });
-    }
+        `
+      );
+    });
+  }
 
-    // Gọi hàm hiển thị khi trang tải
-    document.addEventListener('DOMContentLoaded', fetchClassList());
-  </script>
+  // Gọi hàm hiển thị khi trang tải
+  document.addEventListener('DOMContentLoaded', fetchClassList());
+</script>

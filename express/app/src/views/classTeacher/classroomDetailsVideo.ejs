@@ -1,12 +1,11 @@
-<link rel="stylesheet" href="/public/css/classroomDetail.css">
+<link rel="stylesheet" href="/public/css/classroomDetail.css" />
 <!-- button stogle sidebar -->
 <button id="sidebarToggle" class="btn btn-outline-secondary me-3 d-md-none">
   <i class="fas fa-bars"></i>
 </button>
 <div id="mobileBreak"></div>
 <!-- Sidebar -->
-<div class="sidebar" id="sidebar">  
-</div>
+<div class="sidebar" id="sidebar"></div>
 
 <!-- Main Content -->
 <div class="main-content">
@@ -32,16 +31,15 @@
       Chưa có video nào được giao cho lớp này.
     </p>
   </div>
-
 </div>
 
 <!-- this is list sidebar script render -->
 <script>
-  const url = new URL(window.location.href)
-  const CLASS_ID = url.pathname.split('/')[3]
+  const url = new URL(window.location.href);
+  const CLASS_ID = url.pathname.split('/')[3];
 
   function renderSidebar() {
-    const sidebar = document.getElementById('sidebar')
+    const sidebar = document.getElementById('sidebar');
     sidebar.innerHTML = `
   <ul class="nav flex-column">
     <li class="nav-item">
@@ -63,32 +61,31 @@
       <a class="nav-link" href="/folder/folder-teacher/${CLASS_ID}">Tài Liệu</a>
     </li>        
   </ul>
-    `
-    return
+    `;
+    return;
   }
   // Fetch class details from API
-    async function fetchClassDetails() {
-      try {
-        const response = await fetch(`/class-teacher/api/classroom-details/${CLASS_ID}`);
-        if (!response.ok) throw new Error('Failed to fetch class details');
-        const data = await response.json();
+  async function fetchClassDetails() {
+    try {
+      const response = await fetch(`/class-teacher/api/classroom-details/${CLASS_ID}`);
+      if (!response.ok) throw new Error('Failed to fetch class details');
+      const data = await response.json();
 
-        // Update class title
-        document.getElementById('classTitle').textContent = `${data.class_name} (${data.school_year})`;
-
-      } catch (error) {
-        console.error('Error fetching class details:', error);
-        alert('Không thể tải chi tiết lớp học. Vui lòng thử lại sau.');
-      }
+      // Update class title
+      document.getElementById(
+        'classTitle'
+      ).textContent = `${data.class_name} (${data.school_year})`;
+    } catch (error) {
+      console.error('Error fetching class details:', error);
+      alert('Không thể tải chi tiết lớp học. Vui lòng thử lại sau.');
     }
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
-    renderSidebar()
-    fetchClassDetails()
+    renderSidebar();
+    fetchClassDetails();
   });
 </script>
-
-
 
 <script>
   document.addEventListener('DOMContentLoaded', loadVideos);
@@ -123,9 +120,11 @@
     }
     emptyMsg.classList.add('d-none');
 
-    videos.forEach(video => {
+    videos.forEach((video) => {
       const videoEmbedUrl = `https://www.youtube.com/embed/${video.video_embed}`;
-      container.insertAdjacentHTML('beforeend', `
+      container.insertAdjacentHTML(
+        'beforeend',
+        `
         <div class="col-md-6 col-lg-4">
           <div class="card shadow-sm h-100">
             <div class="ratio ratio-16x9">
@@ -140,30 +139,30 @@
                 <strong>Thời lượng:</strong> ${video.video_duration}
               </p>
               <p class="card-text small">
-                <strong>Ghi chú:</strong> ${video.note || "Không có"}
+                <strong>Ghi chú:</strong> ${video.note || 'Không có'}
               </p>
             </div>
           </div>
         </div>
-      `);
+      `
+      );
     });
   }
 </script>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", ()=>{
-      document.getElementById('sidebarToggle').addEventListener('click', () => {
-        const sidebar = document.getElementById('sidebar');
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+      const sidebar = document.getElementById('sidebar');
 
-        const isShowing = sidebar.classList.contains('show');
-        if (isShowing) {
-          sidebar.classList.remove('show');
-          sidebar.classList.add('hide');
-        } else {
-          sidebar.classList.add('show');
-          sidebar.classList.remove('hide');
-        }
-      });
-
-    })
-  </script>
+      const isShowing = sidebar.classList.contains('show');
+      if (isShowing) {
+        sidebar.classList.remove('show');
+        sidebar.classList.add('hide');
+      } else {
+        sidebar.classList.add('show');
+        sidebar.classList.remove('hide');
+      }
+    });
+  });
+</script>

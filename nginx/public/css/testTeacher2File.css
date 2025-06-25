@@ -20,8 +20,8 @@ iframe {
 }
 
 /* Form Inputs */
-input[type="text"],
-input[type="number"],
+input[type='text'],
+input[type='number'],
 select {
   font-family: 'Montserrat', sans-serif;
   border-radius: 10px;
@@ -31,15 +31,17 @@ select {
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-input[type="text"]:focus,
-input[type="number"]:focus,
+input[type='text']:focus,
+input[type='number']:focus,
 select:focus {
   border-color: #007bff;
   box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
 }
 
 /* Headings */
-h3, h4, h5 {
+h3,
+h4,
+h5 {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   color: #2c3e50;
@@ -163,7 +165,8 @@ button {
     flex-direction: column;
   }
 
-  .col-md-4, .col-md-8 {
+  .col-md-4,
+  .col-md-8 {
     width: 100%;
   }
 

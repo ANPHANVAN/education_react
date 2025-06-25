@@ -1,111 +1,123 @@
-  <style>
-    /* Tinh chỉnh nhỏ để giống ảnh prototype */
-    .test-card {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: .35rem 0;
-      font-size: 15px;
-      border-bottom: 1px dashed #e2e6ea;
-    }
-    .info-row:last-child {
-      border-bottom: none;
-    }
-    .info-row i {
-      margin-right: .5rem;
-    }
-  </style>
-  <div class="container my-4">
-    <div id="card" class="card shadow-sm test-card">
-      <div class="card-body">
-        <!-- Tiêu đề -->
-        <h6 id="testTitle" class="card-title fw-semibold text-wrap"></h6>
+<style>
+  /* Tinh chỉnh nhỏ để giống ảnh prototype */
+  .test-card {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0;
+    font-size: 15px;
+    border-bottom: 1px dashed #e2e6ea;
+  }
+  .info-row:last-child {
+    border-bottom: none;
+  }
+  .info-row i {
+    margin-right: 0.5rem;
+  }
+</style>
+<div class="container my-4">
+  <div id="card" class="card shadow-sm test-card">
+    <div class="card-body">
+      <!-- Tiêu đề -->
+      <h6 id="testTitle" class="card-title fw-semibold text-wrap"></h6>
 
-        <!-- Mã đề & QR -->
-        <div class="d-flex gap-2 justify-content-center mb-3 small">
-          <span>Mã đề thi: <span id="testCode" class="fw-semibold"></span></span>
-          <!-- <i class="bi bi-qr-code fs-6"></i> -->
-        </div>
-
-        <!-- Danh sách thông tin -->
-        <div id="infoList" class="mb-4"></div>
-
-        <!-- Nút bắt đầu -->
-        <button id="startBtn" class="btn btn-primary w-100">
-          Bắt đầu thi <i class="bi bi-chevron-right"></i>
-        </button>
+      <!-- Mã đề & QR -->
+      <div class="d-flex gap-2 justify-content-center mb-3 small">
+        <span>Mã đề thi: <span id="testCode" class="fw-semibold"></span></span>
+        <!-- <i class="bi bi-qr-code fs-6"></i> -->
       </div>
+
+      <!-- Danh sách thông tin -->
+      <div id="infoList" class="mb-4"></div>
+
+      <!-- Nút bắt đầu -->
+      <button id="startBtn" class="btn btn-primary w-100">
+        Bắt đầu thi <i class="bi bi-chevron-right"></i>
+      </button>
     </div>
   </div>
+</div>
 
-  <script>
-    /* ===== Cấu hình icon & label cho từng dòng ===== */
-    const INFO_CONFIG = [
-      { icon: 'clock',       label: 'Thời gian làm bài',  value: (d) => d.test_time + ' phút' },
-      { icon: 'calendar-day',label: 'Thời gian vào thi', value: (d) => d.time_begin || 'Không thời hạn' },
-      { icon: 'question-circle', label: 'Số lượng câu hỏi', value: (d) => d.answers?.length || 0 },
-      { icon: 'clipboard-check', label: 'Môn', value: (d) => d.subject || 'Khác' },
-      { icon: 'clipboard-check', label: 'Khối', value: (d) => d.grade || 'None' },
-      { icon: 'arrow-repeat',    label: 'Số lượt làm đề còn lại',  value: (d) => d.remainingAttempt ? `${d.remainingAttempt}/${d.limitAttempt} lượt` : 'Không giới hạn Nhưng lấy điểm lần đầu tiên thi' },
-    ];
+<script>
+  /* ===== Cấu hình icon & label cho từng dòng ===== */
+  const INFO_CONFIG = [
+    { icon: 'clock', label: 'Thời gian làm bài', value: (d) => d.test_time + ' phút' },
+    {
+      icon: 'calendar-day',
+      label: 'Thời gian vào thi',
+      value: (d) => d.time_begin || 'Không thời hạn',
+    },
+    { icon: 'question-circle', label: 'Số lượng câu hỏi', value: (d) => d.answers?.length || 0 },
+    { icon: 'clipboard-check', label: 'Môn', value: (d) => d.subject || 'Khác' },
+    { icon: 'clipboard-check', label: 'Khối', value: (d) => d.grade || 'None' },
+    {
+      icon: 'arrow-repeat',
+      label: 'Số lượt làm đề còn lại',
+      value: (d) =>
+        d.remainingAttempt
+          ? `${d.remainingAttempt}/${d.limitAttempt} lượt`
+          : 'Không giới hạn Nhưng lấy điểm lần đầu tiên thi',
+    },
+  ];
 
-    /* ===== Helper: tạo dòng thông tin ===== */
-    function makeInfoRow(icon, label, value) {
-      const row = document.createElement('div');
-      row.className = 'info-row';
-      row.innerHTML = `
+  /* ===== Helper: tạo dòng thông tin ===== */
+  function makeInfoRow(icon, label, value) {
+    const row = document.createElement('div');
+    row.className = 'info-row';
+    row.innerHTML = `
         <div class="d-flex align-items-center"><i class="bi bi-${icon}"></i>${label}</div>
         <div class="fw-semibold">${value}</div>
       `;
-      return row;
+    return row;
+  }
+
+  /* ===== Lấy testId từ URL ===== */
+  function getTestId() {
+    // URL pattern: /video-student/test-information/:testId
+    const segments = window.location.pathname.split('/');
+    console.log(segments[segments.length - 1] || segments[segments.length - 2]);
+    return segments[segments.length - 1] || segments[segments.length - 2];
+  }
+
+  /* ===== Gọi API và hiển thị ===== */
+  async function loadTestInformation() {
+    const testId = getTestId();
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const class_id = urlParams.get('class_id');
+      const res = await fetch(`/test-student/api/test-information/${testId}?class_id=${class_id}`);
+      if (!res.ok) throw new Error('Lỗi lấy dữ liệu');
+      const data = await res.json();
+
+      // Tiêu đề và mã đề
+      document.getElementById('testTitle').textContent = data.title || 'Đề thi';
+      document.getElementById('testCode').textContent = testId;
+
+      // Danh sách thông tin chi tiết
+      const infoList = document.getElementById('infoList');
+      console.log('infoList', infoList);
+      INFO_CONFIG.forEach(({ icon, label, value }) => {
+        const val = typeof value === 'function' ? value(data) : value;
+        infoList.appendChild(makeInfoRow(icon, label, val));
+      });
+
+      // Nút bắt đầu thi
+      document.getElementById('startBtn').addEventListener('click', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const class_id = urlParams.get('class_id');
+        window.location.href = `/test-student/test/${testId}?class_id=${class_id}`;
+      });
+    } catch (err) {
+      console.error(err);
+      document.getElementById('card').innerHTML =
+        '<div class="alert alert-danger m-0">Không thể tải thông tin đề thi.</div>';
     }
+  }
 
-    /* ===== Lấy testId từ URL ===== */
-    function getTestId() {
-      // URL pattern: /video-student/test-information/:testId
-      const segments = window.location.pathname.split('/');
-      console.log(segments[segments.length - 1] || segments[segments.length - 2])
-      return segments[segments.length - 1] || segments[segments.length - 2];
-    }
-
-    /* ===== Gọi API và hiển thị ===== */
-    async function loadTestInformation() {
-      const testId = getTestId();
-      try {
-        const urlParams = new URLSearchParams(window.location.search)
-        const class_id = urlParams.get('class_id')
-        const res = await fetch(`/test-student/api/test-information/${testId}?class_id=${class_id}`);
-        if (!res.ok) throw new Error('Lỗi lấy dữ liệu');
-        const data = await res.json();
-
-        // Tiêu đề và mã đề
-        document.getElementById('testTitle').textContent = data.title || 'Đề thi';
-        document.getElementById('testCode').textContent  = testId;
-
-        // Danh sách thông tin chi tiết
-        const infoList = document.getElementById('infoList');
-        console.log("infoList", infoList)
-        INFO_CONFIG.forEach(({icon, label, value}) => {
-          const val = typeof value === 'function' ? value(data) : value;
-          infoList.appendChild(makeInfoRow(icon, label, val));
-        });
-
-        // Nút bắt đầu thi
-        document.getElementById('startBtn').addEventListener('click', () => {
-        const urlParams = new URLSearchParams(window.location.search)
-        const class_id = urlParams.get('class_id')
-          window.location.href = `/test-student/test/${testId}?class_id=${class_id}`;
-        });
-      } catch (err) {
-        console.error(err);
-        document.getElementById('card').innerHTML = '<div class="alert alert-danger m-0">Không thể tải thông tin đề thi.</div>';
-      }
-    }
-
-    // Khởi động
-    document.addEventListener('DOMContentLoaded', loadTestInformation);
-  </script>
+  // Khởi động
+  document.addEventListener('DOMContentLoaded', loadTestInformation);
+</script>

@@ -1,7 +1,7 @@
-<br>
-<br><br>
-<a href="/admin"><button class="btn btn-primary w-20 ">Về Trang Chủ Admin</button></a>
-  <!-- <div class="container">
+<br />
+<br /><br />
+<a href="/admin"><button class="btn btn-primary w-20">Về Trang Chủ Admin</button></a>
+<!-- <div class="container">
     <h2 class="mb-4">Tìm kiếm người dùng</h2>
     <div class="mb-3">
       <input type="text" id="searchInput" class="form-control" placeholder="Nhập username hoặc email">
@@ -9,47 +9,52 @@
     <ul class="list-group" id="userList"></ul>
   </div> -->
 
-  <div class="card shadow-sm mx-auto" style="max-width: 500px;">
-      <div class="card-body">
-        <h4 class="card-title mb-4 text-center">Tìm Kiếm User bằng username</h4>
-        <div class="mb-3">
-          <label for="username" class="form-label">Username & Email</label>
-          <input type="text" id="searchInput" class="form-control" placeholder="Nhập username hoặc email">
-        </div>
-        <ul class="list-group" id="userList"></ul>
-      </div>
+<div class="card shadow-sm mx-auto" style="max-width: 500px">
+  <div class="card-body">
+    <h4 class="card-title mb-4 text-center">Tìm Kiếm User bằng username</h4>
+    <div class="mb-3">
+      <label for="username" class="form-label">Username & Email</label>
+      <input
+        type="text"
+        id="searchInput"
+        class="form-control"
+        placeholder="Nhập username hoặc email"
+      />
     </div>
+    <ul class="list-group" id="userList"></ul>
+  </div>
+</div>
 
-  <script>
-    document.getElementById('searchInput').addEventListener('input', async function () {
-      const keyword = this.value.trim();
-      if (!keyword) {
-        document.getElementById('userList').innerHTML = '';
-        return;
-      }
+<script>
+  document.getElementById('searchInput').addEventListener('input', async function () {
+    const keyword = this.value.trim();
+    if (!keyword) {
+      document.getElementById('userList').innerHTML = '';
+      return;
+    }
 
-      try {
-        const res = await fetch(`/admin/api/find-user?keyword=${encodeURIComponent(keyword)}`);
-        const data = await res.json();
+    try {
+      const res = await fetch(`/admin/api/find-user?keyword=${encodeURIComponent(keyword)}`);
+      const data = await res.json();
 
-        const list = document.getElementById('userList');
-        list.innerHTML = '';
+      const list = document.getElementById('userList');
+      list.innerHTML = '';
 
-        data.forEach(user => {
-          const li = document.createElement('li');
-          li.className = 'list-group-item d-flex justify-content-between align-items-center';
-          li.innerHTML = `
+      data.forEach((user) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.innerHTML = `
             <div>
               <strong>${user.fullname}</strong> (${user.username})<br>
               <small>${user.email}</small>
             </div>
             <a href="/admin/api/get-one-user?id=${user._id}" class="btn btn-sm btn-outline-info">Chi tiết</a>
           `;
-          list.appendChild(li);
-        });
-      } catch (err) {
-        console.error(err);
-        alert('Lỗi khi tìm kiếm');
-      }
-    });
-  </script>
+        list.appendChild(li);
+      });
+    } catch (err) {
+      console.error(err);
+      alert('Lỗi khi tìm kiếm');
+    }
+  });
+</script>

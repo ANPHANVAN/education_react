@@ -1,11 +1,13 @@
-<link rel="stylesheet" href="/public/css/essayTeacher3File.css">
-  <style>
-    .status-pill {padding: .25rem .6rem; border-radius: 50px;}
-  </style>
+<link rel="stylesheet" href="/public/css/essayTeacher3File.css" />
+<style>
+  .status-pill {
+    padding: 0.25rem 0.6rem;
+    border-radius: 50px;
+  }
+</style>
 
 <div class="container my-4">
-
-    <!-- ==== THÔNG TIN VIDEO & LỚP ==== -->
+  <!-- ==== THÔNG TIN VIDEO & LỚP ==== -->
   <h2 class="mb-4">Danh sách nộp bài</h2>
 
   <div id="infoCard" class="card mb-4 d-none">
@@ -13,15 +15,15 @@
       <div class="col-md-6">
         <h5 class="card-title mb-1"><span id="videoName"></span></h5>
         <p class="mb-0 small text-muted">
-          Môn <span id="EssaySubject"></span> • Khối <span id="EssayGrade"></span><br>
+          Môn <span id="EssaySubject"></span> • Khối <span id="EssayGrade"></span><br />
           Tạo ngày: <span id="EssayCreated"></span>
         </p>
       </div>
       <div class="col-md-6">
         <h5 class="card-title mb-1">Thông tin lớp</h5>
         <p class="mb-0 small text-muted">
-          Tên lớp: <strong id="className"></strong><br>
-          Năm học: <span id="classYear"></span><br>
+          Tên lớp: <strong id="className"></strong><br />
+          Năm học: <span id="classYear"></span><br />
           Khối: <span id="classGrade"></span> • Sĩ số: <span id="classSize"></span>
         </p>
       </div>
@@ -42,10 +44,13 @@
           <th>Họ&nbsp;tên&nbsp;/&nbsp;Email</th>
           <th>Trạng&nbsp;thái</th>
           <th>Thời&nbsp;gian&nbsp;nộp</th>
-          <th>Bài Nộp</th> <!-- NEW -->
+          <th>Bài Nộp</th>
+          <!-- NEW -->
           <th>Điểm</th>
-          <th>Phản hồi</th>      <!-- NEW -->
-          <th>Gửi</th>           <!-- NEW -->
+          <th>Phản hồi</th>
+          <!-- NEW -->
+          <th>Gửi</th>
+          <!-- NEW -->
         </tr>
       </thead>
 
@@ -54,24 +59,20 @@
   </div>
 
   <!-- khi không có dữ liệu -->
-  <p id="emptyMsg" class="text-muted text-center d-none">
-    Chưa có thông tin học sinh.
-  </p>
+  <p id="emptyMsg" class="text-muted text-center d-none">Chưa có thông tin học sinh.</p>
 </div>
 
-
 <script>
-  
   document.addEventListener('DOMContentLoaded', () => {
     /* === Lấy classId & essayId từ URL === */
     const urlParams = new URLSearchParams(window.location.search);
     const CLASS_ID = urlParams.get('class_id');
-    const ESSAY_ID  = urlParams.get('essay-id');
+    const ESSAY_ID = urlParams.get('essay-id');
     if (!CLASS_ID || !ESSAY_ID) {
       alert('Thiếu class_id hoặc essay-id trên URL');
       return;
     }
-    
+
     const API = `/essay-teacher/api/essay-class-detail?class_id=${CLASS_ID}&essay-id=${ESSAY_ID}`;
 
     loadData(API);
@@ -79,36 +80,36 @@
 
   /* ---- Hàm tải & render ---- */
   async function loadData(apiUrl) {
-    const spinner   = document.getElementById('loading');
-    const table     = document.getElementById('resultTable');
-    const tbody     = table.querySelector('tbody');
-    const emptyMsg  = document.getElementById('emptyMsg');
+    const spinner = document.getElementById('loading');
+    const table = document.getElementById('resultTable');
+    const tbody = table.querySelector('tbody');
+    const emptyMsg = document.getElementById('emptyMsg');
 
     try {
       const res = await fetch(apiUrl);
       if (!res.ok) throw new Error('Fetch failed');
-      const { essaySubmitInfo = [], classInfo = {} ,essayInfo={}} = await res.json();
+      const { essaySubmitInfo = [], classInfo = {}, essayInfo = {} } = await res.json();
       const students = classInfo.students || [];
 
-    /* ----- HIỂN THỊ THÔNG TIN TEST + CLASS ----- */
-    document.getElementById('videoName').textContent     = essayInfo.title;
-    document.getElementById('EssaySubject').textContent  = essayInfo.subject;
-    document.getElementById('EssayGrade').textContent    = essayInfo.grade;
-    document.getElementById('EssayCreated').textContent  =
-      new Date(essayInfo.createdAt).toLocaleString('vi-VN');
+      /* ----- HIỂN THỊ THÔNG TIN TEST + CLASS ----- */
+      document.getElementById('videoName').textContent = essayInfo.title;
+      document.getElementById('EssaySubject').textContent = essayInfo.subject;
+      document.getElementById('EssayGrade').textContent = essayInfo.grade;
+      document.getElementById('EssayCreated').textContent = new Date(
+        essayInfo.createdAt
+      ).toLocaleString('vi-VN');
 
-    document.getElementById('className').textContent = classInfo.class_name;
-    document.getElementById('classYear').textContent = classInfo.school_year;
-    document.getElementById('classGrade').textContent= classInfo.grade;
-    document.getElementById('classSize').textContent = classInfo.number_student;
-    infoCard.classList.remove('d-none');
-
+      document.getElementById('className').textContent = classInfo.class_name;
+      document.getElementById('classYear').textContent = classInfo.school_year;
+      document.getElementById('classGrade').textContent = classInfo.grade;
+      document.getElementById('classSize').textContent = classInfo.number_student;
+      infoCard.classList.remove('d-none');
 
       /* ---- Ghép hai mảng ---- */
-      const merged = students.map(student => {
+      const merged = students.map((student) => {
         // tìm tất cả bài nộp của học sinh này
         const subs = essaySubmitInfo.filter(
-          essaySubmit => essaySubmit.student_id === student.student_id
+          (essaySubmit) => essaySubmit.student_id === student.student_id
         );
         if (!subs.length) return { ...student, submit_status: false };
 
@@ -117,7 +118,7 @@
         return {
           ...student,
           submit_status: true,
-          submission: subs[0]
+          submission: subs[0],
         };
       });
 
@@ -140,9 +141,11 @@
 
         const score = student.submission?.score ?? '';
         const comments = student.submission?.comments ?? '';
-        const essaySubmitId = student.submission?.grade;  // ID cần để gửi chấm điểm
+        const essaySubmitId = student.submission?.grade; // ID cần để gửi chấm điểm
         const actionSubmit = student.submission
-          ? `/essay-teacher/api/teacher-give-evaluate?essay-submit-id=${student.submission?._id ?? ''}`
+          ? `/essay-teacher/api/teacher-give-evaluate?essay-submit-id=${
+              student.submission?._id ?? ''
+            }`
           : '';
         const time = student.submit_status
           ? new Date(student.submission.createdAt).toLocaleString('vi-VN')
@@ -161,7 +164,7 @@
           </td>
           <td>${statusHtml}</td>
           <td>${time}</td>
-          <td><a href="${linkFile}" target="_blank">${linkFile ? 'Link': ''}</a></td>
+          <td><a href="${linkFile}" target="_blank">${linkFile ? 'Link' : ''}</a></td>
           <td>
             <input id="${scoreInputId}" type="number" name="score" placeholder="${score}" required style="width: 60px;">
           </td>
@@ -169,7 +172,9 @@
             <input id="${commentsInputId}" type="text" name="comments" placeholder="${comments}" required style="width: 300px;">
           </td>
           <td>
-            <button class="btn btn-primary" ${(!student.submit_status || student.submission.score) ? 'disabled' : ''}>Gửi</button>
+            <button class="btn btn-primary" ${
+              !student.submit_status || student.submission.score ? 'disabled' : ''
+            }>Gửi</button>
           </td>
         `;
 
@@ -220,7 +225,6 @@
 
         tbody.appendChild(tr);
       });
-
     } catch (err) {
       console.error(err);
       spinner.classList.add('d-none');

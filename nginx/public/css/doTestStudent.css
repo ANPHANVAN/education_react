@@ -62,22 +62,22 @@
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 .form-check-input {
-  border: 2px solid #999;       /* Viền rõ ràng hơn */
-  background-color: #fff;       /* Nền trắng để nổi bật */
-  width: 1.1em;                 /* Có thể tăng size một chút */
+  border: 2px solid #999; /* Viền rõ ràng hơn */
+  background-color: #fff; /* Nền trắng để nổi bật */
+  width: 1.1em; /* Có thể tăng size một chút */
   height: 1.1em;
 }
 
 .form-check-input:checked {
-  background-color: #0d6efd;    /* Màu nền khi được chọn (Bootstrap blue) */
+  background-color: #0d6efd; /* Màu nền khi được chọn (Bootstrap blue) */
   border-color: #0d6efd;
 }
 #countdown {
-  width: 100%;           /* Hoặc giá trị cố định như 160px */
-  max-width: 100px;      /* Giới hạn tối đa nếu cần */
-  text-align:center;      /* Căn trái nội dung nếu có icon */
-  white-space: nowrap;   /* Không xuống dòng */
-  overflow: hidden;      /* Ẩn chữ thừa */
+  width: 100%; /* Hoặc giá trị cố định như 160px */
+  max-width: 100px; /* Giới hạn tối đa nếu cần */
+  text-align: center; /* Căn trái nội dung nếu có icon */
+  white-space: nowrap; /* Không xuống dòng */
+  overflow: hidden; /* Ẩn chữ thừa */
   text-overflow: ellipsis; /* Hiển thị ... nếu quá dài */
 }
 /* Button Styling */
@@ -98,7 +98,8 @@
 
 /* Responsive Adjustments */
 @media (max-width: 991px) {
-  .col-lg-8, .col-lg-4 {
+  .col-lg-8,
+  .col-lg-4 {
     width: 100%;
   }
 

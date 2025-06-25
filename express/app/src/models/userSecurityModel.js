@@ -9,12 +9,12 @@ const UserSecuritySchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   hash_password: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('UserSecurity', UserSecuritySchema);

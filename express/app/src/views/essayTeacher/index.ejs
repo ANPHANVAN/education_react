@@ -1,30 +1,33 @@
-<link rel="stylesheet" href="/public/css/essayTeacher3File.css">
+<link rel="stylesheet" href="/public/css/essayTeacher3File.css" />
 
 <style>
-    .btn-custom { min-width: 180px; }
-    .doc-card {
-      border: 1px solid #eee;
-      border-radius: 8px;
-      padding: 1rem;
-      background-color: #fff;
-      height: 100%;
-    }
-    .tag-badge {
-      background-color: #0d6efd;
-      color: white;
-      font-size: 0.75rem;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.5rem;
-    }
-  </style>
+  .btn-custom {
+    min-width: 180px;
+  }
+  .doc-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #fff;
+    height: 100%;
+  }
+  .tag-badge {
+    background-color: #0d6efd;
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+  }
+</style>
 <div class="container mt-4">
-
   <!-- Tìm kiếm + nút tạo -->
   <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
     <!-- <input type="text" class="form-control w-auto" placeholder="Tìm kiếm" style="max-width: 300px;" hidden> -->
 
     <div class="d-flex flex-wrap gap-2">
-      <a href="/essay-teacher/upload-file-essay-test"><button class="btn btn-primary btn-custom">+ Tạo đề thi tự luận</button></a>
+      <a href="/essay-teacher/upload-file-essay-test"
+        ><button class="btn btn-primary btn-custom">+ Tạo đề thi tự luận</button></a
+      >
     </div>
   </div>
 
@@ -39,8 +42,7 @@
           <th>Sửa lần cuối</th>
         </tr>
       </thead>
-      <tbody class="test-teacher-list">
-      </tbody>
+      <tbody class="test-teacher-list"></tbody>
     </table>
   </div>
 </div>
@@ -56,33 +58,31 @@
       console.log(essays);
       const listItems = document.querySelector('.test-teacher-list');
       listItems.innerHTML = ''; // Clear existing items
-      essays.forEach(essay => {
+      essays.forEach((essay) => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${essay.title || 'no data'}</td>
-            <td>${(essay.class && essay.class.length > 0)
-              ? essay.class.map(classItem => classItem.class_name).join(', ')
-              : 'chưa giao'}</td>
+            <td>${
+              essay.class && essay.class.length > 0
+                ? essay.class.map((classItem) => classItem.class_name).join(', ')
+                : 'chưa giao'
+            }</td>
             <td>${new Date(essay.updatedAt).toLocaleString() || 'no data'}</td>
         `;
         // Gắn sự kiện click để chuyển trang
         row.addEventListener('click', () => {
-          window.location.href = `/essay-teacher/essay-detail?essay-id=${essay._id}`
+          window.location.href = `/essay-teacher/essay-detail?essay-id=${essay._id}`;
         });
 
-        row.style.cursor = 'pointer'
+        row.style.cursor = 'pointer';
         listItems.appendChild(row);
       });
-
-
     } catch (error) {
       console.error('Error fetching tests', error);
     }
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    fetchTests()
-
-
+  document.addEventListener('DOMContentLoaded', function () {
+    fetchTests();
   });
 </script>

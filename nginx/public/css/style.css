@@ -1,10 +1,10 @@
 /* General Body Styling */
 body {
-  font-family: 'Montserrat', sans-serif !important;;
-  background-color: #f5f7fa !important;;
-  color: #333 !important;;
-  margin: 0 !important;;
-  padding: 0 !important;;
+  font-family: 'Montserrat', sans-serif !important;
+  background-color: #f5f7fa !important;
+  color: #333 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Header Styling */
@@ -71,7 +71,7 @@ main {
   .navbar-brand {
     font-size: 1.5rem;
   }
-    footer .row {
+  footer .row {
     flex-direction: column;
     text-align: center;
   }

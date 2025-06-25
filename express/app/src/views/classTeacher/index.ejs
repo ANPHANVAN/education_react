@@ -1,101 +1,124 @@
-<link rel="stylesheet" href="/public/css/classStudent.css">
+<link rel="stylesheet" href="/public/css/classStudent.css" />
 <div class="container mt-4">
-    <h2>Danh sách lớp học (<span id="classCount">0</span> lớp)</h2>
-    <div class="d-flex justify-content-between mb-3">
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createClassModal">+ Tạo lớp học</button>
-      <!-- <div>
+  <h2>Danh sách lớp học (<span id="classCount">0</span> lớp)</h2>
+  <div class="d-flex justify-content-between mb-3">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createClassModal">
+      + Tạo lớp học
+    </button>
+    <!-- <div>
         <button class="btn btn-outline-secondary me-2">Tạo lớp từ khóa cũ</button>
       </div> -->
-    </div>
-    <div class="class-list">
-      <div id="classItems" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div> <!-- Grid layout -->
-    </div>
   </div>
+  <div class="class-list">
+    <div id="classItems" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"></div>
+    <!-- Grid layout -->
+  </div>
+</div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="createClassModal" tabindex="-1" aria-labelledby="createClassModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="createClassModalLabel">Tạo lớp học mới</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="createClassForm">
-            <div class="mb-3">
-              <label for="className" class="form-label">Tên lớp</label>
-              <input type="text" class="form-control" id="className" placeholder="Nhập tên lớp">
-            </div>
-            <div class="mb-3">
-              <label for="schoolYear" class="form-label">Năm học</label>
-              <select class="form-select" id="schoolYear">
-                <option value="2023-2024">2023 - 2024</option>
-                <option value="2024-2025">2024 - 2025</option>
-                <option value="2025-2026" selected>2025 - 2026</option>
-                <option value="2026-2027">2026 - 2027</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="grade" class="form-label">Khối</label>
-              <select class="form-select" id="grade">
-                <option value="6">Lớp 6</option>
-                <option value="7">Lớp 7</option>
-                <option value="8">Lớp 8</option>
-                <option value="9">Lớp 9</option>
-                <option value="10">Lớp 10</option>
-                <option value="11">Lớp 11</option>
-                <option value="12">Lớp 12</option>
-              </select>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" id="saveClassBtn" onclick="createClass()">Lưu</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-        </div>
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="createClassModal"
+  tabindex="-1"
+  aria-labelledby="createClassModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createClassModalLabel">Tạo lớp học mới</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="createClassForm">
+          <div class="mb-3">
+            <label for="className" class="form-label">Tên lớp</label>
+            <input type="text" class="form-control" id="className" placeholder="Nhập tên lớp" />
+          </div>
+          <div class="mb-3">
+            <label for="schoolYear" class="form-label">Năm học</label>
+            <select class="form-select" id="schoolYear">
+              <option value="2023-2024">2023 - 2024</option>
+              <option value="2024-2025">2024 - 2025</option>
+              <option value="2025-2026" selected>2025 - 2026</option>
+              <option value="2026-2027">2026 - 2027</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="grade" class="form-label">Khối</label>
+            <select class="form-select" id="grade">
+              <option value="6">Lớp 6</option>
+              <option value="7">Lớp 7</option>
+              <option value="8">Lớp 8</option>
+              <option value="9">Lớp 9</option>
+              <option value="10">Lớp 10</option>
+              <option value="11">Lớp 11</option>
+              <option value="12">Lớp 12</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="saveClassBtn" onclick="createClass()">
+          Lưu
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Rename Class Modal -->
-  <div class="modal fade" id="renameClassModal" tabindex="-1" aria-labelledby="renameClassModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="renameClassModalLabel">Đổi tên lớp học</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-        </div>
-        <div class="modal-body">
-          <input type="text" name="className" id="newClassNameInput" class="form-control" placeholder="Nhập tên lớp mới">
-          <input type="hidden" name="classId" id="renameClassId"> <!-- ID ẩn -->
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-          <button type="button" class="btn btn-primary" onclick="submitRenameClass()">Lưu</button>
-        </div>
+<!-- Rename Class Modal -->
+<div
+  class="modal fade"
+  id="renameClassModal"
+  tabindex="-1"
+  aria-labelledby="renameClassModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="renameClassModalLabel">Đổi tên lớp học</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+      </div>
+      <div class="modal-body">
+        <input
+          type="text"
+          name="className"
+          id="newClassNameInput"
+          class="form-control"
+          placeholder="Nhập tên lớp mới"
+        />
+        <input type="hidden" name="classId" id="renameClassId" />
+        <!-- ID ẩn -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-primary" onclick="submitRenameClass()">Lưu</button>
       </div>
     </div>
   </div>
+</div>
 
+<script>
+  // Fetch and display classes
+  async function fetchClasses() {
+    try {
+      const response = await fetch('/class-teacher/api/get-teacher-class');
+      if (!response.ok) throw new Error('Failed to fetch classes');
+      const data = await response.json();
+      const classes = data[0]?.class_id || [];
+      const classItemsDiv = document.getElementById('classItems');
+      const classCountSpan = document.getElementById('classCount');
 
-  <script>
-    // Fetch and display classes
-    async function fetchClasses() {
-      try {
-        const response = await fetch('/class-teacher/api/get-teacher-class');
-        if (!response.ok) throw new Error('Failed to fetch classes');
-        const data = await response.json();
-        const classes = data[0]?.class_id || [];
-        const classItemsDiv = document.getElementById('classItems');
-        const classCountSpan = document.getElementById('classCount');
+      classCountSpan.textContent = classes.length;
+      classItemsDiv.innerHTML = ''; // Clear existing items
 
-        classCountSpan.textContent = classes.length;
-        classItemsDiv.innerHTML = ''; // Clear existing items
-
-        classes.forEach(classItem => {
-          const div = document.createElement('div');
-          div.className = 'col'; // Bootstrap column
-          div.innerHTML = `
+      classes.forEach((classItem) => {
+        const div = document.createElement('div');
+        div.className = 'col'; // Bootstrap column
+        div.innerHTML = `
             <div class="class-item position-relative p-3 border rounded shadow-sm">
               <div class="d-flex justify-content-between align-items-center">
                 <a href="/class-teacher/classroom-details/${classItem._id}" class="text-decoration-none text-dark">
@@ -106,7 +129,7 @@
                     ⋮
                   </button>
                   <ul class="dropdown-menu  dropdown-menu-end">
-                    <li><a class="dropdown-item text-primary" href="#" onclick="renameClass('${classItem._id}', '${classItem.class_name}')">Đổi tên</a></li>
+                    <li><a class="dropdown-item text-primary" href="#" onclick="renameClass('${classItem._id}', '${classItem.class_name}')"> <i class="fa-solid fa-pen-to-square"></i> Đổi tên</a></li>
                     <li><a class="dropdown-item text-danger" href="#" onclick="deleteClass('${classItem._id}')"> <i class="fa-solid fa-trash"></i> Xóa Lớp Học</a></li>
                   </ul>
                 </div>
@@ -118,134 +141,133 @@
             </div>
 
           `;
-          classItemsDiv.appendChild(div);
-        });
-      } catch (error) {
-        console.error('Error fetching classes:', error);
-      }
+        classItemsDiv.appendChild(div);
+      });
+    } catch (error) {
+      console.error('Error fetching classes:', error);
+    }
+  }
+
+  // Create a new class
+  async function createClass() {
+    const saveBtn = document.getElementById('saveClassBtn');
+    saveBtn.disabled = true;
+
+    const className = document.getElementById('className').value;
+    const schoolYear = document.getElementById('schoolYear').value;
+    const grade = document.getElementById('grade').value;
+
+    if (!className || !schoolYear || !grade) {
+      alert('Vui lòng điền đầy đủ thông tin!');
+      saveBtn.disabled = false;
+      return;
     }
 
-    // Create a new class
-    async function createClass() {
-      const saveBtn = document.getElementById('saveClassBtn');
-      saveBtn.disabled = true;
+    const newClass = {
+      className: className,
+      schoolYear: schoolYear,
+      grade: parseInt(grade),
+    };
 
-      const className = document.getElementById('className').value;
-      const schoolYear = document.getElementById('schoolYear').value;
-      const grade = document.getElementById('grade').value;
-
-      if (!className || !schoolYear || !grade) {
-        alert('Vui lòng điền đầy đủ thông tin!');
-        saveBtn.disabled = false;
-        return;
-      }
-
-      const newClass = {
-        className: className,
-        schoolYear: schoolYear,
-        grade: parseInt(grade),
-      };
-
-      try {
-        const response = await fetch('/class-teacher/api/create-class', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(newClass)
-        });
-
-        if (response.ok) {
-          const modal = document.getElementById('createClassModal');
-          const bootstrapModal = bootstrap.Modal.getInstance(modal);
-          bootstrapModal.hide();
-
-          document.getElementById('createClassForm').reset();
-          await fetchClasses();
-        } else {
-          throw new Error('Failed to create class');
-        }
-      } catch (error) {
-        console.error('Error creating class:', error);
-        alert('Có lỗi xảy ra khi tạo lớp học. Vui lòng thử lại.');
-      } finally {
-        saveBtn.disabled = false;
-      }
-    }
-
-    // Delete class function
-    async function deleteClass(ClassId) {
-      if (confirm("Bạn có chắc chắn muốn xóa lớp học này?")) {
-        try {
-          const response = await fetch(`/class-teacher/api/delete-class`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ classId: ClassId })
-          });
-          if (!response.ok) throw new Error('Failed to delete class');
-          alert('Lớp học đã được xóa thành công.');
-          fetchClasses();
-        } catch (error) {
-          console.error('Error deleting class:', error);
-          alert('Không thể xóa lớp học. Vui lòng thử lại sau.');
-        }
-      }
-    } 
-
-    function renameClass(classId, currentName) {
-      // Gán dữ liệu vào modal
-      document.getElementById('newClassNameInput').value = currentName;
-      document.getElementById('renameClassId').value = classId;
-
-      // Hiện modal
-      const renameModal = new bootstrap.Modal(document.getElementById('renameClassModal'));
-      renameModal.show();
-    }
-
-    async function submitRenameClass() {
-      const classId = document.getElementById('renameClassId').value;
-      const newClassName = document.getElementById('newClassNameInput').value.trim();
-
-      if (!newClassName) {
-        alert('Tên lớp không được để trống!');
-        return;
-      }
-
-      try {
-        const response = await fetch('/class-teacher/api/rename-class', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ classId, newClassName })
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-          alert('Đổi tên lớp thành công!');
-          bootstrap.Modal.getInstance(document.getElementById('renameClassModal')).hide();
-          fetchClasses()
-        } else {
-          alert(data.message || 'Không thể đổi tên lớp');
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Đã xảy ra lỗi khi đổi tên lớp');
-      }
-    }
-      
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const modal = document.getElementById('createClassModal');
-      modal.addEventListener('hidden.bs.modal', () => {
-        document.body.classList.remove('modal-open');
-        const backdrop = document.querySelector('.modal-backdrop');
-        if (backdrop) {
-          backdrop.remove();
-        }
-        document.getElementById('saveClassBtn').disabled = false;
+    try {
+      const response = await fetch('/class-teacher/api/create-class', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newClass),
       });
 
-      fetchClasses();
+      if (response.ok) {
+        const modal = document.getElementById('createClassModal');
+        const bootstrapModal = bootstrap.Modal.getInstance(modal);
+        bootstrapModal.hide();
+
+        document.getElementById('createClassForm').reset();
+        await fetchClasses();
+      } else {
+        throw new Error('Failed to create class');
+      }
+    } catch (error) {
+      console.error('Error creating class:', error);
+      alert('Có lỗi xảy ra khi tạo lớp học. Vui lòng thử lại.');
+    } finally {
+      saveBtn.disabled = false;
+    }
+  }
+
+  // Delete class function
+  async function deleteClass(ClassId) {
+    if (confirm('Bạn có chắc chắn muốn xóa lớp học này?')) {
+      try {
+        const response = await fetch(`/class-teacher/api/delete-class`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ classId: ClassId }),
+        });
+        if (!response.ok) throw new Error('Failed to delete class');
+        alert('Lớp học đã được xóa thành công.');
+        fetchClasses();
+      } catch (error) {
+        console.error('Error deleting class:', error);
+        alert('Không thể xóa lớp học. Vui lòng thử lại sau.');
+      }
+    }
+  }
+
+  function renameClass(classId, currentName) {
+    // Gán dữ liệu vào modal
+    document.getElementById('newClassNameInput').value = currentName;
+    document.getElementById('renameClassId').value = classId;
+
+    // Hiện modal
+    const renameModal = new bootstrap.Modal(document.getElementById('renameClassModal'));
+    renameModal.show();
+  }
+
+  async function submitRenameClass() {
+    const classId = document.getElementById('renameClassId').value;
+    const newClassName = document.getElementById('newClassNameInput').value.trim();
+
+    if (!newClassName) {
+      alert('Tên lớp không được để trống!');
+      return;
+    }
+
+    try {
+      const response = await fetch('/class-teacher/api/rename-class', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ classId, newClassName }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert('Đổi tên lớp thành công!');
+        bootstrap.Modal.getInstance(document.getElementById('renameClassModal')).hide();
+        fetchClasses();
+      } else {
+        alert(data.message || 'Không thể đổi tên lớp');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Đã xảy ra lỗi khi đổi tên lớp');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('createClassModal');
+    modal.addEventListener('hidden.bs.modal', () => {
+      document.body.classList.remove('modal-open');
+      const backdrop = document.querySelector('.modal-backdrop');
+      if (backdrop) {
+        backdrop.remove();
+      }
+      document.getElementById('saveClassBtn').disabled = false;
     });
-  </script>
+
+    fetchClasses();
+  });
+</script>

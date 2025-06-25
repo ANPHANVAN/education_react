@@ -1,4 +1,4 @@
-    /* body {
+/* body {
       background-color: #f2f4f8;
     }
     .sidebar {
@@ -16,7 +16,7 @@
     .tab-content {
       padding: 2rem;
     } */
-    /* General Body Styling */
+/* General Body Styling */
 
 /* Sidebar Styling */
 .sidebar {
@@ -65,7 +65,7 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-h5 a{
+h5 a {
   color: #2b5783;
   text-decoration: none;
 }
@@ -127,8 +127,6 @@ h5 a:hover {
   border-radius: 10px;
 }
 
-
-
 /* Messenger Icon Styling */
 .fa-facebook-messenger {
   position: fixed;
@@ -158,7 +156,8 @@ h5 a:hover {
     border-bottom: 1px solid #ddd;
   }
 
-  .col-2, .col-10 {
+  .col-2,
+  .col-10 {
     width: 100%;
   }
 

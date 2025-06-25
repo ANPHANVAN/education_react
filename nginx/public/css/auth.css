@@ -72,7 +72,7 @@ h2 {
 
 .btn-primary:hover {
   transform: scale(1.05);
-  background: linear-gradient(135deg,#0754a7 0%, #021c79 100%);
+  background: linear-gradient(135deg, #0754a7 0%, #021c79 100%);
 }
 
 /* Links */

@@ -1,39 +1,42 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-const essaySubmitSchema = new mongoose.Schema({
+const essaySubmitSchema = new mongoose.Schema(
+  {
     class_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Classes',
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Classes',
+      required: true,
     },
     student_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Students',
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Students',
+      required: true,
     },
     essay_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Essay',
-        required: true
-    }, 
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Essay',
+      required: true,
+    },
     grade: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
     subject: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-    score:{ 
-        type: Number,
+    score: {
+      type: Number,
     },
-    url_file_submit :{
-        type: String,
-        required: true
+    url_file_submit: {
+      type: String,
+      required: true,
     },
     comments: {
-        type: String,
-    }
-},{timestamps: true})
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('EssaySubmits', essaySubmitSchema)
+module.exports = mongoose.model('EssaySubmits', essaySubmitSchema);

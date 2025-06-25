@@ -1,29 +1,35 @@
-  <style>
-    .btn-custom { min-width: 180px; }
-    .doc-card {
-      border: 1px solid #eee;
-      border-radius: 8px;
-      padding: 1rem;
-      background-color: #fff;
-      height: 100%;
-    }
-    .tag-badge {
-      background-color: #0d6efd;
-      color: white;
-      font-size: 0.75rem;
-      padding: 0.25rem 0.5rem;
-      border-radius: 0.5rem;
-    }
-  </style>
+<style>
+  .btn-custom {
+    min-width: 180px;
+  }
+  .doc-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #fff;
+    height: 100%;
+  }
+  .tag-badge {
+    background-color: #0d6efd;
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
+  }
+</style>
 <div class="container mt-4">
-
   <!-- Tìm kiếm + nút tạo -->
   <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
     <!-- <input type="text" class="form-control w-auto" placeholder="Tìm kiếm" style="max-width: 300px;" hidden> -->
 
     <!-- Nút mở modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
-        Upload Tài Liệu
+    <button
+      type="button"
+      class="btn btn-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#uploadModal"
+    >
+      Upload Tài Liệu
     </button>
   </div>
 
@@ -40,37 +46,56 @@
           <th>Hành Động</th>
         </tr>
       </thead>
-      <tbody class="file-teacher-list">
-      </tbody>
+      <tbody class="file-teacher-list"></tbody>
     </table>
   </div>
 </div>
 
-
 <div class="container mt-5">
-
-
   <!-- Modal -->
-  <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="uploadModal"
+    tabindex="-1"
+    aria-labelledby="uploadModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <form id="formId" method="POST" enctype="multipart/form-data">
           <div class="modal-header">
             <h5 class="modal-title" id="uploadModalLabel">Tải lên tài liệu</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Đóng"
+            ></button>
           </div>
 
           <div class="modal-body">
             <!-- Tên gợi nhớ -->
             <div class="mb-3">
               <label for="documentName" class="form-label">Tên gợi nhớ cho tài liệu</label>
-              <input type="text" class="form-control" id="documentName" name="title" placeholder="VD: Đề thi giữa kỳ Toán">
+              <input
+                type="text"
+                class="form-control"
+                id="documentName"
+                name="title"
+                placeholder="VD: Đề thi giữa kỳ Toán"
+              />
             </div>
 
             <!-- File upload -->
             <div class="mb-3">
               <label for="file" class="form-label">Chọn file</label>
-              <input class="form-control" type="file" id="file" name="file" accept=".pdf,.docx,.pptx">
+              <input
+                class="form-control"
+                type="file"
+                id="file"
+                name="file"
+                accept=".pdf,.docx,.pptx"
+              />
             </div>
           </div>
 
@@ -84,12 +109,10 @@
   </div>
 </div>
 
-
-
 <script>
-    const url = window.location.pathname
-    const CLASS_ID = url.split("/")[3]
-    
+  const url = window.location.pathname;
+  const CLASS_ID = url.split('/')[3];
+
   async function fetchFiles() {
     try {
       const response = await fetch(`/folder/api/folder-teacher/${CLASS_ID}/get-files`);
@@ -100,7 +123,7 @@
       console.log(files);
       const listItems = document.querySelector('.file-teacher-list');
       listItems.innerHTML = ''; // Clear existing items
-      files.forEach(file => {
+      files.forEach((file) => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${file.title || 'no data'}</td>
@@ -110,25 +133,21 @@
             <td><button type="button" class="btn btn-danger">Xóa File</button></td>
         `;
 
-        row.style.cursor = 'pointer'
+        row.style.cursor = 'pointer';
         listItems.appendChild(row);
       });
-
-
     } catch (error) {
       console.error('Error fetching files:', error);
     }
   }
 
-  function navigationForm(){
+  function navigationForm() {
     const formElement = document.getElementById('formId');
-    formElement.action = action=`/folder/api/folder-teacher/${CLASS_ID}`
+    formElement.action = action = `/folder/api/folder-teacher/${CLASS_ID}`;
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    fetchFiles()
+  document.addEventListener('DOMContentLoaded', function () {
+    fetchFiles();
     navigationForm();
-
-
   });
 </script>

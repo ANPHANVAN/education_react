@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/public/css/auth.css">
+<link rel="stylesheet" href="/public/css/auth.css" />
 
 <div class="container mt-5 d-flex justify-content-center">
   <div class="col-md-4 border rounded p-4 bg-light">
@@ -8,7 +8,13 @@
     <form id="requestOtpForm" class="needs-validation" novalidate>
       <div class="mb-3">
         <label class="form-label">Email</label>
-        <input type="email" name="email" class="form-control shadow-on-focus" placeholder="Nhập email đã đăng ký" required>
+        <input
+          type="email"
+          name="email"
+          class="form-control shadow-on-focus"
+          placeholder="Nhập email đã đăng ký"
+          required
+        />
         <div class="invalid-feedback">Vui lòng nhập email hợp lệ</div>
       </div>
       <button type="submit" class="btn btn-primary w-100">Gửi OTP</button>
@@ -18,16 +24,22 @@
     <form id="resetForm" class="needs-validation d-none mt-3" novalidate>
       <div class="mb-3">
         <label class="form-label">Email</label>
-        <input type="email" name="email" class="form-control shadow-on-focus" required readonly>
+        <input type="email" name="email" class="form-control shadow-on-focus" required readonly />
       </div>
       <div class="mb-3">
         <label class="form-label">Mã OTP</label>
-        <input type="text" name="otp" class="form-control shadow-on-focus" required>
+        <input type="text" name="otp" class="form-control shadow-on-focus" required />
         <div class="invalid-feedback">Vui lòng nhập mã OTP</div>
       </div>
       <div class="mb-3">
         <label class="form-label">Mật khẩu mới</label>
-        <input type="password" name="newPassword" class="form-control shadow-on-focus" required minlength="6">
+        <input
+          type="password"
+          name="newPassword"
+          class="form-control shadow-on-focus"
+          required
+          minlength="6"
+        />
         <div class="invalid-feedback">Mật khẩu ít nhất 6 ký tự</div>
       </div>
       <button type="submit" class="btn btn-success w-100">Đặt lại mật khẩu</button>
@@ -54,19 +66,23 @@
   (function () {
     'use strict';
     const forms = document.querySelectorAll('.needs-validation');
-    Array.from(forms).forEach(form => {
-      form.addEventListener('submit', e => {
-        if (!form.checkValidity()) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        form.classList.add('was-validated');
-      }, false);
+    Array.from(forms).forEach((form) => {
+      form.addEventListener(
+        'submit',
+        (e) => {
+          if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        },
+        false
+      );
     });
   })();
 
   // Submit gửi OTP
-  requestForm.addEventListener('submit', async e => {
+  requestForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!requestForm.checkValidity()) return;
 
@@ -75,7 +91,7 @@
       const res = await fetch('/auth/api/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email }),
       });
 
       const data = await res.json();
@@ -85,28 +101,27 @@
       requestForm.classList.add('d-none');
       resetForm.classList.remove('d-none');
       resetForm.email.value = email;
-
     } catch (err) {
       alert(err.message);
     }
   });
 
   // Submit đặt lại mật khẩu
-  resetForm.addEventListener('submit', async e => {
+  resetForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!resetForm.checkValidity()) return;
 
     const payload = {
       email: resetForm.email.value.trim(),
       otp: resetForm.otp.value.trim(),
-      newPassword: resetForm.newPassword.value
+      newPassword: resetForm.newPassword.value,
     };
 
     try {
       const res = await fetch('/auth/api/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -114,7 +129,6 @@
 
       alert('Mật khẩu đã được cập nhật thành công!');
       window.location.replace('/auth/login');
-
     } catch (err) {
       alert(err.message);
     }

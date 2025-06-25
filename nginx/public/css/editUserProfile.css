@@ -73,14 +73,16 @@ h2 {
   color: #34495e;
 }
 
-.form-control, textarea {
+.form-control,
+textarea {
   border-radius: 10px;
   border: 1px solid #ddd;
   padding: 10px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.form-control:focus, textarea:focus {
+.form-control:focus,
+textarea:focus {
   border-color: #007bff;
   box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
 }
@@ -110,7 +112,9 @@ h2 {
 }
 
 /* Action Buttons (Edit, Save, Cancel) */
-.btn-primary, .btn-success, .btn-secondary {
+.btn-primary,
+.btn-success,
+.btn-secondary {
   border-radius: 20px;
   padding: 8px 20px;
   transition: transform 0.3s ease, background 0.3s ease;
@@ -185,7 +189,9 @@ h2 {
     gap: 10px !important;
   }
 
-  .btn-primary, .btn-success, .btn-secondary {
+  .btn-primary,
+  .btn-success,
+  .btn-secondary {
     width: 100%;
   }
 }

@@ -1,55 +1,76 @@
-<link rel="stylesheet" href="/public/css/homeStudent.css">
+<link rel="stylesheet" href="/public/css/homeStudent.css" />
 <style>
-    body { background:#f5f7fb; }
-    .class-card { max-width: 430px; }
-    .class-avatar {
-        width:42px; height:42px; object-fit:cover; border-radius:50%;
-    }
-    .accordion-button:after { transition: transform .2s; }
-    .accordion-button:not(.collapsed):after { transform: rotate(-180deg); }
+  body {
+    background: #f5f7fb;
+  }
+  .class-card {
+    max-width: 430px;
+  }
+  .class-avatar {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  .accordion-button:after {
+    transition: transform 0.2s;
+  }
+  .accordion-button:not(.collapsed):after {
+    transform: rotate(-180deg);
+  }
 </style>
 
 <div class="container py-4">
-    <!-- Header bar -->
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h4 class="mb-0 fw-semibold">Danh sách lớp</h4>
-        <!-- <div class="d-flex flex-grow-1 gap-2" style="max-width:400px;">
+  <!-- Header bar -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h4 class="mb-0 fw-semibold">Danh sách lớp</h4>
+    <!-- <div class="d-flex flex-grow-1 gap-2" style="max-width:400px;">
         <div class="input-group">
             <input id="searchInput" type="text" class="form-control" placeholder="Tìm kiếm theo tên lớp" />
             <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
         </div>
         </div> -->
-        <!-- <button class="btn btn-primary d-flex align-items-center gap-1"><i class="bi bi-plus-lg"></i> Tìm giáo viên</button> -->
-    </div>
+    <!-- <button class="btn btn-primary d-flex align-items-center gap-1"><i class="bi bi-plus-lg"></i> Tìm giáo viên</button> -->
+  </div>
 
-    <!-- List of class cards -->
-    <div id="classList" class="d-flex flex-column gap-4"></div>
-    <div id="dont-have-class" class="d-none"><h3>Bạn Đang Không Tham Gia Lớp Nào, Liên Hệ Giáo Viên Để Thêm Bạn Vào Lớp</h3></div>
+  <!-- List of class cards -->
+  <div id="classList" class="d-flex flex-column gap-4"></div>
+  <div id="dont-have-class" class="d-none">
+    <h3>Bạn Đang Không Tham Gia Lớp Nào, Liên Hệ Giáo Viên Để Thêm Bạn Vào Lớp</h3>
+  </div>
 </div>
 
 <script>
-    /* -------------- Helpers -------------- */
-    function createElement(html) {
-        const temp = document.createElement('template');
-        temp.innerHTML = html.trim();
-        return temp.content.firstChild;
-    }
+  /* -------------- Helpers -------------- */
+  function createElement(html) {
+    const temp = document.createElement('template');
+    temp.innerHTML = html.trim();
+    return temp.content.firstChild;
+  }
 
-    /* -------------- Build class card -------------- */
-    function buildClassCard(cls) {
-        const id        = cls._id;
-        const card      = createElement(`<div class="card shadow-sm class-card" data-name="${cls.class_name.toLowerCase()}"></div>`);
-        const cardBody  = document.createElement('div');
-        cardBody.className = 'card-body';
+  /* -------------- Build class card -------------- */
+  function buildClassCard(cls) {
+    const id = cls._id;
+    const card = createElement(
+      `<div class="card shadow-sm class-card" data-name="${cls.class_name.toLowerCase()}"></div>`
+    );
+    const cardBody = document.createElement('div');
+    cardBody.className = 'card-body';
 
-        // Header with avatar & name
-        cardBody.innerHTML = `
+    // Header with avatar & name
+    cardBody.innerHTML = `
         <div class="d-flex align-items-center gap-2 mb-1">
             <div>
-            <h6 class="mb-0 fw-semibold"><a href="/class-student/${cls._id}">${cls.class_name}</a></h6>
-            <small class="text-muted">${cls.teacher_id?.length ? 'Giáo viên: ' + cls.teacher_id[0].username : ''}</small>
+            <h6 class="mb-0 fw-semibold"><a href="/class-student/${cls._id}">${
+      cls.class_name
+    }</a></h6>
+            <small class="text-muted">${
+              cls.teacher_id?.length ? 'Giáo viên: ' + cls.teacher_id[0].username : ''
+            }</small>
             <br>
-            <small class="text-muted">${cls.teacher_id?.length ? 'Gmail: ' + cls.teacher_id[0].email : ''}</small>
+            <small class="text-muted">${
+              cls.teacher_id?.length ? 'Gmail: ' + cls.teacher_id[0].email : ''
+            }</small>
             </div>
             <div class="dropdown ms-auto">
             <ul class="dropdown-menu dropdown-menu-end">
@@ -58,17 +79,22 @@
             </div>
         </div>`;
 
-        // Meta row: class number & school year
-        cardBody.insertAdjacentHTML('beforeend',`
+    // Meta row: class number & school year
+    cardBody.insertAdjacentHTML(
+      'beforeend',
+      `
         <div class="d-flex justify-content-between small text-muted mb-2">
             <span>Sĩ số: ${cls.number_student ?? 0}</span>
             <span>Khối: ${cls.grade}</span>
             <span>Năm học: ${cls.school_year}</span>
-        </div>`);
+        </div>`
+    );
 
-        // Accordion
-        const accId = `acc_${id}`;
-        cardBody.insertAdjacentHTML('beforeend',`
+    // Accordion
+    const accId = `acc_${id}`;
+    cardBody.insertAdjacentHTML(
+      'beforeend',
+      `
         <div class="accordion" id="${accId}">
             <!-- Section 2: Bảng tin -->
             <div class="accordion-item mt-2">
@@ -79,62 +105,74 @@
             </h2>
             <div id="news_${id}" class="accordion-collapse collapse" data-bs-parent="#${accId}">
                 <div class="accordion-body p-2">
-                ${cls.announcement?.length ? cls.announcement.map(a=>
-                `<div class="mb-1 mt-1">${a.content} <br> ${new Date(a.date).toLocaleDateString('vi-VN')}</div>`
-            ).join('') : '<em class="text-muted">Chưa có thông báo.</em>'}
+                ${
+                  cls.announcement?.length
+                    ? cls.announcement
+                        .map(
+                          (a) =>
+                            `<div class="mb-1 mt-1">${a.content} <br> ${new Date(
+                              a.date
+                            ).toLocaleDateString('vi-VN')}</div>`
+                        )
+                        .join('')
+                    : '<em class="text-muted">Chưa có thông báo.</em>'
+                }
                 </div>
             </div>
             </div>
-        </div>`);
+        </div>`
+    );
 
-        card.appendChild(cardBody);
-        return card;
+    card.appendChild(cardBody);
+    return card;
+  }
+
+  /* -------------- Render list -------------- */
+  function renderClasses(list) {
+    const container = document.getElementById('classList');
+    container.innerHTML = '';
+    console.log('list', list);
+    list.forEach((cls) => container.appendChild(buildClassCard(cls)));
+  }
+
+  /* -------------- Fetch classes -------------- */
+  async function loadClasses() {
+    try {
+      const res = await fetch('/home-student/get-user-student-classes');
+      if (!res.ok) throw new Error('Không thể tải danh sách lớp');
+      const user = await res.json();
+      const classes = user.class_id || [];
+      if (classes.length == 0) {
+        document.getElementById('dont-have-class').classList.remove('d-none');
+        return;
+      }
+      renderClasses(classes);
+    } catch (err) {
+      console.error(err);
+      document.getElementById(
+        'classList'
+      ).innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
     }
+  }
 
-    /* -------------- Render list -------------- */
-    function renderClasses(list) {
-        const container = document.getElementById('classList');
-        container.innerHTML = '';
-        console.log("list",list)
-        list.forEach(cls => container.appendChild(buildClassCard(cls)));
-    }
-
-    /* -------------- Fetch classes -------------- */
-    async function loadClasses() {
-        try {
-        const res = await fetch('/home-student/get-user-student-classes');
-        if (!res.ok) throw new Error('Không thể tải danh sách lớp');
-        const user = await res.json();
-        const classes = user.class_id || [];
-        if (classes.length == 0) {
-            document.getElementById('dont-have-class').classList.remove('d-none')
-            return
-        }
-        renderClasses(classes);
-        } catch (err) {
-        console.error(err);
-        document.getElementById('classList').innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
-        }
-    }
-
-    /* -------------- Search filter -------------- */
-    function initSearch() {
-        const input = document.getElementById('searchInput');
-        input.addEventListener('input', () => {
-        const term = input.value.trim().toLowerCase();
-        document.querySelectorAll('#classList .card').forEach(card => {
-            card.style.display = card.dataset.name.includes(term) ? '' : 'none';
-        });
-        });
-    }
-
-    /* -------------- Navigation link -------------- */
-    function navigationClassDetail(classId) {
-        window.location.href = ``
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        loadClasses();
-        initSearch();
+  /* -------------- Search filter -------------- */
+  function initSearch() {
+    const input = document.getElementById('searchInput');
+    input.addEventListener('input', () => {
+      const term = input.value.trim().toLowerCase();
+      document.querySelectorAll('#classList .card').forEach((card) => {
+        card.style.display = card.dataset.name.includes(term) ? '' : 'none';
+      });
     });
+  }
+
+  /* -------------- Navigation link -------------- */
+  function navigationClassDetail(classId) {
+    window.location.href = ``;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadClasses();
+    initSearch();
+  });
 </script>

@@ -2,53 +2,63 @@ const express = require('express');
 const router = express.Router();
 const classTeacherController = require('../controllers/ClassTeacher.Controller.js');
 
-
 ///////////////////////////////////// Classroom Details /////////////////////////////////////
 
 // [GET] /class-teacher/classroom-details/:classId/test
-router.get('/classroom-details/:classId/test', classTeacherController.classDetailsTest )
+router.get('/classroom-details/:classId/test', classTeacherController.classDetailsTest);
 
 // [GET] /class-teacher/api/classroom-details/:classId/test
-router.get('/api/classroom-details/:classId/test', classTeacherController.getClassDetailsTest )
+router.get('/api/classroom-details/:classId/test', classTeacherController.getClassDetailsTest);
 
 // [GET] /class-teacher/classroom-details/:classId/video
-router.get('/classroom-details/:classId/video', classTeacherController.classDetailsVideo )
+router.get('/classroom-details/:classId/video', classTeacherController.classDetailsVideo);
 
 // [GET] /class-teacher/api/classroom-details/:classId/video
-router.get('/api/classroom-details/:classId/video', classTeacherController.getClassDetailsVideo )
+router.get('/api/classroom-details/:classId/video', classTeacherController.getClassDetailsVideo);
 
 // [GET] /class-teacher/classroom-details/:classId/announce
-router.get('/classroom-details/:classId/announce', classTeacherController.classDetailsAnnounce )
+router.get('/classroom-details/:classId/announce', classTeacherController.classDetailsAnnounce);
 
 // [GET] /class-teacher/api/classroom-details/:classId/announce
-router.get('/api/classroom-details/:classId/announce', classTeacherController.getClassDetailsAnnounce )
+router.get(
+  '/api/classroom-details/:classId/announce',
+  classTeacherController.getClassDetailsAnnounce
+);
 
 // [POST] /class-teacher/api/classroom-details/:classId/announce
-router.post('/api/classroom-details/:classId/announce', classTeacherController.postClassDetailsAnnounce )
+router.post(
+  '/api/classroom-details/:classId/announce',
+  classTeacherController.postClassDetailsAnnounce
+);
 
 // [GET] /class-teacher/classroom-details/:classId/essay
-router.get('/classroom-details/:classId/essay', classTeacherController.classDetailsEssay )
+router.get('/classroom-details/:classId/essay', classTeacherController.classDetailsEssay);
 
 // [GET] /class-teacher/api/classroom-details/:classId/essay
-router.get('/api/classroom-details/:classId/essay', classTeacherController.getClassDetailsEssay )
+router.get('/api/classroom-details/:classId/essay', classTeacherController.getClassDetailsEssay);
 
 /////////////////////////////////////////////////////////////////
 
 // [GET] /class-teacher/classroom-details/:classId
-router.get('/classroom-details/:classId', classTeacherController.classDetails )
+router.get('/classroom-details/:classId', classTeacherController.classDetails);
 
 // [GET] /class-teacher/api/classroom-details/:classId
-router.get('/api/classroom-details/:classId', classTeacherController.getClassDetails )
+router.get('/api/classroom-details/:classId', classTeacherController.getClassDetails);
 
 // [PUT] /class-teacher/api/classroom-details/:classId
-router.put('/api/classroom-details/:classId', classTeacherController.putClassDetails )
+router.put('/api/classroom-details/:classId', classTeacherController.putClassDetails);
 
 // [POST] /class-teacher/api/classroom-details/:classId/add-student
-router.post('/api/classroom-details/:classId/add-student', classTeacherController.addStudentToClass )
+router.post(
+  '/api/classroom-details/:classId/add-student',
+  classTeacherController.addStudentToClass
+);
 
 // [DELETE] /class-teacher/api/classroom-details/:classId/delete-student
-router.delete('/api/classroom-details/:classId/delete-student', classTeacherController.deleteStudentFromClass )
-
+router.delete(
+  '/api/classroom-details/:classId/delete-student',
+  classTeacherController.deleteStudentFromClass
+);
 
 ///////////////////////////////////// Index /class-teacher //////////////////////////////////
 // [POST] /class-teacher/api/create-class

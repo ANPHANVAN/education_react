@@ -166,11 +166,13 @@ h2 {
     padding: 15px;
   }
 
-  .form-control, .form-select {
+  .form-control,
+  .form-select {
     padding: 8px;
   }
 
-  .modal-footer .btn-primary, .modal-footer .btn-secondary {
+  .modal-footer .btn-primary,
+  .modal-footer .btn-secondary {
     padding: 8px 15px;
   }
 }

@@ -1,43 +1,49 @@
 <header>
   <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">Education App</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav" id="navigation-button">
-          </ul>
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Education App</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav" id="navigation-button"></ul>
 
-          <ul id="logout" class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a id="profile-user" class="nav-link"></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/auth/logout">Đăng Xuất</a>
-            </li>
-          </ul>
-        </div>
+        <ul id="logout" class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a id="profile-user" class="nav-link"></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/auth/logout">Đăng Xuất</a>
+          </li>
+        </ul>
       </div>
-    </nav>
+    </div>
+  </nav>
 </header>
 
-
 <script>
-const partname = new URL(window.location.href).pathname.split('/')
-const mainPathName = partname[1];
+  const partname = new URL(window.location.href).pathname.split('/');
+  const mainPathName = partname[1];
 
-  const navigation = document.getElementById('navigation-button')
-  const profileUser = document.getElementById('profile-user')
+  const navigation = document.getElementById('navigation-button');
+  const profileUser = document.getElementById('profile-user');
 
   async function hideRolePage() {
-    const response = await fetch('/me/api/get-user-info')
-    const { userInfo } = await response.json()
+    const response = await fetch('/me/api/get-user-info');
+    const { userInfo } = await response.json();
 
     // update href info
-    profileUser.href = `/me/${userInfo._id}`
+    profileUser.href = `/me/${userInfo._id}`;
     // update user FullName
-    profileUser.innerHTML = `${userInfo.fullname || "Hồ Sơ Cá Nhân"}`
+    profileUser.innerHTML = `${userInfo.fullname || 'Hồ Sơ Cá Nhân'}`;
 
     if (userInfo.role == 'teacher') {
       navigation.innerHTML = `
@@ -53,8 +59,8 @@ const mainPathName = partname[1];
         <li class="nav-item  teacher-page">
           <a class="nav-link nav-link-header" href="/video-teacher">Video</a>
         </li>
-      `
-    } else if (userInfo.role=='admin') {
+      `;
+    } else if (userInfo.role == 'admin') {
       navigation.innerHTML = `
         <li class="nav-item  student-page">
           <a class="nav-link nav-link-header" href="/home-student">Home Student</a>
@@ -75,39 +81,42 @@ const mainPathName = partname[1];
           <a class="nav-link nav-link-header" href="/admin">Admin</a>
         </li>        
 
-      `
+      `;
     }
   }
 
-  document.addEventListener("DOMContentLoaded", async function () {
-    await hideRolePage()
+  document.addEventListener('DOMContentLoaded', async function () {
+    await hideRolePage();
     // Ẩn nút logout ở những route nhất định
-    if ((window.location.pathname === "/auth/logout") || (window.location.pathname === "/auth/login") || (window.location.pathname === "/auth/register")) {
-      const logout = document.getElementById("logout");
+    if (
+      window.location.pathname === '/auth/logout' ||
+      window.location.pathname === '/auth/login' ||
+      window.location.pathname === '/auth/register'
+    ) {
+      const logout = document.getElementById('logout');
       if (logout) {
-        logout.style.display = "none";
+        logout.style.display = 'none';
       }
     }
 
     // Thêm chức năng đổi active khi click nav-link
-    const navLinks = document.querySelectorAll(".nav-link-header");
+    const navLinks = document.querySelectorAll('.nav-link-header');
 
-    navLinks.forEach(link => {
-      link.addEventListener("click", function () {
+    navLinks.forEach((link) => {
+      link.addEventListener('click', function () {
         // Xóa class 'active' khỏi tất cả link
-        navLinks.forEach(l => l.classList.remove("active"));
-        
+        navLinks.forEach((l) => l.classList.remove('active'));
+
         // Thêm class 'active' cho link hiện tại
-        this.classList.add("active");
+        this.classList.add('active');
       });
     });
 
-    navLinks.forEach(link => {
+    navLinks.forEach((link) => {
       const linkPath = new URL(link.href).pathname.split('/')[1];
       if (linkPath === mainPathName) {
-        link.classList.add("active");
+        link.classList.add('active');
       }
     });
-
   });
 </script>

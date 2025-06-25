@@ -1,8 +1,6 @@
-  <link rel="stylesheet" href="/public/css/videoTeacher3File.css">
-
+<link rel="stylesheet" href="/public/css/videoTeacher3File.css" />
 
 <div class="container my-4">
-
   <!-- ==== THÔNG TIN VIDEO & LỚP ==== -->
   <h2 class="mb-3">Danh sách xem video</h2>
 
@@ -11,16 +9,16 @@
       <div class="col-md-6">
         <h5 class="card-title mb-1"><span id="videoName"></span></h5>
         <p class="mb-0 small text-muted">
-          Môn <span id="videoSubject"></span> • Khối <span id="videoGrade"></span><br>
-          Thời lượng: <strong id="videoDuration"></strong><br>
+          Môn <span id="videoSubject"></span> • Khối <span id="videoGrade"></span><br />
+          Thời lượng: <strong id="videoDuration"></strong><br />
           Tạo ngày: <span id="videoCreated"></span>
         </p>
       </div>
       <div class="col-md-6">
         <h5 class="card-title mb-1">Thông tin lớp</h5>
         <p class="mb-0 small text-muted">
-          Tên lớp: <strong id="className"></strong><br>
-          Năm học: <span id="classYear"></span><br>
+          Tên lớp: <strong id="className"></strong><br />
+          Năm học: <span id="classYear"></span><br />
           Khối: <span id="classGrade"></span> • Sĩ số: <span id="classSize"></span>
         </p>
       </div>
@@ -47,104 +45,102 @@
     </table>
   </div>
 
-  <p id="emptyMsg" class="text-muted text-center d-none">
-    Chưa có thông tin học sinh.
-  </p>
+  <p id="emptyMsg" class="text-muted text-center d-none">Chưa có thông tin học sinh.</p>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  /* ----------------- LẤY PARAM TỪ URL ----------------- */
-  const params   = new URLSearchParams(window.location.search);
-  const VIDEO_ID = params.get('video-id');
-  const CLASS_ID = params.get('class_id');
-  if (!VIDEO_ID || !CLASS_ID){
-    alert('Thiếu video-id hoặc class_id trên URL'); return;
-  }
-
-  /* ----------------- FETCH API ----------------- */
-  const API = `/video-teacher/api/class-video-detail?video-id=${VIDEO_ID}&class_id=${CLASS_ID}`;
-  const spinner   = document.getElementById('loading');
-  const table     = document.getElementById('resultTable');
-  const tbody     = table.querySelector('tbody');
-  const emptyMsg  = document.getElementById('emptyMsg');
-  const infoCard  = document.getElementById('infoCard');
-
-  try{
-    const res = await fetch(API);
-    if(!res.ok) throw new Error('Fetch failed');
-    const { videoRequirementInfo, classInfo } = await res.json();
-
-    /* ----- HIỂN THỊ THÔNG TIN VIDEO + CLASS ----- */
-    document.getElementById('videoName').textContent     = videoRequirementInfo.video_requirement_name;
-    document.getElementById('videoSubject').textContent  = videoRequirementInfo.subject;
-    document.getElementById('videoGrade').textContent    = videoRequirementInfo.grade;
-    document.getElementById('videoDuration').textContent = videoRequirementInfo.video_duration;
-    document.getElementById('videoCreated').textContent  =
-      new Date(videoRequirementInfo.createdAt).toLocaleString('vi-VN');
-
-    document.getElementById('className').textContent = classInfo.class_name;
-    document.getElementById('classYear').textContent = classInfo.school_year;
-    document.getElementById('classGrade').textContent= classInfo.grade;
-    document.getElementById('classSize').textContent = classInfo.number_student;
-    infoCard.classList.remove('d-none');
-
-    /* ----------------- GHÉP MẢNG ----------------- */
-    const students = classInfo.students || [];
-    if(!students.length){
-      spinner.classList.add('d-none');
-      emptyMsg.classList.remove('d-none');
+  document.addEventListener('DOMContentLoaded', async () => {
+    /* ----------------- LẤY PARAM TỪ URL ----------------- */
+    const params = new URLSearchParams(window.location.search);
+    const VIDEO_ID = params.get('video-id');
+    const CLASS_ID = params.get('class_id');
+    if (!VIDEO_ID || !CLASS_ID) {
+      alert('Thiếu video-id hoặc class_id trên URL');
       return;
     }
 
-    const merged = students.map(st=>{
-      const watched = (st.student_id.video || []).filter(
-        v=> v.video_requirement_id === VIDEO_ID && v.completed
-      );
-      if(!watched.length){
+    /* ----------------- FETCH API ----------------- */
+    const API = `/video-teacher/api/class-video-detail?video-id=${VIDEO_ID}&class_id=${CLASS_ID}`;
+    const spinner = document.getElementById('loading');
+    const table = document.getElementById('resultTable');
+    const tbody = table.querySelector('tbody');
+    const emptyMsg = document.getElementById('emptyMsg');
+    const infoCard = document.getElementById('infoCard');
+
+    try {
+      const res = await fetch(API);
+      if (!res.ok) throw new Error('Fetch failed');
+      const { videoRequirementInfo, classInfo } = await res.json();
+
+      /* ----- HIỂN THỊ THÔNG TIN VIDEO + CLASS ----- */
+      document.getElementById('videoName').textContent =
+        videoRequirementInfo.video_requirement_name;
+      document.getElementById('videoSubject').textContent = videoRequirementInfo.subject;
+      document.getElementById('videoGrade').textContent = videoRequirementInfo.grade;
+      document.getElementById('videoDuration').textContent = videoRequirementInfo.video_duration;
+      document.getElementById('videoCreated').textContent = new Date(
+        videoRequirementInfo.createdAt
+      ).toLocaleString('vi-VN');
+
+      document.getElementById('className').textContent = classInfo.class_name;
+      document.getElementById('classYear').textContent = classInfo.school_year;
+      document.getElementById('classGrade').textContent = classInfo.grade;
+      document.getElementById('classSize').textContent = classInfo.number_student;
+      infoCard.classList.remove('d-none');
+
+      /* ----------------- GHÉP MẢNG ----------------- */
+      const students = classInfo.students || [];
+      if (!students.length) {
+        spinner.classList.add('d-none');
+        emptyMsg.classList.remove('d-none');
+        return;
+      }
+
+      const merged = students.map((st) => {
+        const watched = (st.student_id.video || []).filter(
+          (v) => v.video_requirement_id === VIDEO_ID && v.completed
+        );
+        if (!watched.length) {
+          return {
+            fullname: st.student_user_id.fullname,
+            email: st.student_user_id.email,
+            status: false,
+          };
+        }
+        // lấy lần xem mới nhất
+        watched.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         return {
           fullname: st.student_user_id.fullname,
-          email   : st.student_user_id.email,
-          status  : false
+          email: st.student_user_id.email,
+          status: true,
+          watchedAt: watched[0].createdAt,
         };
-      }
-      // lấy lần xem mới nhất
-      watched.sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt));
-      return {
-        fullname: st.student_user_id.fullname,
-        email   : st.student_user_id.email,
-        status  : true,
-        watchedAt: watched[0].createdAt
-      };
-    });
+      });
 
-    /* ----------------- RENDER BẢNG ----------------- */
-    spinner.classList.add('d-none');
-    table.classList.remove('d-none');
+      /* ----------------- RENDER BẢNG ----------------- */
+      spinner.classList.add('d-none');
+      table.classList.remove('d-none');
 
-    merged.forEach((s,idx)=>{
-      const tr = document.createElement('tr');
-      const statusHtml = s.status
-        ? `<span class="status-pill bg-success text-white">Đã xem</span>`
-        : `<span class="status-pill bg-secondary text-white">Chưa xem</span>`;
-      const time = s.status
-        ? new Date(s.watchedAt).toLocaleString('vi-VN')
-        : '-';
+      merged.forEach((s, idx) => {
+        const tr = document.createElement('tr');
+        const statusHtml = s.status
+          ? `<span class="status-pill bg-success text-white">Đã xem</span>`
+          : `<span class="status-pill bg-secondary text-white">Chưa xem</span>`;
+        const time = s.status ? new Date(s.watchedAt).toLocaleString('vi-VN') : '-';
 
-      tr.innerHTML = `
-        <td>${idx+1}</td>
+        tr.innerHTML = `
+        <td>${idx + 1}</td>
         <td>${s.fullname}<br><small class="text-muted">${s.email}</small></td>
         <td>${statusHtml}</td>
         <td>${time}</td>
       `;
-      tbody.appendChild(tr);
-    });
-
-  }catch(err){
-    console.error(err);
-    spinner.classList.add('d-none');
-    emptyMsg.textContent = 'Không thể tải dữ liệu. Vui lòng thử lại.';
-    emptyMsg.classList.remove('d-none');
-  }
-});
+        tbody.appendChild(tr);
+      });
+    } catch (err) {
+      console.error(err);
+      spinner.classList.add('d-none');
+      emptyMsg.textContent = 'Không thể tải dữ liệu. Vui lòng thử lại.';
+      emptyMsg.classList.remove('d-none');
+    }
+  });
 </script>

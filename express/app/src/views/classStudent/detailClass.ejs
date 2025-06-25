@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/public/css/classDetail.css">
+<link rel="stylesheet" href="/public/css/classDetail.css" />
 
 <div class="container-fluid">
   <div class="row">
@@ -24,32 +24,28 @@
       </button>
     </div>
 
-
     <!-- Content -->
     <div class="col-10">
       <!-- Bài tập, đề thi -->
-      <div id="content-baitap" class="tab-content">
-      </div>
+      <div id="content-baitap" class="tab-content"></div>
 
       <!-- essay test -->
       <div id="content-essay" class="tab-content d-none">
-      <h4>Bài Tự Luận sẽ được hiển thị tại đây.</h4>
-      </div>  
+        <h4>Bài Tự Luận sẽ được hiển thị tại đây.</h4>
+      </div>
 
       <!-- Bảng tin -->
-      <div id="content-bangtin" class="tab-content d-none">
-      </div>
+      <div id="content-bangtin" class="tab-content d-none"></div>
 
       <!-- video watch -->
       <div id="content-video" class="tab-content d-none">
-      <h4>Video sẽ được hiển thị tại đây.</h4>
-      </div>  
+        <h4>Video sẽ được hiển thị tại đây.</h4>
+      </div>
 
       <!-- Folder -->
       <div id="content-folder" class="tab-content d-none">
         <h4>Thư mục lưu trữ tài liệu sẽ hiển thị ở đây.</h4>
       </div>
-
     </div>
   </div>
 </div>
@@ -57,144 +53,145 @@
 <script>
   let TEACHER_ID;
 
-  const btnBaitap = document.getElementById("btn-baitap");
-  const btnBangtin = document.getElementById("btn-bangtin");
-  const btnVideo = document.getElementById("btn-video");
-  const btnEssay = document.getElementById("btn-essay");
-  const contentBaitap = document.getElementById("content-baitap");
-  const contentBangtin = document.getElementById("content-bangtin");
-  const contentVideo = document.getElementById("content-video");
-  const contentEssay = document.getElementById("content-essay");
-  const btnFolder = document.getElementById("btn-folder");
-  const contentFolder = document.getElementById("content-folder");
+  const btnBaitap = document.getElementById('btn-baitap');
+  const btnBangtin = document.getElementById('btn-bangtin');
+  const btnVideo = document.getElementById('btn-video');
+  const btnEssay = document.getElementById('btn-essay');
+  const contentBaitap = document.getElementById('content-baitap');
+  const contentBangtin = document.getElementById('content-bangtin');
+  const contentVideo = document.getElementById('content-video');
+  const contentEssay = document.getElementById('content-essay');
+  const btnFolder = document.getElementById('btn-folder');
+  const contentFolder = document.getElementById('content-folder');
 
+  btnBaitap.addEventListener('click', () => {
+    btnBaitap.classList.add('active');
+    btnBangtin.classList.remove('active');
+    btnVideo.classList.remove('active');
+    btnEssay.classList.remove('active');
+    btnFolder.classList.remove('active');
 
-  btnBaitap.addEventListener("click", () => {
-    btnBaitap.classList.add("active");
-    btnBangtin.classList.remove("active");
-    btnVideo.classList.remove("active");
-    btnEssay.classList.remove("active");
-    btnFolder.classList.remove("active");
-
-    contentBaitap.classList.remove("d-none");
-    contentBangtin.classList.add("d-none");
-    contentVideo.classList.add("d-none");
-    contentEssay.classList.add("d-none");
-    contentFolder.classList.add("d-none");
-
+    contentBaitap.classList.remove('d-none');
+    contentBangtin.classList.add('d-none');
+    contentVideo.classList.add('d-none');
+    contentEssay.classList.add('d-none');
+    contentFolder.classList.add('d-none');
   });
 
-  btnBangtin.addEventListener("click", () => {
-    btnBangtin.classList.add("active");
-    btnBaitap.classList.remove("active");
-    btnVideo.classList.remove("active");
-    btnEssay.classList.remove("active");
-    btnFolder.classList.remove("active");
+  btnBangtin.addEventListener('click', () => {
+    btnBangtin.classList.add('active');
+    btnBaitap.classList.remove('active');
+    btnVideo.classList.remove('active');
+    btnEssay.classList.remove('active');
+    btnFolder.classList.remove('active');
 
-    contentBangtin.classList.remove("d-none");
-    contentBaitap.classList.add("d-none");
-    contentVideo.classList.add("d-none");
-    contentEssay.classList.add("d-none");
-    contentFolder.classList.add("d-none");
-
+    contentBangtin.classList.remove('d-none');
+    contentBaitap.classList.add('d-none');
+    contentVideo.classList.add('d-none');
+    contentEssay.classList.add('d-none');
+    contentFolder.classList.add('d-none');
   });
 
-  btnVideo.addEventListener("click", () => {
-    btnVideo.classList.add("active");
-    btnBaitap.classList.remove("active");
-    btnBangtin.classList.remove("active");
-    btnEssay.classList.remove("active");
-    btnFolder.classList.remove("active");
+  btnVideo.addEventListener('click', () => {
+    btnVideo.classList.add('active');
+    btnBaitap.classList.remove('active');
+    btnBangtin.classList.remove('active');
+    btnEssay.classList.remove('active');
+    btnFolder.classList.remove('active');
 
-    contentVideo.classList.remove("d-none");
-    contentBaitap.classList.add("d-none");
-    contentBangtin.classList.add("d-none");
-    contentEssay.classList.add("d-none");
-    contentFolder.classList.add("d-none");
+    contentVideo.classList.remove('d-none');
+    contentBaitap.classList.add('d-none');
+    contentBangtin.classList.add('d-none');
+    contentEssay.classList.add('d-none');
+    contentFolder.classList.add('d-none');
   });
 
-  btnEssay.addEventListener("click", () => {
-    btnEssay.classList.add("active");
-    btnVideo.classList.remove("active");
-    btnBaitap.classList.remove("active");
-    btnBangtin.classList.remove("active");
-    btnFolder.classList.remove("active");
+  btnEssay.addEventListener('click', () => {
+    btnEssay.classList.add('active');
+    btnVideo.classList.remove('active');
+    btnBaitap.classList.remove('active');
+    btnBangtin.classList.remove('active');
+    btnFolder.classList.remove('active');
 
-    contentEssay.classList.remove("d-none");
-    contentVideo.classList.add("d-none");
-    contentBaitap.classList.add("d-none");
-    contentBangtin.classList.add("d-none");
-    contentFolder.classList.add("d-none");
+    contentEssay.classList.remove('d-none');
+    contentVideo.classList.add('d-none');
+    contentBaitap.classList.add('d-none');
+    contentBangtin.classList.add('d-none');
+    contentFolder.classList.add('d-none');
   });
 
-  btnFolder.addEventListener("click", () => {
+  btnFolder.addEventListener('click', () => {
     // Active class
-    btnFolder.classList.add("active");
-    btnBaitap.classList.remove("active");
-    btnBangtin.classList.remove("active");
-    btnVideo.classList.remove("active");
-    btnEssay.classList.remove("active");
+    btnFolder.classList.add('active');
+    btnBaitap.classList.remove('active');
+    btnBangtin.classList.remove('active');
+    btnVideo.classList.remove('active');
+    btnEssay.classList.remove('active');
 
     // Toggle nội dung
-    contentFolder.classList.remove("d-none");
-    contentBaitap.classList.add("d-none");
-    contentBangtin.classList.add("d-none");
-    contentVideo.classList.add("d-none");
-    contentEssay.classList.add("d-none");
+    contentFolder.classList.remove('d-none');
+    contentBaitap.classList.add('d-none');
+    contentBangtin.classList.add('d-none');
+    contentVideo.classList.add('d-none');
+    contentEssay.classList.add('d-none');
   });
-
 </script>
 
 <script>
-    const pathParts = window.location.pathname.split('/');
-    const CLASS_ID = pathParts[pathParts.length - 1];
+  const pathParts = window.location.pathname.split('/');
+  const CLASS_ID = pathParts[pathParts.length - 1];
 
-    function navigationTeacherInfo(){
-      const teacherInfo = document.getElementById('btn-class')
-      teacherInfo.addEventListener('click',()=>{window.location.href = `/me/teacher-info/${TEACHER_ID}`})
-    }
+  function navigationTeacherInfo() {
+    const teacherInfo = document.getElementById('btn-class');
+    teacherInfo.addEventListener('click', () => {
+      window.location.href = `/me/teacher-info/${TEACHER_ID}`;
+    });
+  }
 
-    async function renderAnnounce(){
-      try {
-        const res = await fetch(`/class-student/api/${CLASS_ID}`)
-        const classInfo = await res.json()
+  async function renderAnnounce() {
+    try {
+      const res = await fetch(`/class-student/api/${CLASS_ID}`);
+      const classInfo = await res.json();
 
-        TEACHER_ID = classInfo.teacher_id[0]
-        navigationTeacherInfo()
-        // change content Bang tin
-        let listAnnouncements = classInfo.announcement
-        listAnnouncements = (classInfo.announcement || []).sort((a, b) => {
-          return new Date(b.date) - new Date(a.date);
-        });
-        contentBangtin.innerHTML = listAnnouncements
-        .map(a => `
+      TEACHER_ID = classInfo.teacher_id[0];
+      navigationTeacherInfo();
+      // change content Bang tin
+      let listAnnouncements = classInfo.announcement;
+      listAnnouncements = (classInfo.announcement || []).sort((a, b) => {
+        return new Date(b.date) - new Date(a.date);
+      });
+      contentBangtin.innerHTML = listAnnouncements
+        .map(
+          (a) => `
           <div class="card p-3 mb-3">
           <span class="text-muted">
               ${new Date(a.date).toLocaleDateString('vi-VN')}
           </span>
           <p class="mb-0">${a.content}</p>
           </div>
-        `)
+        `
+        )
         .join('');
-          
-      } catch(error) {
-          console.error('error fetch class info')
-      }
+    } catch (error) {
+      console.error('error fetch class info');
     }
+  }
 
+  async function renderTestInfo() {
+    try {
+      const res = await fetch(`/class-student/api/get-class-test?class_id=${CLASS_ID}`);
+      const essayInfoStatus = await res.json();
+      const { student_id, tests } = essayInfoStatus;
 
-    async function renderTestInfo(){
-      try {
-        const res = await fetch(`/class-student/api/get-class-test?class_id=${CLASS_ID}`)
-        const essayInfoStatus = await res.json()
-        const { student_id, tests} = essayInfoStatus
-
-        contentBaitap.innerHTML = tests
-          .map(test => `
+      contentBaitap.innerHTML = tests
+        .map(
+          (test) => `
             <div class="card mt-3 shadow-sm">
               <div class="card-body">
                 <h5 class="card-title">
-                  <a href="/test-student/test-information/${test.test_id}?class_id=${CLASS_ID}" class="text-decoration-none text-dark">
+                  <a href="/test-student/test-information/${
+                    test.test_id
+                  }?class_id=${CLASS_ID}" class="text-decoration-none text-dark">
                     <strong>${test.test_title}</strong>
                   </a>
                 </h5>
@@ -207,73 +204,83 @@
                 </div>
 
                 <div class="mb-1">
-                  ${test.test_status_submit 
-                    ? `<strong>Điểm số thi lần đầu:</strong> ${test.score} / ${test.sum_score}` 
-                    : '<strong>Chưa có điểm</strong>'}
+                  ${
+                    test.test_status_submit
+                      ? `<strong>Điểm số thi lần đầu:</strong> ${test.score} / ${test.sum_score}`
+                      : '<strong>Chưa có điểm</strong>'
+                  }
                 </div>
 
-                ${test.time_test 
-                  ? `<div class="mb-1"><strong>Thời gian làm bài:</strong> ${test.time_test} phút</div>` 
-                  : ''}
+                ${
+                  test.time_test
+                    ? `<div class="mb-1"><strong>Thời gian làm bài:</strong> ${test.time_test} phút</div>`
+                    : ''
+                }
 
-                ${test.time_end 
-                  ? `<div class="text-muted"><small>Thời gian nộp: ${new Date(test.time_end).toLocaleString('vi-VN')}</small></div>` 
-                  : ''}
+                ${
+                  test.time_end
+                    ? `<div class="text-muted"><small>Thời gian nộp: ${new Date(
+                        test.time_end
+                      ).toLocaleString('vi-VN')}</small></div>`
+                    : ''
+                }
               </div>
             </div>
-          `)
-          .join('');
-        
-          
-      } catch(error) {
-        console.error('error fetch class info')
-      }
+          `
+        )
+        .join('');
+    } catch (error) {
+      console.error('error fetch class info');
     }
+  }
 
-    async function renderVideoInfo(){
-        try {
-            const res = await fetch(`/class-student/student-video?class_id=${CLASS_ID}`)
-            const videoStudentInfoStatus = await res.json()
-            const { videoClassInfo, studentVideoInfo, student_id } = videoStudentInfoStatus
+  async function renderVideoInfo() {
+    try {
+      const res = await fetch(`/class-student/student-video?class_id=${CLASS_ID}`);
+      const videoStudentInfoStatus = await res.json();
+      const { videoClassInfo, studentVideoInfo, student_id } = videoStudentInfoStatus;
 
-            // this part merge information
-            let videoStatus = [] ;
-            for (let i = 0; i < videoClassInfo.length; i++) {
-              const videoRequirement = videoClassInfo[i];
-              let haveFound = false;
-              for (let j = 0; j < studentVideoInfo.video.length; j++) {
-                const video = studentVideoInfo.video[j];
-                if ( videoRequirement._id === video.video_requirement_id ) {
-                  videoStatus.push({
-                    video_requirement_id: videoRequirement._id,
-                    video_requirement_name:videoRequirement.video_requirement_name,
-                    video_embed: videoRequirement.videoRequirement,
-                    video_duration: videoRequirement.video_duration,
-                    note: videoRequirement.note,
-                    completedStatus: true
-                  })
-                  haveFound = true
-                }
-              }
+      // this part merge information
+      let videoStatus = [];
+      for (let i = 0; i < videoClassInfo.length; i++) {
+        const videoRequirement = videoClassInfo[i];
+        let haveFound = false;
+        for (let j = 0; j < studentVideoInfo.video.length; j++) {
+          const video = studentVideoInfo.video[j];
+          if (videoRequirement._id === video.video_requirement_id) {
+            videoStatus.push({
+              video_requirement_id: videoRequirement._id,
+              video_requirement_name: videoRequirement.video_requirement_name,
+              video_embed: videoRequirement.videoRequirement,
+              video_duration: videoRequirement.video_duration,
+              note: videoRequirement.note,
+              completedStatus: true,
+            });
+            haveFound = true;
+          }
+        }
 
-              if ( !haveFound ) {
-                videoStatus.push({
-                  video_requirement_id: videoRequirement._id,
-                  video_requirement_name:videoRequirement.video_requirement_name,
-                  video_embed: videoRequirement.videoRequirement,
-                  video_duration: videoRequirement.video_duration,
-                  note: videoRequirement.note,
-                  completedStatus: false
-                })
-              }
-            }
+        if (!haveFound) {
+          videoStatus.push({
+            video_requirement_id: videoRequirement._id,
+            video_requirement_name: videoRequirement.video_requirement_name,
+            video_embed: videoRequirement.videoRequirement,
+            video_duration: videoRequirement.video_duration,
+            note: videoRequirement.note,
+            completedStatus: false,
+          });
+        }
+      }
 
-            contentVideo.innerHTML = videoStatus
-              .map(video_Status => `
+      contentVideo.innerHTML = videoStatus
+        .map(
+          (video_Status) => `
                 <div class="card mt-3 shadow-sm">
                   <div class="card-body">
                     <h5 class="card-title">
-                      <a href="/video-student/watch-video/${video_Status.video_requirement_id}?student_id=${student_id}" class="text-decoration-none text-dark">
+                      <a href="/video-student/watch-video/${
+                        video_Status.video_requirement_id
+                      }?student_id=${student_id}" class="text-decoration-none text-dark">
                         <strong>${video_Status.video_requirement_name}</strong>
                       </a>
                     </h5>
@@ -282,60 +289,69 @@
                       <strong>Thời gian xem:</strong> ${video_Status.video_duration}
                     </div>
 
-                    ${video_Status.note 
-                      ? `<div class="mb-1"><strong>Ghi chú:</strong> ${video_Status.note}</div>` 
-                      : ''}
+                    ${
+                      video_Status.note
+                        ? `<div class="mb-1"><strong>Ghi chú:</strong> ${video_Status.note}</div>`
+                        : ''
+                    }
 
                     <div>
                       <strong>Trạng thái:</strong>
-                      <span class="${video_Status.completedStatus ? 'text-success' : 'text-danger'}">
+                      <span class="${
+                        video_Status.completedStatus ? 'text-success' : 'text-danger'
+                      }">
                         ${video_Status.completedStatus ? 'Đã hoàn thành' : 'Chưa hoàn thành'}
                       </span>
                     </div>
                   </div>
                 </div>
-              `)
-              .join('');
-
-            
-        } catch(error) {
-            console.error('error fetch class info')
-        }
+              `
+        )
+        .join('');
+    } catch (error) {
+      console.error('error fetch class info');
     }
+  }
 
-    async function renderEssayInfo() {
-      try {
-        const res = await fetch(`/class-student/student-essay?class_id=${CLASS_ID}`)
-        const { essayClassInfo, studentEssayInfo, student_id } = await res.json();
+  async function renderEssayInfo() {
+    try {
+      const res = await fetch(`/class-student/student-essay?class_id=${CLASS_ID}`);
+      const { essayClassInfo, studentEssayInfo, student_id } = await res.json();
 
-        const essaySubmissions = studentEssayInfo.essay || [];
-        const essayStatus = essayClassInfo.map((essay) => {
-          // Tìm bài nộp tương ứng của học sinh (nếu có)
-          const submission = essaySubmissions.find(sub => sub.essay_id === essay._id);
+      const essaySubmissions = studentEssayInfo.essay || [];
+      const essayStatus = essayClassInfo.map((essay) => {
+        // Tìm bài nộp tương ứng của học sinh (nếu có)
+        const submission = essaySubmissions.find((sub) => sub.essay_id === essay._id);
 
-          return {
-            essay_id: essay._id,
-            title: essay.title,
-            subject: essay.subject,
-            grade: essay.grade,
-            url_file: essay.url_file,
-            score: submission?.score ?? null,
-            comments:submission?.comments ?? null,
-            submit_status: !!submission,
-            submission_file: submission?.url_file_submit ?? null,
-            submitted_at: submission?.createdAt ?? null
-          };
-        });
+        return {
+          essay_id: essay._id,
+          title: essay.title,
+          subject: essay.subject,
+          grade: essay.grade,
+          url_file: essay.url_file,
+          score: submission?.score ?? null,
+          comments: submission?.comments ?? null,
+          submit_status: !!submission,
+          submission_file: submission?.url_file_submit ?? null,
+          submitted_at: submission?.createdAt ?? null,
+        };
+      });
 
-        contentEssay.innerHTML = essayStatus.map(status => `
+      contentEssay.innerHTML = essayStatus
+        .map(
+          (status) => `
           <div class="card mt-3 shadow-sm">
             <div class="card-body">
               <h5 class="card-title">
-                <a href="/essay-student/essay-information/${status.essay_id}?class_id=${CLASS_ID}" class="text-decoration-none text-dark">
+                <a href="/essay-student/essay-information/${
+                  status.essay_id
+                }?class_id=${CLASS_ID}" class="text-decoration-none text-dark">
                   <strong>Đề thi: ${status.title}</strong>
                 </a>
               </h5>
-              <h6 class="card-subtitle mb-2 text-muted">Môn: ${status.subject} - Khối: ${status.grade}</h6>
+              <h6 class="card-subtitle mb-2 text-muted">Môn: ${status.subject} - Khối: ${
+            status.grade
+          }</h6>
 
               <div class="mb-2">
                 <strong>File đề:</strong>
@@ -349,29 +365,45 @@
                 </span>
               </div>
 
-              ${status.score ? `<div class="mb-1"><strong>Điểm:</strong> ${status.score} điểm</div>` : ''}
-              ${status.comments ? `<div class="mb-1"><strong>Đánh giá:</strong> ${status.comments}</div>` : ''}
+              ${
+                status.score
+                  ? `<div class="mb-1"><strong>Điểm:</strong> ${status.score} điểm</div>`
+                  : ''
+              }
+              ${
+                status.comments
+                  ? `<div class="mb-1"><strong>Đánh giá:</strong> ${status.comments}</div>`
+                  : ''
+              }
 
-              ${status.submit_status ? `
+              ${
+                status.submit_status
+                  ? `
                 <div class="mb-1">
                   <strong>File bài làm:</strong>
-                  <a href="${status.submission_file}" target="_blank" class="text-primary">Xem bài nộp</a>
+                  <a href="${
+                    status.submission_file
+                  }" target="_blank" class="text-primary">Xem bài nộp</a>
                 </div>
-                <div class="text-muted"><small>Thời gian nộp: ${new Date(status.submitted_at).toLocaleString('vi-VN')}</small></div>
-              ` : ''}
+                <div class="text-muted"><small>Thời gian nộp: ${new Date(
+                  status.submitted_at
+                ).toLocaleString('vi-VN')}</small></div>
+              `
+                  : ''
+              }
             </div>
           </div>
-        `).join('');
-
-
-      } catch (err) {
-        console.error(err);
-        contentEssay.innerHTML = `<div class="alert alert-danger">Lỗi tải dữ liệu bài essay</div>`;
-      }
+        `
+        )
+        .join('');
+    } catch (err) {
+      console.error(err);
+      contentEssay.innerHTML = `<div class="alert alert-danger">Lỗi tải dữ liệu bài essay</div>`;
     }
+  }
 
-    function renderFileHeader() {
-      contentFolder.innerHTML =`
+  function renderFileHeader() {
+    contentFolder.innerHTML = `
       <div class="container mt-4">
 
         <!-- Danh sách tất cả -->
@@ -392,59 +424,61 @@
         </div>
       </div>
 
-      `
-    }
+      `;
+  }
 
-    async function renderFileInfo(){
-      try {
-        const response = await fetch(`/folder/api/folder-teacher/${CLASS_ID}/get-files`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const files = await response.json();
-        console.log(files);
-        const listItems = document.querySelector('.file-teacher-list');
-        listItems.innerHTML = ''; // Clear existing items
-        files.forEach(file => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
+  async function renderFileInfo() {
+    try {
+      const response = await fetch(`/folder/api/folder-teacher/${CLASS_ID}/get-files`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const files = await response.json();
+      console.log(files);
+      const listItems = document.querySelector('.file-teacher-list');
+      listItems.innerHTML = ''; // Clear existing items
+      files.forEach((file) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
               <td>${file.title || 'no data'}</td>
               <td>${file.file_origin_name || 'no data'}</td>
               <td><a href="${file.url_file}" target="_blank">Xem File</a></td>
               <td>${new Date(file.updatedAt).toLocaleString() || 'no data'}</td>
           `;
 
-          row.style.cursor = 'pointer'
-          listItems.appendChild(row);
-        });
-
-      } catch (error) {
-        console.error('Error fetching files:', error);
-      }
+        row.style.cursor = 'pointer';
+        listItems.appendChild(row);
+      });
+    } catch (error) {
+      console.error('Error fetching files:', error);
     }
+  }
 
-
-    document.addEventListener('DOMContentLoaded',async ()=>{
-        renderAnnounce()
-        renderTestInfo()
-        renderVideoInfo()
-        renderEssayInfo()
-        await renderFileHeader()
-        renderFileInfo()
-    })
+  document.addEventListener('DOMContentLoaded', async () => {
+    renderAnnounce();
+    renderTestInfo();
+    renderVideoInfo();
+    renderEssayInfo();
+    await renderFileHeader();
+    renderFileInfo();
+  });
 </script>
 
-<a href="https://m.me/61575332265438" target="_blank" >
-  <i style="
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #0084ff;
-  color: white;
-  padding: 15px;
-  border-radius: 50%;
-  font-size: 20px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-  z-index: 9999;
-  text-decoration: none;" class="fa-brands fa-facebook-messenger"></i>
+<a href="https://m.me/61575332265438" target="_blank">
+  <i
+    style="
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #0084ff;
+      color: white;
+      padding: 15px;
+      border-radius: 50%;
+      font-size: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      text-decoration: none;
+    "
+    class="fa-brands fa-facebook-messenger"
+  ></i>
 </a>

@@ -2,6 +2,11 @@
 *.vscode/
 *node_modules/
 
+# format prettier
+*.prettierrc
+*.prettierrc.json
+*.prettierrc.js
+*.prettierignore
 # Environments
 *.env
 *.venv

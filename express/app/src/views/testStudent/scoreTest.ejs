@@ -1,165 +1,168 @@
-  <style>
-    body { background-color: #f8f9fa; padding: 2rem; }
+<style>
+  body {
+    background-color: #f8f9fa;
+    padding: 2rem;
+  }
 
+  /* Score Box Styling */
+  .score-box {
+    max-width: 700px;
+    margin: auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+  }
 
-    /* Score Box Styling */
+  .score-box:hover {
+    transform: translateY(-5px);
+  }
+
+  /* Answer Card Styling */
+  .answer-card {
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    background-color: #fefefe;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .answer-card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Text and Heading Styling */
+  h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: #2c3e50;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  h5 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    color: #34495e;
+  }
+
+  p {
+    font-family: 'Montserrat', sans-serif;
+    color: #7f8c8d;
+  }
+
+  p strong {
+    color: #2c3e50;
+  }
+
+  /* Badge Styling */
+  .badge {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+  }
+
+  .bg-success {
+    background-color: #28a745;
+    color: white;
+  }
+
+  /* Button Styling */
+  .btn-primary {
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border: none;
+    font-weight: 500;
+    transition: transform 0.3s ease, background 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #0056b3 0%, #003d7a 100%);
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
     .score-box {
-      max-width: 700px;
-      margin: auto;
-      padding: 2rem;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-      transition: transform 0.3s ease;
+      padding: 1.5rem;
+      margin: 0 1rem;
     }
 
-    .score-box:hover {
-      transform: translateY(-5px);
-    }
-
-    /* Answer Card Styling */
     .answer-card {
-      padding: 1rem;
-      border: 1px solid #dee2e6;
-      border-radius: 0.5rem;
-      background-color: #fefefe;
-      margin-bottom: 1rem;
-      transition: box-shadow 0.3s ease;
+      padding: 0.75rem;
     }
 
-    .answer-card:hover {
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Text and Heading Styling */
-    h3 {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 700;
-      color: #2c3e50;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    h5 {
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
-      color: #34495e;
-    }
-
-    p {
-      font-family: 'Montserrat', sans-serif;
-      color: #7f8c8d;
-    }
-
-    p strong {
-      color: #2c3e50;
-    }
-
-    /* Badge Styling */
-    .badge {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1rem;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-    }
-
-    .bg-success {
-      background-color: #28a745;
-      color: white;
-    }
-
-    /* Button Styling */
     .btn-primary {
-      font-family: 'Montserrat', sans-serif;
-      border-radius: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-      border: none;
-      font-weight: 500;
-      transition: transform 0.3s ease, background 0.3s ease;
+      padding: 0.5rem 1rem;
     }
-
-    .btn-primary:hover {
-      transform: scale(1.05);
-      background: linear-gradient(135deg, #0056b3 0%, #003d7a 100%);
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
-      .score-box {
-        padding: 1.5rem;
-        margin: 0 1rem;
-      }
-
-      .answer-card {
-        padding: 0.75rem;
-      }
-
-      .btn-primary {
-        padding: 0.5rem 1rem;
-      }
-    }    
-  </style>
-  <div class="score-box">
-    <h3 class="mb-4 text-center">Kết Quả Bài Làm</h3>
-    <a id="buttonGoClass"><button type="button" class="btn btn-primary w-20 mb-2">Về Lớp</button></a>
-    <div id="infoArea" class="mb-4">
-      <p><strong>Họ tên:</strong> <span id="studentName"></span></p>
-      <p><strong>Email:</strong> <span id="studentEmail"></span></p>
-      <p><strong>Môn:</strong> <span id="subject"></span></p>
-      <p><strong>Lớp:</strong> <span id="grade"></span></p>
-      <p><strong>Thời gian bắt đầu:</strong> <span id="beginTime"></span></p>
-      <p><strong>Thời gian kết thúc:</strong> <span id="endTime"></span></p>
-      <p><strong>Điểm số:</strong> <span class="badge bg-success" id="score"></span></p>
-    </div>
-
-    <h5 class="mb-3">Danh sách câu đã làm</h5>
-    <div id="answersArea"></div>
+  }
+</style>
+<div class="score-box">
+  <h3 class="mb-4 text-center">Kết Quả Bài Làm</h3>
+  <a id="buttonGoClass"><button type="button" class="btn btn-primary w-20 mb-2">Về Lớp</button></a>
+  <div id="infoArea" class="mb-4">
+    <p><strong>Họ tên:</strong> <span id="studentName"></span></p>
+    <p><strong>Email:</strong> <span id="studentEmail"></span></p>
+    <p><strong>Môn:</strong> <span id="subject"></span></p>
+    <p><strong>Lớp:</strong> <span id="grade"></span></p>
+    <p><strong>Thời gian bắt đầu:</strong> <span id="beginTime"></span></p>
+    <p><strong>Thời gian kết thúc:</strong> <span id="endTime"></span></p>
+    <p><strong>Điểm số:</strong> <span class="badge bg-success" id="score"></span></p>
   </div>
 
-  <script>
-    const url = new URL(window.location.href);
-    const urlParams = new URLSearchParams(window.location.search)
-    const submissionId = url.pathname.split('/')[3] // Giả sử URL: /result/submit/6853bc...
-    const CLASS_ID = urlParams.get('class_id')
+  <h5 class="mb-3">Danh sách câu đã làm</h5>
+  <div id="answersArea"></div>
+</div>
 
+<script>
+  const url = new URL(window.location.href);
+  const urlParams = new URLSearchParams(window.location.search);
+  const submissionId = url.pathname.split('/')[3]; // Giả sử URL: /result/submit/6853bc...
+  const CLASS_ID = urlParams.get('class_id');
 
-    // /test-student/submit-info/:submissionId?class_id=classId
-    async function fetchSubmission() {
-      try {
-        const res = await fetch(`/test-student/api/submit-info/${submissionId}?class_id=${CLASS_ID}`);
-        if (!res.ok) throw new Error('Không thể lấy dữ liệu');
+  // /test-student/submit-info/:submissionId?class_id=classId
+  async function fetchSubmission() {
+    try {
+      const res = await fetch(`/test-student/api/submit-info/${submissionId}?class_id=${CLASS_ID}`);
+      if (!res.ok) throw new Error('Không thể lấy dữ liệu');
 
-        const data = await res.json();
+      const data = await res.json();
 
-        // Hiển thị thông tin cơ bản
-        document.getElementById('studentName').textContent = data.student_id.student_user_id?.fullname || 'Không rõ';
-        document.getElementById('studentEmail').textContent = data.student_id.student_user_id?.email || 'Không rõ';
-        document.getElementById('subject').textContent = data.subject || 'Không rõ';
-        document.getElementById('grade').textContent = data.grade || 'Không rõ';
-        document.getElementById('beginTime').textContent = new Date(data.time_begin).toLocaleString();
-        document.getElementById('endTime').textContent = new Date(data.time_end).toLocaleString();
-        document.getElementById('score').textContent = data.score ?? '0';
+      // Hiển thị thông tin cơ bản
+      document.getElementById('studentName').textContent =
+        data.student_id.student_user_id?.fullname || 'Không rõ';
+      document.getElementById('studentEmail').textContent =
+        data.student_id.student_user_id?.email || 'Không rõ';
+      document.getElementById('subject').textContent = data.subject || 'Không rõ';
+      document.getElementById('grade').textContent = data.grade || 'Không rõ';
+      document.getElementById('beginTime').textContent = new Date(data.time_begin).toLocaleString();
+      document.getElementById('endTime').textContent = new Date(data.time_end).toLocaleString();
+      document.getElementById('score').textContent = data.score ?? '0';
 
-        // Hiển thị danh sách câu trả lời
-        const answerList = document.getElementById('answersArea');
-        data.student_answers.forEach((item, idx) => {
-          const div = document.createElement('div');
-          div.className = 'answer-card';
-          div.innerHTML = `
+      // Hiển thị danh sách câu trả lời
+      const answerList = document.getElementById('answersArea');
+      data.student_answers.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'answer-card';
+        div.innerHTML = `
             <p><strong>Phần:</strong> ${item.part} - <strong>Câu:</strong> ${item.number}</p>
             <!-- <p><strong>Loại:</strong> ${item.type.toUpperCase()}</p> -->
             <p><strong>Đáp án Của Bạn:</strong> ${item.answer}</p>
           `;
-          answerList.appendChild(div);
-        });
-      } catch (err) {
-        console.error(err);
-        document.body.innerHTML = `<div class="container text-center mt-5"><div class="alert alert-danger">${err.message}</div></div>`;
-      }
+        answerList.appendChild(div);
+      });
+    } catch (err) {
+      console.error(err);
+      document.body.innerHTML = `<div class="container text-center mt-5"><div class="alert alert-danger">${err.message}</div></div>`;
     }
+  }
 
-    document.addEventListener('DOMContentLoaded', ()=>{
-      fetchSubmission()
-      document.getElementById('buttonGoClass').href = `/class-student/${CLASS_ID}`
-    });
-  </script>
+  document.addEventListener('DOMContentLoaded', () => {
+    fetchSubmission();
+    document.getElementById('buttonGoClass').href = `/class-student/${CLASS_ID}`;
+  });
+</script>

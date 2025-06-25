@@ -1,13 +1,14 @@
-<link rel="stylesheet" href="/public/css/testTeacher3File.css">
+<link rel="stylesheet" href="/public/css/testTeacher3File.css" />
 
 <div class="container mt-4">
-
   <!-- Tìm kiếm + nút tạo -->
   <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
     <!-- <input type="text" class="form-control w-auto" placeholder="Tìm kiếm" style="max-width: 300px;" hidden> -->
 
     <div class="d-flex flex-wrap gap-2">
-      <a href="/test-teacher/upload-files-test"><button class="btn btn-primary btn-custom">+ Tạo đề thi</button></a>
+      <a href="/test-teacher/upload-files-test"
+        ><button class="btn btn-primary btn-custom">+ Tạo đề thi</button></a
+      >
     </div>
   </div>
 
@@ -23,8 +24,7 @@
           <th>Sửa lần cuối</th>
         </tr>
       </thead>
-      <tbody class="test-teacher-list">
-      </tbody>
+      <tbody class="test-teacher-list"></tbody>
     </table>
   </div>
 </div>
@@ -40,34 +40,32 @@
       console.log(tests);
       const listItems = document.querySelector('.test-teacher-list');
       listItems.innerHTML = ''; // Clear existing items
-      tests.forEach(test => {
+      tests.forEach((test) => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${test.title || 'no data'}</td>
-            <td>${test.test_time +' phút' || 'no data'}</td>
-            <td>${(test.class && test.class.length > 0)
-              ? test.class.map(classItem => classItem.class_name).join(', ')
-              : 'chưa giao'}</td>
+            <td>${test.test_time + ' phút' || 'no data'}</td>
+            <td>${
+              test.class && test.class.length > 0
+                ? test.class.map((classItem) => classItem.class_name).join(', ')
+                : 'chưa giao'
+            }</td>
             <td>${new Date(test.updatedAt).toLocaleString() || 'no data'}</td>
         `;
         // Gắn sự kiện click để chuyển trang
         row.addEventListener('click', () => {
-          window.location.href = `/test-teacher/test-detail?test-id=${test._id}`
+          window.location.href = `/test-teacher/test-detail?test-id=${test._id}`;
         });
 
-        row.style.cursor = 'pointer'
+        row.style.cursor = 'pointer';
         listItems.appendChild(row);
       });
-
-
     } catch (error) {
       console.error('Error fetching tests:', error);
     }
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    fetchTests()
-
-
+  document.addEventListener('DOMContentLoaded', function () {
+    fetchTests();
   });
 </script>

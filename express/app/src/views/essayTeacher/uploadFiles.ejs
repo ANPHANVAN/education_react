@@ -1,17 +1,35 @@
-<link rel="stylesheet" href="/public/css/essayTeacher3File.css">
+<link rel="stylesheet" href="/public/css/essayTeacher3File.css" />
 
 <body>
   <div class="container mt-5">
     <h3 class="mb-4">Tạo Đề Thi Tự Luận</h3>
-    <form action="/essay-teacher/api/upload-file-essay-test" method="POST" enctype="multipart/form-data">
+    <form
+      action="/essay-teacher/api/upload-file-essay-test"
+      method="POST"
+      enctype="multipart/form-data"
+    >
       <div class="mb-3">
         <label for="title" class="form-label">Tiêu đề đề thi</label>
-        <input type="text" class="form-control" id="title" name="title" placeholder="Nhập tiêu đề đề thi" required>
+        <input
+          type="text"
+          class="form-control"
+          id="title"
+          name="title"
+          placeholder="Nhập tiêu đề đề thi"
+          required
+        />
       </div>
 
       <div class="mb-3">
         <label for="file" class="form-label">Tải lên file đề thi</label>
-        <input type="file" class="form-control" id="file" name="upload-essay" accept=".pdf" required>
+        <input
+          type="file"
+          class="form-control"
+          id="file"
+          name="upload-essay"
+          accept=".pdf"
+          required
+        />
       </div>
 
       <div class="mb-3">
@@ -45,15 +63,16 @@
       <button type="submit" class="btn btn-primary">Tạo đề</button>
     </form>
   </div>
-<script>
-  document.getElementById("file").addEventListener("change", function (event) {
-    const fileInput = event.target;
-    const file = fileInput.files[0];
-    const allowedExtension = /\.pdf$/i;
+  <script>
+    document.getElementById('file').addEventListener('change', function (event) {
+      const fileInput = event.target;
+      const file = fileInput.files[0];
+      const allowedExtension = /\.pdf$/i;
 
-    if (file && !allowedExtension.test(file.name)) {
-      alert("Chỉ chấp nhận file .pdf");
-      fileInput.value = ""; // Xóa file không hợp lệ
-    }
-  });
-</script>
+      if (file && !allowedExtension.test(file.name)) {
+        alert('Chỉ chấp nhận file .pdf');
+        fileInput.value = ''; // Xóa file không hợp lệ
+      }
+    });
+  </script>
+</body>

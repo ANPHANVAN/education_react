@@ -7,7 +7,7 @@ body {
 }
 
 .nav-link.active {
-  color:#011763;
+  color: #011763;
   background-color: #f1f1f1;
   cursor: pointer;
 }
@@ -21,7 +21,8 @@ body {
   padding: 20px;
 }
 
-h2, h3 {
+h2,
+h3 {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   color: #2c3e50;
@@ -198,7 +199,8 @@ a {
   margin-left: 200px;
   padding: 20px;
 }
-.student-table th, .student-table td {
+.student-table th,
+.student-table td {
   vertical-align: middle;
   text-align: center;
 }
@@ -225,54 +227,51 @@ a {
 }
 
 .col-md-6:hover {
-    transform: translateY(-5px);
+  transform: translateY(-5px);
 }
 
-
-    /* Responsive Adjustments */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
-
-  #mobileBreak{
+  #mobileBreak {
     width: 100%;
     height: 40px;
   }
-/* Show sidebar when toggled */
-.sidebar.show {
-  display: block;
-  animation: slideDown 0.3s ease forwards;
-}
-
-@keyframes slideDown {
-  0% {
-    opacity: 0;
-    transform: translateY(-10%);
+  /* Show sidebar when toggled */
+  .sidebar.show {
+    display: block;
+    animation: slideDown 0.3s ease forwards;
   }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
+
+  @keyframes slideDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-10%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-}
 
+  /* Optional: when sidebar is open, hide or move main content */
+  .main-content.push-up {
+    display: none;
+    /* Hoặc transform: translateY(100%); nếu muốn hiệu ứng */
+  }
 
-/* Optional: when sidebar is open, hide or move main content */
-.main-content.push-up {
-  display: none;
-  /* Hoặc transform: translateY(100%); nếu muốn hiệu ứng */
-}
-
-#sidebarToggle{
-  color: #fff;
-  position: fixed;
-  background: #064a8d;
-  border-radius: 0;
-  width:100%;
-  top: 50px;
-  z-index: 10;
+  #sidebarToggle {
+    color: #fff;
+    position: fixed;
+    background: #064a8d;
+    border-radius: 0;
+    width: 100%;
+    top: 50px;
+    z-index: 10;
   }
 
   .sidebar {
     display: none;
-    position:relative;
+    position: relative;
     top: 0;
     bottom: 0;
     left: 0;
@@ -290,11 +289,13 @@ a {
     padding: 20px;
   }
 
-  .col-md-6, .col-md-4 {
+  .col-md-6,
+  .col-md-4 {
     width: 100%;
   }
 
-  .btn-primary, .btn-outline-secondary {
+  .btn-primary,
+  .btn-outline-secondary {
     padding: 8px 15px;
   }
 

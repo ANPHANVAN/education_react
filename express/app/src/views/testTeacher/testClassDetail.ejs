@@ -1,12 +1,14 @@
-<link rel="stylesheet" href="/public/css/testTeacher3File.css">
+<link rel="stylesheet" href="/public/css/testTeacher3File.css" />
 
 <style>
-    .status-pill {padding: .25rem .6rem; border-radius: 50px;}
-  </style>
+  .status-pill {
+    padding: 0.25rem 0.6rem;
+    border-radius: 50px;
+  }
+</style>
 
 <div class="container my-4">
-
-    <!-- ==== THÔNG TIN VIDEO & LỚP ==== -->
+  <!-- ==== THÔNG TIN VIDEO & LỚP ==== -->
   <h2 class="mb-4">Danh sách nộp bài</h2>
 
   <div id="infoCard" class="card mb-4 d-none">
@@ -14,16 +16,16 @@
       <div class="col-md-6">
         <h5 class="card-title mb-1"><span id="videoName"></span></h5>
         <p class="mb-0 small text-muted">
-          Môn <span id="TestSubject"></span> • Khối <span id="TestGrade"></span><br>
-          Thời lượng: <strong id="TestDuration"></strong><br>
+          Môn <span id="TestSubject"></span> • Khối <span id="TestGrade"></span><br />
+          Thời lượng: <strong id="TestDuration"></strong><br />
           Tạo ngày: <span id="TestCreated"></span>
         </p>
       </div>
       <div class="col-md-6">
         <h5 class="card-title mb-1">Thông tin lớp</h5>
         <p class="mb-0 small text-muted">
-          Tên lớp: <strong id="className"></strong><br>
-          Năm học: <span id="classYear"></span><br>
+          Tên lớp: <strong id="className"></strong><br />
+          Năm học: <span id="classYear"></span><br />
           Khối: <span id="classGrade"></span> • Sĩ số: <span id="classSize"></span>
         </p>
       </div>
@@ -52,18 +54,15 @@
   </div>
 
   <!-- khi không có dữ liệu -->
-  <p id="emptyMsg" class="text-muted text-center d-none">
-    Chưa có thông tin học sinh.
-  </p>
+  <p id="emptyMsg" class="text-muted text-center d-none">Chưa có thông tin học sinh.</p>
 </div>
 
 <script>
-  
   document.addEventListener('DOMContentLoaded', () => {
     /* === Lấy classId & testId từ URL === */
     const urlParams = new URLSearchParams(window.location.search);
     const CLASS_ID = urlParams.get('class_id');
-    const TEST_ID  = urlParams.get('test-id');
+    const TEST_ID = urlParams.get('test-id');
     if (!CLASS_ID || !TEST_ID) {
       alert('Thiếu class_id hoặc test-id trên URL');
       return;
@@ -76,38 +75,36 @@
 
   /* ---- Hàm tải & render ---- */
   async function loadData(apiUrl) {
-    const spinner   = document.getElementById('loading');
-    const table     = document.getElementById('resultTable');
-    const tbody     = table.querySelector('tbody');
-    const emptyMsg  = document.getElementById('emptyMsg');
+    const spinner = document.getElementById('loading');
+    const table = document.getElementById('resultTable');
+    const tbody = table.querySelector('tbody');
+    const emptyMsg = document.getElementById('emptyMsg');
 
     try {
       const res = await fetch(apiUrl);
       if (!res.ok) throw new Error('Fetch failed');
-      const { submissionInfo = [], classInfo = {} ,testInfo={}} = await res.json();
+      const { submissionInfo = [], classInfo = {}, testInfo = {} } = await res.json();
       const students = classInfo.students || [];
 
-    /* ----- HIỂN THỊ THÔNG TIN TEST + CLASS ----- */
-    document.getElementById('videoName').textContent     = testInfo.title;
-    document.getElementById('TestSubject').textContent  = testInfo.subject;
-    document.getElementById('TestGrade').textContent    = testInfo.grade;
-    document.getElementById('TestDuration').textContent = testInfo.test_time + ' phút';
-    document.getElementById('TestCreated').textContent  =
-      new Date(testInfo.createdAt).toLocaleString('vi-VN');
+      /* ----- HIỂN THỊ THÔNG TIN TEST + CLASS ----- */
+      document.getElementById('videoName').textContent = testInfo.title;
+      document.getElementById('TestSubject').textContent = testInfo.subject;
+      document.getElementById('TestGrade').textContent = testInfo.grade;
+      document.getElementById('TestDuration').textContent = testInfo.test_time + ' phút';
+      document.getElementById('TestCreated').textContent = new Date(
+        testInfo.createdAt
+      ).toLocaleString('vi-VN');
 
-    document.getElementById('className').textContent = classInfo.class_name;
-    document.getElementById('classYear').textContent = classInfo.school_year;
-    document.getElementById('classGrade').textContent= classInfo.grade;
-    document.getElementById('classSize').textContent = classInfo.number_student;
-    infoCard.classList.remove('d-none');
-
+      document.getElementById('className').textContent = classInfo.class_name;
+      document.getElementById('classYear').textContent = classInfo.school_year;
+      document.getElementById('classGrade').textContent = classInfo.grade;
+      document.getElementById('classSize').textContent = classInfo.number_student;
+      infoCard.classList.remove('d-none');
 
       /* ---- Ghép hai mảng ---- */
-      const merged = students.map(st => {
+      const merged = students.map((st) => {
         // tìm tất cả bài nộp của học sinh này
-        const subs = submissionInfo.filter(
-          s => s.student_id === st.student_id
-        );
+        const subs = submissionInfo.filter((s) => s.student_id === st.student_id);
         if (!subs.length) return { ...st, submit_status: false };
 
         // lấy bài nộp mới nhất (time_end lớn nhất)
@@ -115,7 +112,7 @@
         return {
           ...st,
           submit_status: true,
-          submission: subs[0]
+          submission: subs[0],
         };
       });
 
@@ -139,7 +136,7 @@
           : `<span class="status-pill bg-secondary text-white">Chưa nộp</span>`;
 
         const score = st.submit_status ? st.submission.score : '-';
-        const time  = st.submit_status
+        const time = st.submit_status
           ? new Date(st.submission.time_end).toLocaleString('vi-VN')
           : '-';
 
