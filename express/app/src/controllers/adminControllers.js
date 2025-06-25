@@ -15,6 +15,8 @@ class AdminController {
         try {
             let { username, email, role } = req.body;
             username = username.trim().toLowerCase();
+            email = email.trim().toLowerCase();
+            
             const user = await Users.findOneAndUpdate({username, email},{
                 $set: {
                     role: role

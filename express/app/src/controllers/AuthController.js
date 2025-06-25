@@ -67,31 +67,45 @@ class AuthController {
     }
 
     // [POST] /auth/register-new
-    async registerNew(req,res,next){
+    async registerNew(req, res, next) {
         try {
-            let registerInformation = req.body
+            let registerInformation = req.body;
             let { confirmPassword, ...userData } = registerInformation;
 
-            userData.username = userData.username.trim().toLowerCase()
-            let result = await Users.find({username: userData.username})
-            if (result.length > 0) {
-                res.render('sites/apology', {message: `Username already exists`});
-            } else {
-                const hashPassword = await bcrypt.hash(userData.password, HASH_SALT);
-                let user = await Users.create(userData)
-                await UserSecurity.create({
-                    _id: user._id,
-                    username: user.username,
-                    hash_password: hashPassword
-                })
-                res.redirect('auth/login');
+            userData.username = userData.username.trim().toLowerCase();
+            userData.email = userData.email.trim().toLowerCase();
+
+            // Kiểm tra username hoặc email đã tồn tại
+            let existingUser = await Users.findOne({
+                $or: [
+                    { username: userData.username },
+                    { email: userData.email }
+                ]
+            });
+
+            if (existingUser) {
+                let message = existingUser.username === userData.username
+                    ? "Username already exists"
+                    : "Email already exists";
+                return res.render('sites/apology', { message });
             }
 
+            const hashPassword = await bcrypt.hash(userData.password, HASH_SALT);
+
+            let user = await Users.create(userData);
+            await UserSecurity.create({
+                _id: user._id,
+                username: user.username,
+                hash_password: hashPassword
+            });
+
+            res.redirect('auth/login');
         } catch (err) {
             console.error('Error fetching data:', err);
             res.status(500).send('Internal Server Error');
         }
     }
+
 
     // [POST] /auth/login/authentication
     async authentication(req,res,next) {
@@ -124,7 +138,8 @@ class AuthController {
     // [POST] /auth/api/forgot-password
     async forgotPassword(req,res){
         try {
-            const { email } = req.body;
+            let { email } = req.body;
+            email = email.trim().toLowerCase();
             const user = await Users.findOne({email: email})
             if (!user){
                 res.status(404).json({message: "Dont Exit this email"});
@@ -178,7 +193,8 @@ class AuthController {
     // [POST] /auth/api/reset-password/
     async resetPassword(req,res){
         try {
-            const { email, otp, newPassword } = req.body;
+            let { email, otp, newPassword } = req.body;
+            email = email.trim().toLowerCase();
             const record = await OtpReset.findOne({ email, otp });
             if (!record || record.expiresAt < new Date()) {
                 return res.status(400).json({ message: 'OTP không hợp lệ hoặc đã hết hạn' });

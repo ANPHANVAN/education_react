@@ -91,7 +91,7 @@ services:
     volumes:
       - ./nginx/certbot/www:/var/www/certbot
       - ./nginx/certbot/conf:/etc/letsencrypt
-    entrypoint: /bin/sh -c "sleep 10"  # tạo container rồi bạn sẽ run lệnh sau
+    #entrypoint: /bin/sh -c "sleep 10"  # tạo container rồi bạn sẽ run lệnh sau
 
 networks:
   app-network:
