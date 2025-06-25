@@ -1,0 +1,15 @@
+node_modules
+.database
+.vscode
+.dockerignore
+.git
+.gitignore
+.env
+nginx/certbot
+
+*.log
+*.lock
+*.cache
+*.tmp
+*.min.js
+*.map
