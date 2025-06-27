@@ -91,7 +91,6 @@ class FolderController {
       }
 
       const filePath = path.join(__dirname, '..', deleteFile.url_file);
-      console.log('filePath', filePath);
 
       await fs.unlink(filePath, (err) => {
         if (err) {

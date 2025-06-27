@@ -105,7 +105,6 @@ class TestStudentController {
         res.status(400).json({ message: 'Dont update testsubmit in student' });
       }
 
-      console.log('testSubmitInfo', testSubmitInfo);
       res.status(200).json(testSubmitInfo);
     } catch (error) {
       console.error('error when submit test', error);

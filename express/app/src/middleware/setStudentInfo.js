@@ -15,8 +15,6 @@ const setStudentInfo = async (req, res, next) => {
       res.status(400).json({ message: 'must have class-id or class_id or /:classId' });
     }
 
-    console.log('classId', classId);
-    console.log('userId', userId);
     const student = await Students.findOne({ student_user_id: userId, class_id: classId });
 
     if (!student) {

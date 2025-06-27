@@ -41,8 +41,6 @@ class VideoStudentController {
         { $push: { video: videoProgress._id } },
         { new: true }
       );
-      console.log('videoProgress', videoProgress);
-      console.log('studentUpdateVideo', studentUpdateVideo);
       res.status(200).json({ videoProgress });
     } catch (error) {
       res.status(500).json({ message: 'An error occurred while render page', error: error });

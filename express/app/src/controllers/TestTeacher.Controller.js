@@ -93,7 +93,6 @@ class TestTeacherController {
   async postFileTests(req, res) {
     try {
       if (req.file) {
-        console.log('File uploaded:', req.file);
         res.redirect(`/test-teacher/create-test?file=${req.file.filename}`);
       } else {
         res.status(400).json({ message: 'No file uploaded' });
@@ -148,7 +147,6 @@ class TestTeacherController {
     try {
       const teacherId = req.user._id;
       const classes = await Classes.find({ teacher_id: teacherId });
-      console.log('classes', classes);
 
       if (!classes || classes.length === 0) {
         return res.status(404).json({ message: 'No classes found for this teacher.' });

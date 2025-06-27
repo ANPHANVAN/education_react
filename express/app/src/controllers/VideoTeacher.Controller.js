@@ -145,7 +145,6 @@ class VideoTeacherController {
   async getClassVideo(req, res) {
     try {
       const videoId = req.query['video-id'];
-      console.log('videoId', videoId);
       const videoInfo = await VideoRequirements.findById(videoId).populate({
         path: 'class',
         select: '_id grade class_name number_student school_year',
