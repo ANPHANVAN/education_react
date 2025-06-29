@@ -1,6 +1,7 @@
 // middlewares/upload.js
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 // Cấu hình nơi lưu file và tên file
 const storage = multer.diskStorage({
