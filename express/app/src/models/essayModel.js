@@ -34,5 +34,6 @@ const essaySchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+essaySchema.index({ teacher_owner_id: 1, class: 1 });
 
 module.exports = mongoose.model('Essay', essaySchema);

@@ -38,5 +38,6 @@ const essaySubmitSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+essaySubmitSchema.index({ class_id: 1, student_id: 1, essay_id: 1 });
 
 module.exports = mongoose.model('EssaySubmits', essaySubmitSchema);

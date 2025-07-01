@@ -19,5 +19,5 @@ const videoProgressSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+videoProgressSchema.index({ student_id: 1, video_requirement_id: 1 });
 module.exports = mongoose.model('VideoProgress', videoProgressSchema);

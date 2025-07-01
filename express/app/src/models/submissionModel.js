@@ -27,5 +27,6 @@ const submissionsSchema = new mongoose.Schema({
   test_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Tests', required: true },
   student_answers: { type: [answersSchema], required: true },
 });
+submissionsSchema.index({ student_id: 1, class_id: 1, test_id: 1 });
 
 module.exports = mongoose.model('Submissions', submissionsSchema);
