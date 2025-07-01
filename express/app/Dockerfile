@@ -5,7 +5,7 @@ FROM node:20-slim
 WORKDIR /app
 
 # Cài curl
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl && npm install -g pm2 && rm -rf /var/lib/apt/lists/*
 
 # Copy package.json và package-lock.json để cài dependencies
 COPY package*.json ./
@@ -17,4 +17,7 @@ RUN npm ci
 EXPOSE 3000
 
 # Chạy nodemon
-CMD ["npm", "start"]
+# CMD ["npm", "start:dev"]
+
+# Run production server with PM2
+CMD ["pm2-runtime", "start", "npm", "--", "start:prod", "-i", "max"]
