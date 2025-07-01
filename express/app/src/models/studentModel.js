@@ -26,6 +26,7 @@ const studentSchema = new mongoose.Schema({
     default: [],
   },
 });
-studentSchema.index({ student_user_id: 1, class_id: 1 });
+studentSchema.index({ student_user_id: 1 });
+studentSchema.index({ class_id: 1 });
 
 module.exports = mongoose.model('Students', studentSchema);

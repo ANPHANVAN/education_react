@@ -23,6 +23,7 @@ const videoRequirementSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-videoRequirementSchema.index({ teacher_owner_id: 1, class: 1 });
+videoRequirementSchema.index({ teacher_owner_id: 1 });
+videoRequirementSchema.index({ class: 1 });
 
 module.exports = mongoose.model('VideoRequirements', videoRequirementSchema);

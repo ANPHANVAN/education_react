@@ -17,7 +17,6 @@ const UsersSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-UsersSchema.index({ username: 1, email: 1 }, { unique: true });
 
 UsersSchema.plugin(mongooseDelete, {
   deletedAt: true,

@@ -41,6 +41,7 @@ const testSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-testSchema.index({ teacher_owner_id: 1, class: 1 });
+testSchema.index({ teacher_owner_id: 1 });
+testSchema.index({ class: 1 });
 
 module.exports = mongoose.model('Tests', testSchema);
