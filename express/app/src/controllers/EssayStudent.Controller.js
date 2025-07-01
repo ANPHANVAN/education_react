@@ -67,7 +67,6 @@ class EssayStudentController {
         essay_id: essayId,
         url_file_submit: `/uploads/essay/student/${filename}`,
       };
-      console.log('essaySubmit', essaySubmit);
       const essaySubmitInfo = await EssaySubmit.create(essaySubmit);
       if (!essaySubmitInfo) {
         res.status(400).json('Failure in create a EssaySubmit');

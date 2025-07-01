@@ -24,7 +24,6 @@ const classesSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-classesSchema.index({ teacher_id: 1 });
 classesSchema.plugin(mongooseDelete, { overrideMethods: 'all', deletedAt: true });
 
 module.exports = mongoose.model('Classes', classesSchema);

@@ -26,6 +26,5 @@ const folderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-folderSchema.index({ teacher_owner_id: 1 });
 folderSchema.index({ class_id: 1 });
 module.exports = mongoose.model('Folders', folderSchema);
