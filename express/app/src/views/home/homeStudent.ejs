@@ -34,7 +34,8 @@
   </div>
 
   <!-- List of class cards -->
-  <div id="classList" class="d-flex flex-column gap-4"></div>
+  <!-- <div id="classList" class="d-flex flex-column gap-4"></div> -->
+  <div id="classList" class="row g-4"></div>
   <div id="dont-have-class" class="d-none">
     <h3>Bạn Đang Không Tham Gia Lớp Nào, Liên Hệ Giáo Viên Để Thêm Bạn Vào Lớp</h3>
   </div>
@@ -52,7 +53,9 @@
   function buildClassCard(cls) {
     const id = cls._id;
     const card = createElement(
-      `<div class="card shadow-sm class-card" data-name="${cls.class_name.toLowerCase()}"></div>`
+      `<div class="col-12 col-md-6 col-lg-4">
+        <div class="card shadow-sm class-card" data-name="${cls.class_name.toLowerCase()}"></div>
+      </div>`
     );
     const cardBody = document.createElement('div');
     cardBody.className = 'card-body';
@@ -123,7 +126,7 @@
         </div>`
     );
 
-    card.appendChild(cardBody);
+    card.querySelector('.card').appendChild(cardBody);
     return card;
   }
 
