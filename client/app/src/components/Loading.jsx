@@ -2,10 +2,10 @@ import React from 'react';
 
 export const Loading = () => {
   return (
-    <section className="dark:bg-dark bg-white py-20">
+    <section className="fixed inset-0 z-30 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="container">
-        <div className="flex flex-wrap items-center gap-4">
-          <button className="bg-primary inline-flex h-12 items-center justify-center gap-2.5 rounded-lg px-6 py-3 text-base font-medium text-white">
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <button className="bg-primary-from inline-flex h-12 items-center justify-center gap-2.5 rounded-lg px-6 py-3 text-base font-medium text-white dark:hidden">
             <span>
               <svg
                 className="animate-spin"
@@ -30,7 +30,7 @@ export const Loading = () => {
             Loading...
           </button>
 
-          <button className="border-stroke text-dark dark:border-dark-3 inline-flex h-12 items-center justify-center gap-2.5 rounded-lg border bg-transparent px-6 py-3 text-base font-medium dark:text-white">
+          <button className="border-stroke text-dark dark:border-dark-3 hidden h-12 items-center justify-center gap-2.5 rounded-lg border bg-transparent px-6 py-3 text-base font-medium dark:inline-flex dark:text-white">
             <span>
               <svg
                 className="animate-spin"

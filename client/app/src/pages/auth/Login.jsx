@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { Loading } from '@/components';
+
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 export const Login = () => {
@@ -42,12 +45,13 @@ export const Login = () => {
         navigate('/', { replace: true });
       } else {
         console.log('failure to login');
+        toast.error('Login failed!');
       }
     }
   };
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900">
+    <div className="dark:bg-bg bg-gray-50">
       <div className="flex flex-col items-center justify-center px-4 py-6">
         <div className="w-full max-w-[480px]">
           <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">

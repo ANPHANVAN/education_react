@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export const ResetOTP = () => {
   return (
-    <div class="bg-gray-50 dark:bg-gray-900">
+    <div class="bg-bg">
       <div class="flex flex-col items-center justify-center px-4 py-6">
         <div class="w-full max-w-[480px]">
           <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">

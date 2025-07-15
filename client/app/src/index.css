@@ -1,31 +1,40 @@
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
-
 @theme {
-  --color-header: #111c3b;
-  --color-bg: #ffffff;
-  --color-text: #111827;
-  --color-primary-from: #111c3b;
-  --color-primary-to: #2563eb;
-  --color-surface: #f3f4f6;
+  --color-bg: #ffffff; /* use background color*/
+  --color-muted: #6b7280; /* Text secondary, placeholder, caotions, disable state */
+  --color-tertiary: #e0e7ef; /* Borders, dividers, subtle, background, hover */
+  --color-accent: #f59e42; /* Buttons, Links, hightlights, badsges, icon, alart */
+  --color-secondary: #2563eb; /* Strong blue for secondary actions */
+  --color-header: #111c3b; /* Headers bg color */
+  --color-text: #111827; /* Main text */
+  --color-primary-from: #111c3b; /* main action, Promary button, gradient, active state */
+  --color-primary-to: #2563eb; /*  */
+  --color-surface: #e1e4eb; /* background cards models, dropdown, navbar*/
 }
-
-.light {
-  --color-header: #111c3b;
-  --color-bg: #ffffff;
-  --color-text: #111827;
-  --color-primary-from: #111c3b;
-  --color-primary-to: #2563eb;
-  --color-surface: #f3f4f6;
+:root {
+  --color-bg: #ffffff; /* use background color*/
+  --color-muted: #6b7280; /* Text secondary, placeholder, caotions, disable state */
+  --color-tertiary: #e0e7ef; /* Borders, dividers, subtle, background, hover */
+  --color-accent: #f59e42; /* Buttons, Links, hightlights, badsges, icon, alart */
+  --color-secondary: #2563eb; /* Strong blue for secondary actions */
+  --color-header: #111c3b; /* Headers bg color */
+  --color-text: #111827; /* Main text */
+  --color-primary-from: #111c3b; /* main action, Promary button, gradient, active state */
+  --color-primary-to: #2563eb; /*  */
+  --color-surface: #e1e4eb; /* background cards models, dropdown, navbar*/
 }
-
 .dark {
-  --color-header: #000000;
-  --color-bg: var(--color-gray-900);
-  --color-text: #f9fafb;
-  --color-primary-from: #374151;
-  --color-primary-to: #4b5563;
-  --color-surface: #374151;
+  --color-bg: var(--color-gray-900); /* use background color*/
+  --color-muted: #9ca3af; /* Text secondary, placeholder, caotions, disable state */
+  --color-tertiary: #23293a; /* Borders, dividers, subtle, background, hover */
+  --color-accent: #fbbf24; /* Buttons, Links, hightlights, badsges, icon, alart */
+  --color-secondary: #60a5fa; /* Lighter blue for secondary actions */
+  --color-header: #000000; /* Headers bg color */
+  --color-text: #f9fafb; /* Main text */
+  --color-primary-from: #374151; /* main action, Promary button, gradient, active state */
+  --color-primary-to: #4b5563; /*  */
+  --color-surface: #374151; /* background cards models, dropdown, navbar*/
 }
 
 @layer base {

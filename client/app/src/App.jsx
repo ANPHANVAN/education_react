@@ -1,7 +1,8 @@
-import { DarkModeToggle } from './components';
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import './App.css';
+import { DarkModeToggle } from './components';
 import { Header } from './components';
 import { Login, Register, ResetOTP, ResetPassword } from './pages/auth';
 import { NotFound } from './pages/site';
@@ -24,6 +25,7 @@ function App() {
         <Route path="/admin" element={<DarkModeToggle />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <ToastContainer />
     </BrowserRouter>
   );
 }

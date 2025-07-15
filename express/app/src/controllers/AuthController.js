@@ -130,13 +130,11 @@ class AuthController {
         res.cookie('token', token, {
           domain: domain,
           httpOnly: true,
-          // secure: true,
-          secure: false,
-          // sameSite: 'None',
-          sameSite: 'Lax',
+          secure: true,
+          sameSite: 'None',
           maxAge: 1 * 24 * 60 * 60 * 1000,
         });
-        res.redirect('/');
+        res.status(200).redirect('/');
       }
     } catch (err) {
       console.error('Error fetching data:', err);
