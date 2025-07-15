@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 export const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -23,17 +25,29 @@ export const Login = () => {
     return Object.keys(tempErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
       // Handle login logic here (e.g., API call)
       console.log('Form submitted:', formData);
-      // Example: Call API or redirect
+      const res = await fetch(`${VITE_API_URL}/auth/login/authentication`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+        credentials: 'include',
+      });
+      if (res.ok) {
+        navigate('/', { replace: true });
+      } else {
+        console.log('failure to login');
+      }
     }
   };
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-4 py-6">
         <div className="w-full max-w-[480px]">
           <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-8">

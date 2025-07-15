@@ -7,6 +7,8 @@ const bcrypt = require('bcrypt');
 const OtpReset = require('../models/otpResetModel.js');
 const nodemailer = require('nodemailer');
 
+const FINAL_HOST = process.env.FINAL_HOST; // example http://web.com
+const domain = FINAL_HOST.split('//')[1];
 const GMAIL = process.env.GMAIL;
 const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD;
 
@@ -123,8 +125,17 @@ class AuthController {
         const token = jwt.sign({ _id: ObjectId, ObjectId: ObjectId }, JWT_SECRET, {
           expiresIn: '24h',
         });
+        console.log('domain', domain);
 
-        res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 });
+        res.cookie('token', token, {
+          domain: domain,
+          httpOnly: true,
+          // secure: true,
+          secure: false,
+          // sameSite: 'None',
+          sameSite: 'Lax',
+          maxAge: 1 * 24 * 60 * 60 * 1000,
+        });
         res.redirect('/');
       }
     } catch (err) {

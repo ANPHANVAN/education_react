@@ -1,17 +1,16 @@
-import DarkModeToggle from './components/DarkModeToggle.jsx';
+import { DarkModeToggle } from './components';
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
-import { Header } from '@/components';
+import { Header } from './components';
 import { Login, Register, ResetOTP, ResetPassword } from './pages/auth';
-import { NotFound } from '@/pages/site';
-import HeaderNew from './components/HeaderNew.jsx';
+import { NotFound } from './pages/site';
 function App() {
   const VITE_API_URL = import.meta.env.VITE_API_URL;
 
   return (
     <BrowserRouter>
-      <HeaderNew />
+      <Header />
       <Routes>
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/register" element={<Register />} />

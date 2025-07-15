@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const DarkModeToggle = () => {
+export const DarkModeToggle = () => {
   const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
 
   const toggleDarkMode = () => {
@@ -23,11 +23,9 @@ const DarkModeToggle = () => {
   return (
     <button
       onClick={toggleDarkMode}
-      className="rounded bg-gray-200 px-4 py-2 text-sm dark:bg-gray-700"
+      className="rounded bg-gray-200 px-4 py-2 text-sm dark:bg-gray-700 dark:text-blue-200"
     >
       {isDark ? '🌙 Dark Mode' : '☀️ Light Mode'}
     </button>
   );
 };
-
-export default DarkModeToggle;

@@ -6,10 +6,13 @@ const cookieParser = require('cookie-parser');
 const http = require('http');
 const { Server } = require('socket.io');
 const multer = require('multer');
+const cors = require('cors');
 
 require('dotenv').config();
 
 const FINAL_HOST = process.env.FINAL_HOST;
+const VITE_API_URL = process.env.VITE_API_URL;
+
 // import from my file
 const route = require('./routes');
 const mongodb = require('./config/db/mongodb');
@@ -26,6 +29,14 @@ app.use(morgan('combined'));
 app.use(express.json()); // Đọc body dạng JSON
 app.use(express.urlencoded({ extended: true })); // Đọc form (x-www-form-urlencoded)
 app.use(hideFooter); // Middleware để ẩn footer
+
+// all another frontend can use this backend
+app.use(
+  cors({
+    origin: [FINAL_HOST, VITE_API_URL],
+    credentials: true,
+  })
+);
 
 app.set('view engine', 'ejs');
 app.set('views', 'src/views');

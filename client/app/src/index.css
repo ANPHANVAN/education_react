@@ -1,91 +1,47 @@
-@import 'tailwindcss/preflight'; /* thay cho base + reset */
-@import 'tailwindcss/utilities'; /* chứa cả utilities + dark variants */
-/* Tùy chọn nếu dùng variant class-based */
+@import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-header: #111c3b;
+  --color-bg: #ffffff;
+  --color-text: #111827;
+  --color-primary-from: #111c3b;
+  --color-primary-to: #2563eb;
+  --color-surface: #f3f4f6;
+}
+
+.light {
+  --color-header: #111c3b;
+  --color-bg: #ffffff;
+  --color-text: #111827;
+  --color-primary-from: #111c3b;
+  --color-primary-to: #2563eb;
+  --color-surface: #f3f4f6;
+}
+
+.dark {
+  --color-header: #000000;
+  --color-bg: var(--color-gray-900);
+  --color-text: #f9fafb;
+  --color-primary-from: #374151;
+  --color-primary-to: #4b5563;
+  --color-surface: #374151;
+}
 
 @layer base {
   body {
-    background-color: #f0f4f8;
-    font-family: 'Arial', sans-serif;
-    color: #1e3a5f;
-    margin: 0 8px;
+    background-color: var(--color-bg);
+    color: var(--color-text);
   }
-}
-
-@layer components {
-  .card {
-    @apply rounded-xl border border-gray-100 bg-white p-6 shadow-lg transition-all duration-300 hover:shadow-xl;
-  }
-
-  .btn-primary {
-    @apply rounded-xl bg-blue-700 px-6 py-2 font-semibold text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:ring-4 focus:ring-blue-300;
-  }
-
-  .btn-secondary {
-    @apply rounded-xl bg-gray-100 px-6 py-2 font-semibold text-gray-700 transition-all duration-300 ease-in-out hover:bg-gray-200 focus:ring-4 focus:ring-gray-300;
-  }
-
-  .input-field {
-    @apply w-full rounded-xl border border-gray-200 p-3 transition-all duration-200 focus:ring-2 focus:ring-blue-400 focus:outline-none;
-  }
-
-  .link {
-    @apply text-blue-600 underline decoration-dotted decoration-2 transition-all duration-200 hover:text-blue-700;
-  }
-
-  .label {
-    @apply mb-2 block text-base font-medium text-gray-600;
+  header {
+    background-color: var(--color-header);
   }
 }
 
 @layer utilities {
-  .gradient-bg {
-    @apply bg-gradient-to-r from-blue-600 to-teal-600;
+  .gradient-primary {
+    background-image: linear-gradient(to right, var(--color-primary-from), var(--color-primary-to));
   }
-
-  .flex-center {
-    @apply flex items-center justify-center;
-  }
-
-  .text-shadow {
-    @apply shadow-lg text-shadow-md;
-  }
-
-  .hover-scale {
-    @apply transition-transform duration-300 ease-out hover:scale-105;
-  }
-}
-
-li {
-  @apply list-none pl-5 text-gray-700;
-}
-
-Link {
-  @apply text-blue-600 no-underline decoration-dotted decoration-2 transition-all duration-200 hover:text-blue-700;
-}
-
-a {
-  @apply text-blue-600 no-underline decoration-dotted decoration-2 transition-all duration-200 hover:text-blue-700;
-}
-
-button {
-  @apply rounded-xl px-6 py-2 font-semibold transition-all duration-300 ease-in-out;
-}
-
-button:disabled {
-  @apply cursor-not-allowed bg-gray-300 text-gray-500;
-}
-
-input {
-  @apply w-full rounded-xl border border-gray-200 p-3 transition-all duration-200 focus:ring-2 focus:ring-blue-400 focus:outline-none;
-}
-
-select {
-  @apply w-full rounded-xl border border-gray-200 p-3 transition-all duration-200 focus:ring-2 focus:ring-blue-400 focus:outline-none;
-}
-
-textarea {
-  @apply w-full rounded-xl border border-gray-200 p-3 transition-all duration-200 focus:ring-2 focus:ring-blue-400 focus:outline-none;
 }
 
 /* Keyframes for fade-in animation */

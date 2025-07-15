@@ -1,116 +1,84 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { DarkModeToggle } from './DarkModeToggle';
 import { Link } from 'react-router-dom';
 export const Header = () => {
-  const [openHeader, setOpenHeader] = React.useState(false);
-  const handleOpenHeader = () => {
-    setOpenHeader(!openHeader);
-  };
+  const [open, setOpen] = useState(false);
 
   return (
-    <header class="sticky top-0 z-50 flex min-h-[60px] bg-white px-4 py-0 tracking-wide shadow-md sm:px-10">
-      <div class="flex w-full flex-wrap items-center justify-between gap-5">
-        <Link to="/" class="max-sm:hidden">
-          <h1 className="m-0">Education</h1>
-        </Link>
+    <header className={`bg-gray-header sticky top-0 z-50 flex w-full items-center`}>
+      <div className="container">
+        <div className="relative -mx-4 flex items-center justify-between">
+          <div className="w-60 max-w-full px-4">
+            <a href="/#" className="block w-full py-5">
+              <h1 className="mx-5 text-xl text-white hover:text-blue-300 dark:hover:text-blue-300">
+                Education
+              </h1>
+            </a>
+          </div>
+          <div className="flex w-full items-center justify-between px-4">
+            <div>
+              <button
+                onClick={() => setOpen(!open)}
+                id="navbarToggler"
+                className={` ${
+                  open && 'navbarTogglerActive'
+                } ring-primary absolute top-1/2 right-4 block -translate-y-1/2 rounded-lg px-3 py-[6px] focus:ring-2 lg:hidden`}
+              >
+                <span className="relative my-[6px] block h-[2px] w-[30px] bg-cyan-900 dark:bg-white"></span>
+                <span className="relative my-[6px] block h-[2px] w-[30px] bg-cyan-900 dark:bg-white"></span>
+                <span className="relative my-[6px] block h-[2px] w-[30px] bg-cyan-900 dark:bg-white"></span>
+              </button>
+              <nav
+                // :className="!navbarOpen && 'hidden' "
+                id="navbarCollapse"
+                className={`dark:bg-black-2 bg-gray-[--color-tertiary] absolute top-full right-4 w-full max-w-[250px] rounded-lg px-6 py-3 shadow lg:static lg:block lg:w-full lg:max-w-full lg:shadow-none lg:dark:bg-transparent ${
+                  !open && 'hidden'
+                } `}
+              >
+                <ul className="block lg:flex">
+                  <ListItem NavLink="/home-student">Học Sinh</ListItem>
+                  <ListItem NavLink="/class-teacher">Lớp Học</ListItem>
+                  <ListItem NavLink="/test-teacher">Đề Thi</ListItem>
+                  <ListItem NavLink="/essay-teacher">Đề Tự Luận</ListItem>
+                  <ListItem NavLink="/video-teacher">Video</ListItem>
+                  <ListItem NavLink="/admin">Admin</ListItem>
+                </ul>
+              </nav>
+            </div>
+            <div className="hidden justify-end pr-16 sm:flex lg:pr-0">
+              <Link
+                to="/auth/login"
+                className="bg-primary hover:bg-primary/90 rounded-md px-3 py-3 text-base font-medium text-white"
+              >
+                Đăng Nhập
+              </Link>
 
-        <div
-          id="collapseMenu"
-          className="items-center max-lg:hidden max-lg:before:fixed max-lg:before:inset-0 max-lg:before:z-50 max-lg:before:bg-black max-lg:before:opacity-50 lg:!block"
-          style={{ display: openHeader ? 'block' : 'none' }}
-        >
-          <button
-            id="toggleClose"
-            class="fixed top-2 right-[30px] z-[100] flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white lg:hidden"
-            onClick={handleOpenHeader}
-          >
-            X
-          </button>
-
-          <ul class="z-50 mb-0 gap-x-1 max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:h-full max-lg:w-1/2 max-lg:min-w-[300px] max-lg:space-y-3 max-lg:overflow-auto max-lg:bg-white max-lg:p-6 max-lg:shadow-md md:mt-0 lg:flex">
-            <li class="mb-6 hidden max-lg:block">
-              <Link to="/" class="max-sm:hidden">
-                <h1 className="m-0">Education</h1>
-              </Link>
-            </li>
-            <li class="px-3 max-lg:border-b max-lg:border-gray-300 max-lg:py-3">
               <Link
-                to="/home-student"
-                class="block text-[15px] font-medium text-slate-900 hover:text-blue-700"
+                to="/auth/register"
+                className="bg-primary hover:bg-primary/90 rounded-md px-3 py-3 text-base font-medium text-white"
               >
-                Học Sinh
+                Đăng Ký
               </Link>
-            </li>
-            <li class="px-3 max-lg:border-b max-lg:border-gray-300 max-lg:py-3">
-              <Link
-                to="/class-teacher"
-                class="block text-[15px] font-medium text-slate-900 hover:text-blue-700"
-              >
-                Lớp Học
-              </Link>
-            </li>
-            <li class="px-3 max-lg:border-b max-lg:border-gray-300 max-lg:py-3">
-              <Link
-                to="/test-teacher"
-                class="block text-[15px] font-medium text-slate-900 hover:text-blue-700"
-              >
-                Đề Thi
-              </Link>
-            </li>
-            <li class="px-3 max-lg:border-b max-lg:border-gray-300 max-lg:py-3">
-              <Link
-                to="/essay-teacher"
-                class="block text-[15px] font-medium text-slate-900 hover:text-blue-700"
-              >
-                Đề Tự Luận
-              </Link>
-            </li>
-            <li class="px-3 max-lg:border-b max-lg:border-gray-300 max-lg:py-3">
-              <Link
-                to="/video-teacher"
-                class="block text-[15px] font-medium text-slate-900 hover:text-blue-700"
-              >
-                Video
-              </Link>
-            </li>
-            <li class="px-3 max-lg:border-b max-lg:border-gray-300 max-lg:py-3">
-              <Link
-                to="/admin"
-                class="block text-[15px] font-medium text-slate-900 hover:text-blue-700"
-              >
-                Admin
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        <div class="flex items-center space-x-4 max-lg:ml-auto">
-          <Link to="/me">
-            <button class="cursor-pointer rounded-full border border-gray-400 bg-transparent px-4 py-2 text-sm font-medium tracking-wide text-slate-900 transition-all hover:bg-gray-50">
-              Profile
-            </button>
-          </Link>
-          <Link to="/auth/login">
-            <button class="cursor-pointer rounded-full border border-gray-400 bg-transparent px-4 py-2 text-sm font-medium tracking-wide text-slate-900 transition-all hover:bg-gray-50">
-              Đăng Nhập
-            </button>
-          </Link>
-          <Link to="/auth/register">
-            <button class="cursor-pointer rounded-full border border-blue-600 bg-blue-600 px-4 py-2 text-sm font-medium tracking-wide text-white transition-all hover:bg-blue-700">
-              Đăng Ký
-            </button>
-          </Link>
-
-          <button id="toggleOpen" className="cursor-pointer lg:hidden" onClick={handleOpenHeader}>
-            <svg class="h-7 w-7" fill="#000" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path
-                fill-rule="evenodd"
-                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                clip-rule="evenodd"
-              ></path>
-            </svg>
-          </button>
+              <DarkModeToggle />
+            </div>
+          </div>
         </div>
       </div>
     </header>
+  );
+};
+
+const ListItem = ({ children, NavLink }) => {
+  return (
+    <>
+      <li>
+        <Link
+          to={NavLink}
+          className="dark:text-black-6 mx-3 flex py-2 text-base font-medium text-white hover:text-blue-300 lg:ml-3 lg:inline-flex dark:hover:text-blue-300"
+        >
+          {children}
+        </Link>
+      </li>
+    </>
   );
 };
