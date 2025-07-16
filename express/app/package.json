@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "nodemon --inspect src/app.js",
     "start:dev": "nodemon --inspect src/app.js",
     "start:prod": "node src/app.js",
     "prod": "node src/app.js",

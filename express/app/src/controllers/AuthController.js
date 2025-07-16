@@ -87,7 +87,7 @@ class AuthController {
           existingUser.username === userData.username
             ? 'Username already exists'
             : 'Email already exists';
-        return res.render('sites/apology', { message });
+        return res.status(409).render('sites/apology', { message });
       }
 
       const hashPassword = await bcrypt.hash(userData.password, HASH_SALT);
@@ -99,7 +99,7 @@ class AuthController {
         hash_password: hashPassword,
       });
 
-      res.redirect('auth/login');
+      res.status(201).redirect('/auth/login');
     } catch (err) {
       console.error('Error fetching data:', err);
       res.status(500).send('Internal Server Error');
@@ -125,7 +125,6 @@ class AuthController {
         const token = jwt.sign({ _id: ObjectId, ObjectId: ObjectId }, JWT_SECRET, {
           expiresIn: '24h',
         });
-        console.log('domain', domain);
 
         res.cookie('token', token, {
           domain: domain,
@@ -162,6 +161,7 @@ class AuthController {
         expiresAt: expiresAt,
       });
       if (!otpSet) {
+        console.error('Dont create otp reset for email: ', email);
         res.status(500).json({ message: 'Dont create otp reset ' });
         return;
       }
