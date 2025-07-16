@@ -8,8 +8,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   // Xác định host và port cho HMR dựa trên môi trường
-  const hmrHost = env.VITE_APP_ENV === 'production' ? 'web.com' : 'localhost';
-  const hmrPort = env.VITE_APP_ENV === 'production' ? 80 : 9000;
+  const hmrHost = env.CLIENT_SERVER_NAME; // example: web.com
+  const hmrPort = 443;
 
   return {
     plugins: [react(), tailwindcss()],
@@ -19,11 +19,7 @@ export default defineConfig(({ mode }) => {
       strictPort: true,
       cors: false,
       allowedHosts: [new URL(env.VITE_API_URL).hostname, new URL(env.VITE_CLIENT_URL).hostname],
-    },
-    hmr: {
-      host: hmrHost, //example: web.com 👈 RẤT QUAN TRỌNG: để HMR websocket hoạt động đúng qua Nginx
-      protocol: env.VITE_WS_URL.startsWith('wss') ? 'wss' : 'ws', //
-      port: hmrPort, // 👈 VÌ websocket được gửi qua Nginx (cổng 80)
+      hmr: false,
     },
     resolve: {
       alias: {

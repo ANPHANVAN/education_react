@@ -59,7 +59,8 @@ services:
       retries: 5
     # restart: unless-stopped
     container_name: education-express-1
-    command: ["pm2-runtime","start", "src/app.js", "-i", "max"]
+    # command: ["pm2-runtime","start", "src/app.js", "-i", "max"]
+    command: ["npm", "start"] # development
 
   nginx:
     container_name: education-nginx-1
@@ -79,7 +80,7 @@ services:
       # flask:
       #   condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "https://localhost"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       interval: 10s
       timeout: 5s 
       retries: 5
@@ -125,12 +126,12 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 5
-    # restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
     container_name: education-client-1
 
 networks:

@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './App.css';
-import { DarkModeToggle } from './components';
-import { Header } from './components';
+
+import { DarkModeToggle, Header } from './components';
 import { Login, Register, ResetOTP, ResetPassword } from './pages/auth';
 import { NotFound } from './pages/site';
+
 function App() {
   const VITE_API_URL = import.meta.env.VITE_API_URL;
 
