@@ -6,6 +6,7 @@ import './App.css';
 import { DarkModeToggle, Header } from './components';
 import { Login, Register, ResetOTP, ResetPassword } from './pages/auth';
 import { NotFound } from './pages/site';
+import { TestIndex } from './pages/testTeacher';
 
 function App() {
   const VITE_API_URL = import.meta.env.VITE_API_URL;
@@ -20,7 +21,7 @@ function App() {
         <Route path="/auth/reset-password" element={<ResetPassword />} />
         <Route path="/home-student" element={<div>Home Student</div>} />
         <Route path="/class-teacher" element={<div>Class Teacher</div>} />
-        <Route path="/test-teacher" element={<div>Test Teacher</div>} />
+        <Route path="/test-teacher" element={<TestIndex />} />
         <Route path="/essay-teacher" element={<div>Essay Teacher</div>} />
         <Route path="/video-teacher" element={<div>Video Teacher</div>} />
         <Route path="/admin" element={<DarkModeToggle />} />

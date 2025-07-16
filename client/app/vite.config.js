@@ -7,6 +7,17 @@ export default defineConfig(({ mode }) => {
   // Load biến từ file `.env`, `.env.development`, v.v.
   const env = loadEnv(mode, process.cwd(), '');
 
+  // Disable HMR in production, enable in development
+  const isProduction = env.VITE_APP_ENV === 'production';
+  const hmrConfig = isProduction
+    ? false
+    : {
+        protocol: 'ws',
+        host: 'localhost',
+        port: 9000,
+        clientPort: 9000,
+        timeout: 30000,
+      };
   // Xác định host và port cho HMR dựa trên môi trường
   const hmrHost = env.CLIENT_SERVER_NAME; // example: web.com
   const hmrPort = 443;
@@ -18,8 +29,14 @@ export default defineConfig(({ mode }) => {
       port: 9000,
       strictPort: true,
       cors: false,
-      allowedHosts: [new URL(env.VITE_API_URL).hostname, new URL(env.VITE_CLIENT_URL).hostname],
-      hmr: false,
+      allowedHosts: true,
+      // [
+      //   new URL(env.VITE_API_URL).hostname,
+      //   new URL(env.VITE_CLIENT_URL).hostname,
+      //   'http://localhost:9000',
+      // ],
+      hmr: hmrConfig,
+      watch: true,
     },
     resolve: {
       alias: {
