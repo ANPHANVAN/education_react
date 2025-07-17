@@ -1,9 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DarkModeToggle } from './DarkModeToggle';
 import { Link } from 'react-router-dom';
-export const Header = () => {
-  const [open, setOpen] = useState(false);
+const VITE_API_URL = process.env.VITE_API_URL;
 
+export const Header = () => {
+  const [role, setRole] = useState(null);
+  const [fullname, setFullname] = useState('');
+  const [open, setOpen] = useState(false);
+  const handleClick = (e) => {
+    setOpen(false);
+  };
+  const getUserInfo = async () => {
+    try {
+      const res = await fetch(`${VITE_API_URL}/me/api/get-user-info`);
+      const { userInfo } = await res.json();
+      setRole(userInfo.role);
+      setFullname(userInfo.fullname);
+      return;
+    } catch (error) {
+      setRole('student');
+      setFullname('Hồ Sơ');
+    }
+  };
+  useEffect(() => {
+    getUserInfo();
+  }, []);
   return (
     <header className={`bg-gray-header sticky top-0 z-50 flex w-full items-center`}>
       <div className="container">
@@ -35,13 +56,19 @@ export const Header = () => {
                   !open && 'hidden'
                 } `}
               >
-                <ul className="block lg:flex">
-                  <ListItem NavLink="/home-student">Học Sinh</ListItem>
-                  <ListItem NavLink="/class-teacher">Lớp Học</ListItem>
-                  <ListItem NavLink="/test-teacher">Đề Thi</ListItem>
-                  <ListItem NavLink="/essay-teacher">Đề Tự Luận</ListItem>
-                  <ListItem NavLink="/video-teacher">Video</ListItem>
-                  <ListItem NavLink="/admin">Admin</ListItem>
+                <ul className="block lg:flex" onClick={handleClick}>
+                  {(role == 'student' || role == 'admin') && (
+                    <ListItem NavLink="/home-student">Học Sinh</ListItem>
+                  )}
+                  {(role == 'teacher' || role == 'admin') && (
+                    <>
+                      <ListItem NavLink="/class-teacher">Lớp Học</ListItem>
+                      <ListItem NavLink="/test-teacher">Đề Thi</ListItem>
+                      <ListItem NavLink="/essay-teacher">Đề Tự Luận</ListItem>
+                      <ListItem NavLink="/video-teacher">Video</ListItem>
+                    </>
+                  )}
+                  {role == 'admin' && <ListItem NavLink="/admin">Admin</ListItem>}
                 </ul>
               </nav>
             </div>
@@ -71,7 +98,7 @@ export const Header = () => {
 const ListItem = ({ children, NavLink }) => {
   return (
     <>
-      <li>
+      <li className="">
         <Link
           to={NavLink}
           className="dark:text-black-6 mx-3 flex py-2 text-base font-medium text-white hover:text-blue-300 lg:ml-3 lg:inline-flex dark:hover:text-blue-300"

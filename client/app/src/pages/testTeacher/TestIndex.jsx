@@ -1,79 +1,49 @@
 import { useEffect, useState } from 'react';
+import Modal from 'react-modal';
+import { toast } from 'react-toastify';
 import { Table } from '@/components';
 import { useNavigate } from 'react-router-dom';
+import { Loading } from '../../components';
+const VITE_API_URL = process.env.VITE_API_URL;
 
 export const TestIndex = () => {
   const navigate = useNavigate();
-  const [tableData, setTableData] = useState([
-    {
-      _id: '68625a50d5382449d08b55d7',
-      title: 'Đăng Ký Học Phần',
-      url_file:
-        '/uploads/1751276008459-686413759-%C3%84%C2%90%C3%84%C2%83ng%20k%C3%83%C2%BD%20h%C3%A1%C2%BB%C2%8Dc%20ph%C3%A1%C2%BA%C2%A7n.pdf',
-      grade: 12,
-      test_time: 30,
-      subject: 'Toán',
-      teacher_owner_id: '68594ae3f74966354fa66035',
-      class: [
-        {
-          _id: '6859677c9bc294de07d544b9',
-          class_name: 'lớp học tình thương',
-        },
-      ],
-      see_answer: false,
-      sum_score: 1,
-      createdAt: '2025-06-30T09:35:12.232Z',
-      updatedAt: '2025-06-30T09:35:21.833Z',
-      __v: 0,
-    },
-    {
-      _id: '68625a50d5382449d08b554534',
-      title: 'Đăng Ký Học Phần',
-      url_file:
-        '/uploads/1751276008459-686413759-%C3%84%C2%90%C3%84%C2%83ng%20k%C3%83%C2%BD%20h%C3%A1%C2%BB%C2%8Dc%20ph%C3%A1%C2%BA%C2%A7n.pdf',
-      grade: 12,
-      test_time: 30,
-      subject: 'Toán',
-      teacher_owner_id: '68594ae3f74966354fa66035',
-      class: [
-        {
-          _id: '6859677c9bc294de07d544b9',
-          class_name: 'lớp học tình thương',
-        },
-      ],
-      see_answer: false,
-      sum_score: 1,
-      createdAt: '2025-06-30T09:35:12.232Z',
-      updatedAt: '2025-06-30T09:35:21.833Z',
-      __v: 0,
-    },
-    {
-      _id: '68625a50d538249d08b554534',
-      title: 'Đăng Ký Học Phần',
-      url_file:
-        '/uploads/1751276008459-686413759-%C3%84%C2%90%C3%84%C2%83ng%20k%C3%83%C2%BD%20h%C3%A1%C2%BB%C2%8Dc%20ph%C3%A1%C2%BA%C2%A7n.pdf',
-      grade: 12,
-      test_time: 30,
-      subject: 'Toán',
-      teacher_owner_id: '68594ae3f74966354fa66035',
-      class: [
-        {
-          _id: '6859677c9bc294de07d544b9',
-          class_name: 'lớp học tình thương',
-        },
-      ],
-      see_answer: false,
-      sum_score: 1,
-      createdAt: '2025-06-30T09:35:12.232Z',
-      updatedAt: '2025-06-30T09:35:21.833Z',
-      __v: 0,
-    },
-  ]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [file, setFile] = useState(null);
+  const [tableData, setTableData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${VITE_API_URL}/test-teacher/api/get-tests/`, {
+          credentials: 'include',
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          return toast.error('Có Vấn Đề Khi Lấy Dữ Liệu');
+        }
+        const finalData = data.map((test) => ({
+          ...test,
+          createdAt: new Date(test.createdAt).toLocaleString('vi-VN').toString(),
+          test_time: test.test_time + ' phút',
+          classes:
+            test.class.length > 0
+              ? test.class.map((cls) => cls.class_name).join(' ')
+              : 'Chưa Giao Cho Lớp Nào',
+        }));
+        return setTableData(finalData);
+      } catch (error) {
+        return toast.error('Lỗi Lấy Dữ Liệu');
+      }
+    };
+    fetchData();
+  }, []);
 
   const tableColumn = [
     { header: 'Tiêu đề', accessor: 'title' },
-    { header: 'Môn học', accessor: 'subject' },
-    { header: 'Giao Cho Lớp', accessor: 'createdAt' },
+    { header: 'Thời Gian', accessor: 'test_time' },
+    { header: 'Giao Cho Lớp', accessor: 'classes' },
     { header: 'Ngày Tạo', accessor: 'createdAt' },
   ];
 
@@ -81,9 +51,64 @@ export const TestIndex = () => {
     return navigate(`/test-teacher/test-detail?test-id=${testId}`);
   };
 
+  function openModal() {
+    setModalIsOpen(true);
+  }
+  function closeModal() {
+    setModalIsOpen(false);
+  }
+
+  const validFileTypeAndSetFiles = (e) => {
+    const validType = ['.pdf'];
+    const file = e.target.files[0];
+    const ext = file?.name?.slice(file.name.lastIndexOf('.')).toLowerCase();
+    if (file && !validType.includes(ext)) {
+      toast.error('Chỉ chấp nhận file .pdf');
+      return (e.target.value = '');
+    } else {
+      return setFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('testFile', file);
+
+    try {
+      const res = await fetch(`${VITE_API_URL}/test-teacher/api/upload-files-test`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+
+      if (res.ok) {
+        toast.success('Tải File Lên thành công!');
+        const url = new URL(res.url);
+        const urlTail = url.pathname + url.search;
+        navigate(urlTail, { replace: true }); // Điều hướng theo backend
+      } else {
+        if (res.status === 400) {
+          toast.error('Không File Nào Tìm Thấy!');
+        } else {
+          toast.error('Lỗi hệ thống, vui lòng thử lại sau!');
+        }
+      }
+    } catch (error) {
+      toast.error('Lỗi kết nối: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-bg">
-      <button className="bg-primary-from dark:border-black-2 hover:bg-body-color hover:border-body-color disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5 m-3 inline-flex items-center justify-center rounded-xl border border-black px-7 py-3 text-center text-base font-medium text-white hover:cursor-pointer">
+      <button
+        className="bg-primary-from dark:border-black-2 hover:bg-body-color hover:border-body-color disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5 m-3 inline-flex items-center justify-center rounded-xl border border-black px-7 py-3 text-center text-base font-medium text-white hover:cursor-pointer"
+        onClick={openModal}
+      >
         <span className="mr-[10px]">
           <svg
             width={20}
@@ -107,6 +132,51 @@ export const TestIndex = () => {
         Tạo Đề Thi
       </button>
       <Table data={tableData} columns={tableColumn} handleUserId={handleUserId}></Table>
+
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Tải lên đề thi"
+        overlayClassName="fixed inset-0 bg-gray-600/50 dark:bg-gray-900/50 flex items-center justify-center z-20"
+        className="dark:bg-dark w-full max-w-md rounded-2xl bg-white p-8 shadow-xl"
+      >
+        <form
+          encType="multipart/form-data"
+          className="space-y-6"
+          onSubmit={handleSubmit} // bạn có thể thêm handle submit ở đây
+        >
+          <h2 className="text-xl font-semibold text-black">Tải lên đề thi (PDF không có đáp án)</h2>
+
+          <input
+            type="file"
+            accept=".pdf"
+            name="testFile"
+            onChange={validFileTypeAndSetFiles}
+            className="file:bg-primary-from hover:file:bg-primary-to block w-full cursor-pointer text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+          />
+
+          <p className="text-sm text-red-600">
+            Chỉ chấp nhận file <strong>.pdf</strong>
+          </p>
+
+          <div className="flex justify-end gap-3 pt-4">
+            <button
+              type="button"
+              onClick={closeModal}
+              className="rounded-xl border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+            >
+              Hủy
+            </button>
+            <button
+              type="submit"
+              className="bg-primary-from hover:bg-primary-to rounded-xl px-4 py-2 text-sm font-semibold text-white"
+            >
+              Tải lên
+            </button>
+          </div>
+        </form>
+      </Modal>
+      {loading && <Loading></Loading>}
     </div>
   );
 };

@@ -33,10 +33,7 @@ class TestTeacherController {
         'class_name'
       );
 
-      if (!tests || tests.length === 0) {
-        return res.status(404).json({ message: 'No tests found for this teacher.' });
-      }
-      res.status(200).json(tests);
+      return res.status(200).json(tests);
     } catch (error) {
       console.error('Error fetching tests:', error);
       res.status(500).json({ message: 'An error occurred while fetching the tests.' });
@@ -51,12 +48,6 @@ class TestTeacherController {
       const test = await Tests.findOne({ _id: testId, teacher_owner_id: teacherId }, { answers: 0 })
         .populate('class.class_id')
         .populate('teacher_owner_id', 'fullname email');
-
-      if (!test) {
-        return res
-          .status(404)
-          .json({ message: 'Test not found or you do not have permission to access it.' });
-      }
 
       res.status(200).json(test);
     } catch (error) {
@@ -93,9 +84,9 @@ class TestTeacherController {
   async postFileTests(req, res) {
     try {
       if (req.file) {
-        res.redirect(`/test-teacher/create-test?file=${req.file.filename}`);
+        return res.status(200).redirect(`/test-teacher/create-test?file=${req.file.filename}`);
       } else {
-        res.status(400).json({ message: 'No file uploaded' });
+        return res.status(400).json({ message: 'No file uploaded' });
       }
     } catch (error) {
       console.error('Error uploading file:', error);

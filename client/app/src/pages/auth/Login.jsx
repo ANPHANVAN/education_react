@@ -69,20 +69,22 @@ export const Login = () => {
       });
 
       if (res.ok) {
+        console.log(res);
         toast.success('Đăng nhập thành công!');
         const urlNavigate = new URL(res.url).pathname;
-        navigate(urlNavigate, { replace: true }); // Điều hướng theo backend
+        return window.location.replace('/');
+        // return navigate(urlNavigate, { replace: true }); // Điều hướng theo backend
       } else {
         if (res.status === 404) {
-          toast.error('Tên đăng nhập không tồn tại!');
+          return toast.error('Tên đăng nhập không tồn tại!');
         } else if (res.status === 401) {
-          toast.error('Mật khẩu không chính xác!');
+          return toast.error('Mật khẩu không chính xác!');
         } else {
-          toast.error('Lỗi hệ thống, vui lòng thử lại sau!');
+          return toast.error('Lỗi hệ thống, vui lòng thử lại sau!');
         }
       }
     } catch (error) {
-      toast.error('Lỗi kết nối: ' + error.message);
+      return toast.error('Lỗi kết nối: ' + error.message);
     } finally {
       setIsLoading(false);
     }
