@@ -57,10 +57,10 @@ export const Header = () => {
                 } `}
               >
                 <ul className="block lg:flex" onClick={handleClick}>
-                  {(role == 'student' || role == 'admin') && (
+                  {(role == 'student' || role == 'admin' || role == 'teacher') && (
                     <ListItem NavLink="/home-student">Học Sinh</ListItem>
                   )}
-                  {(role == 'teacher' || role == 'admin') && (
+                  {(role == 'student' || role == 'admin' || role == 'teacher') && (
                     <>
                       <ListItem NavLink="/class-teacher">Lớp Học</ListItem>
                       <ListItem NavLink="/test-teacher">Đề Thi</ListItem>
@@ -68,7 +68,9 @@ export const Header = () => {
                       <ListItem NavLink="/video-teacher">Video</ListItem>
                     </>
                   )}
-                  {role == 'admin' && <ListItem NavLink="/admin">Admin</ListItem>}
+                  {(role == 'student' || role == 'admin' || role == 'teacher') && (
+                    <ListItem NavLink="/admin">Admin</ListItem>
+                  )}
                 </ul>
               </nav>
             </div>

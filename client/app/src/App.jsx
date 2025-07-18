@@ -16,6 +16,16 @@ import {
   VideoDetail,
   VideoClassDetail,
 } from './pages/testTeacher';
+import {
+  ClassIndex,
+  ClassDetail,
+  Student,
+  Test,
+  Essay,
+  Video,
+  Announce,
+  Folder,
+} from './pages/classTeacher';
 
 function App() {
   const VITE_API_URL = import.meta.env.VITE_API_URL;
@@ -32,7 +42,17 @@ function App() {
 
         {/* Teacher */}
         <Route path="/home-student" element={<div>Home Student</div>} />
-        <Route path="/class-teacher" element={<div>Class Teacher</div>} />
+        <Route path="/class-teacher" element={<ClassIndex />}></Route>
+
+        <Route path="/class-teacher/classroom-details/:classId" element={<ClassDetail />}>
+          <Route path="student" element={<Student />}></Route>
+          <Route path="test" element={<Test />}></Route>
+          <Route path="essay" element={<Essay />}></Route>
+          <Route path="video" element={<Video />}></Route>
+          <Route path="announce" element={<Announce />}></Route>
+          <Route path="folder" element={<Folder />}></Route>
+        </Route>
+
         <Route path="/test-teacher" element={<TestIndex />} />
         <Route path="/test-teacher/test-detail" element={<TestDetail />} />
         <Route path="/test-teacher/test-class-detail" element={<TestClassDetail />} />
