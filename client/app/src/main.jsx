@@ -6,4 +6,8 @@ import App from './App.jsx';
 import { setupFetchInterceptor } from './api/setupFetchInterceptor';
 Modal.setAppElement('#root');
 setupFetchInterceptor(); // set general /auth/login
-createRoot(document.getElementById('root')).render(<App />);
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Modal from 'react-modal';
 import Dropdown from '../../components/Dropdown';
 const VITE_API_URL = process.env.VITE_API_URL;
@@ -141,7 +141,7 @@ export const ClassIndex = () => {
       >
         + Tạo Lớp Học
       </button>
-      <div className="classContainer">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {classData.map((clas) => (
           <ClassItem
             key={clas._id}
@@ -307,14 +307,14 @@ export const ClassItem = ({ classItem, deleteClass, handleRenameCallback }) => {
     handleRenameCallback(classItem._id, classItem.className);
   };
   return (
-    <div className="class-item position-relative w-sm rounded border p-3 shadow-sm">
+    <div className="class-item position-relative w-auto max-w-sm rounded border p-3 shadow-sm">
       <div className="justify-content-between align-items-center flex">
-        <a
-          href={`/class-teacher/classroom-details/${classItem._id}`}
-          className="text-decoration-none text-dark flex-4/5"
+        <Link
+          to={`/class-teacher/classroom-details/${classItem._id}`}
+          className="text-decoration-none text-dark flex-4/5 text-2xl hover:text-blue-900 dark:hover:text-blue-300"
         >
           <h5 className="mb-0">{classItem.class_name}</h5>
-        </a>
+        </Link>
         <div className="dropdown h-5 flex-1/5">
           <Dropdown
             classId={classItem._id}

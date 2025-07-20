@@ -63,8 +63,22 @@ const Dropdown = ({ handleDelete, handleRename }) => {
                         : 'invisible top-[110%] opacity-0'
                     }`}
                   >
-                    <DropdownItem label="Xóa Lớp" href="/#" onClick={() => handleDelete} />
-                    <DropdownItem label="Đổi Tên" href="/#" onClick={() => handleRename} />
+                    <DropdownItem
+                      label="Xóa Lớp"
+                      icon="fa-solid fa-trash"
+                      onClick={() => {
+                        handleDelete();
+                        setDropdownOpen(false);
+                      }}
+                    />
+                    <DropdownItem
+                      label="Đổi Tên"
+                      icon="fa-solid fa-pen-to-square"
+                      onClick={() => {
+                        handleRename();
+                        setDropdownOpen(false);
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -80,10 +94,13 @@ const Dropdown = ({ handleDelete, handleRename }) => {
 
 export default Dropdown;
 
-const DropdownItem = ({ label, href }) => {
+const DropdownItem = ({ label, onClick, icon }) => {
   return (
-    <div className="text-dark-5 block cursor-pointer px-2 py-2 text-base hover:text-white">
-      {label}
+    <div
+      className="text-dark-5 block w-auto cursor-pointer py-2 text-base hover:text-white"
+      onClick={onClick}
+    >
+      <i className={icon}></i> {label}
     </div>
   );
 };

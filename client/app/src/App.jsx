@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './App.css';
 
@@ -45,6 +45,7 @@ function App() {
         <Route path="/class-teacher" element={<ClassIndex />}></Route>
 
         <Route path="/class-teacher/classroom-details/:classId" element={<ClassDetail />}>
+          <Route index element={<Navigate to="student" replace />} />
           <Route path="student" element={<Student />}></Route>
           <Route path="test" element={<Test />}></Route>
           <Route path="essay" element={<Essay />}></Route>
