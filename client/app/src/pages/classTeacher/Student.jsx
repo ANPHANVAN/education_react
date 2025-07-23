@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 const VITE_API_URL = process.env.VITE_API_URL;
 
 export const Student = () => {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
+  // fetch GET classroom data
   const { classId } = useParams();
   const [classData, setClassData] = useState({
     class_name: 'No Data',
@@ -20,18 +20,36 @@ export const Student = () => {
       );
       const data = await response.json();
       if (!response.ok) {
-        // hide because in main route have toast this error
-        // toast.error(`Lỗi Khi Lấy Dữ Liệu! ${data?.message || ''}`);
+        // dont toast because in main route have toast this error
         return;
       }
-      return setClassData(data);
+      setClassData(data);
+      setFilterStudent(data.students);
+      return;
     } catch (error) {
-      // toast.error(`Lỗi Khi Lấy Dữ Liệu! ${error || ''}`);
+      // dont toast because in main route have toast this error
       return;
     }
   };
 
-  // add student into class
+  // Find Student
+  const [filterStudent, setFilterStudent] = useState(classData.students);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleInputSearch = (e) => {
+    const keyword = e.target.value.toLowerCase();
+    setSearchTerm(keyword);
+    const filtered = classData.students.filter((student) => {
+      const fullName = student.student_user_id.fullname.toLowerCase();
+      const email = student.student_user_id.email.toLowerCase();
+      return fullName.includes(keyword) || email.includes(keyword);
+    });
+    setFilterStudent(filtered);
+    return;
+  };
+
+  // Add student into class
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [studentEmail, setStudentEmail] = useState('');
   const [errorValid, setErrorValid] = useState(false);
 
@@ -46,12 +64,13 @@ export const Student = () => {
     return;
   };
 
-  const handleSubmitAddStudent = () => {
+  const handleSubmitAddStudent = async () => {
     if (!isValidEmail(studentEmail)) {
       return setErrorValid(true);
     }
-    fetchPostAddStudent();
+    await fetchPostAddStudent();
     setModalIsOpen(false);
+    fetchClassInfo();
     return;
   };
 
@@ -80,11 +99,11 @@ export const Student = () => {
     }
   };
 
-  // Delete Student
+  // Delete Student In Class
   const fetchDeleteStudent = async (studentId) => {
     try {
       const deleteStudent = await fetch(
-        `/class-teacher/api/classroom-details/${classId}/delete-student`,
+        `${VITE_API_URL}/class-teacher/api/classroom-details/${classId}/delete-student`,
         {
           method: 'DELETE',
           headers: {
@@ -121,15 +140,16 @@ export const Student = () => {
         <div className="input-group me-3 w-auto flex-4/5">
           <input
             type="text"
+            onChange={handleInputSearch}
+            value={searchTerm}
             className="form-control p-1.5"
-            id="searchInput"
             placeholder="Tìm học sinh theo tên, email"
           />
-          <button className="cursor-pointer pl-2 hover:text-cyan-200" type="button">
-            <i className="fa-brands fa-searchengin"></i>
-          </button>
         </div>
-        <button className="flex-1/5 cursor-pointer text-right" onClick={() => setModalIsOpen(true)}>
+        <button
+          className="flex-1/5 cursor-pointer rounded-xl border border-gray-800 px-2 text-center shadow-md dark:border-gray-300"
+          onClick={() => setModalIsOpen(true)}
+        >
           <i class="fa-solid fa-plus"></i> Thêm học sinh
         </button>
       </div>
@@ -151,7 +171,7 @@ export const Student = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {classData?.students.map((student, index) => (
+              {filterStudent.map((student, index) => (
                 <tr key={student.student_id._id} className="hover:bg-gray-50">
                   <td className="px-4 py-2 text-sm text-gray-800">{index + 1}</td>
                   <td className="px-4 py-2 text-sm text-gray-800">
@@ -164,7 +184,7 @@ export const Student = () => {
                   </td>
                   <td className="px-4 py-2 text-center">
                     <button
-                      className="text-sm font-medium text-red-600 hover:text-red-800"
+                      className="cursor-pointer text-sm font-medium text-red-600 hover:text-red-800"
                       onClick={() => deleteStudent(student.student_id._id)}
                     >
                       Xóa
