@@ -6,16 +6,9 @@ import './App.css';
 import { DarkModeToggle, Header } from './components';
 import { Login, Register, ResetOTP, ResetPassword } from './pages/auth';
 import { NotFound } from './pages/site';
-import {
-  TestIndex,
-  TestDetail,
-  TestClassDetail,
-  CreateTest,
-  EssayDetail,
-  EssayClassDetail,
-  VideoDetail,
-  VideoClassDetail,
-} from './pages/testTeacher';
+import { TestIndex, TestDetail, TestClassDetail, CreateTest } from './pages/testTeacher';
+import { VideoDetail, VideoClassDetail } from './pages/videoTeacher';
+import { EssayDetail, EssayClassDetail } from './pages/essayTeacher';
 import {
   ClassIndex,
   ClassDetail,
