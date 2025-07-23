@@ -7,55 +7,55 @@ import Modal from 'react-modal';
 const VITE_API_URL = process.env.VITE_API_URL;
 
 export const TestDetail = () => {
+  // General Variable
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [testInfo, setTestInfo] = useState(null);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [testId, setTestId] = useState(searchParams.get('test-id'));
-  const [classes, setClasses] = useState(null);
-  const [putClasses, setPutClasses] = useState({
-    class_id: [],
-    testId: testId,
+
+  // fetch GET Test information
+  const [testInfo, setTestInfo] = useState({
+    class: [],
   });
 
+  // TODO: remove data template setTestInfo
   const fetchTestInfo = async () => {
-    setTestInfo({
-      _id: '68625a50d5382449d08b55d7',
-      title: 'Đăng Ký Học Phần',
-      url_file: '/uploads/1752813771032-485319910-ACB%20Online%20-%20sao%20kÃª.pdf',
-      grade: 12,
-      test_time: 30,
-      subject: 'Toán',
-      teacher_owner_id: {
-        _id: '68594ae3f74966354fa66035',
-        fullname: 'Phan Văn An',
-        email: 'anphan.mainwork@gmail.com',
-      },
-      class: ['6859677c9bc294de07d544b9'],
-      see_answer: false,
-      sum_score: 1,
-      createdAt: '2025-06-30T09:35:12.232Z',
-      updatedAt: '2025-06-30T09:35:21.833Z',
-      __v: 0,
-    });
-
-    // try {
-    //   const response = await fetch(
-    //     `${VITE_API_URL}/test-teacher/api/get-test-detail?test-id=${testId}`
-    //   );
-    //   const test = await response.json();
-    //   if (!test) {
-    //     toast.error('Lỗi Lấy Thông Tin Đề Thi', {
-    //       autoClose: 1000,
-    //     });
-    //     return;
-    //   }
-    //   return setTestInfo(test);
-    // } catch (error) {
-    //   toast.error('Không Lấy Được Thông Tin Đề Thi');
-    // }
+    try {
+      const response = await fetch(
+        `${VITE_API_URL}/test-teacher/api/get-test-detail?test-id=${testId}`
+      );
+      const test = await response.json();
+      if (!test) {
+        toast.error('Lỗi Lấy Thông Tin Đề Thi', {
+          autoClose: 1000,
+        });
+        return;
+      }
+      return setTestInfo(test);
+    } catch (error) {
+      toast.error('Không Lấy Được Thông Tin Đề Thi');
+      setTestInfo({
+        _id: '68625a50d5382449d08b55d7',
+        title: 'Đăng Ký Học Phần',
+        url_file: '/uploads/1752813771032-485319910-ACB%20Online%20-%20sao%20kÃª.pdf',
+        grade: 12,
+        test_time: 30,
+        subject: 'Toán',
+        teacher_owner_id: {
+          _id: '68594ae3f74966354fa66035',
+          fullname: 'Phan Văn An',
+          email: 'anphan.mainwork@gmail.com',
+        },
+        class: ['6859677c9bc294de07d544b9'],
+        see_answer: false,
+        sum_score: 1,
+        createdAt: '2025-06-30T09:35:12.232Z',
+        updatedAt: '2025-06-30T09:35:21.833Z',
+        __v: 0,
+      });
+    }
   };
 
+  // DELETE test
   const deleteTest = async () => {
     try {
       const res = await fetch(`${VITE_API_URL}/test-teacher/api/delete-test/${testInfo._id}`, {
@@ -71,6 +71,26 @@ export const TestDetail = () => {
     } catch (error) {}
   };
 
+  // Feature give test for class, PUT classroom(open modals and set classroom)
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [classes, setClasses] = useState([]);
+  const [putClasses, setPutClasses] = useState({
+    class_id: testInfo.class,
+    testId: testId,
+  });
+  function openModal() {
+    setModalIsOpen(true);
+  }
+  function closeModal() {
+    setModalIsOpen(false);
+    setPutClasses((prev) => {
+      return {
+        ...prev,
+        class_id: testInfo.class,
+      };
+    });
+  }
+
   const fetchClass = async () => {
     try {
       const res = await fetch(`${VITE_API_URL}/test-teacher/api/get-classes`);
@@ -85,14 +105,7 @@ export const TestDetail = () => {
     }
   };
 
-  function openModal() {
-    setModalIsOpen(true);
-  }
-  function closeModal() {
-    setModalIsOpen(false);
-  }
-
-  const handleSubmit = async (e) => {
+  const handleSubmitPutClassroom = async (e) => {
     console.log('FETCH PUT METHOD');
     // try {
     //   console.log('Selected class IDs:', selectedIds);
@@ -113,9 +126,32 @@ export const TestDetail = () => {
     // }
   };
 
+  // GET Class of Test
+  const [testWithClassInfo, setTestWithClassInfo] = useState({});
+
+  const getTestWithClassInfo = async () => {
+    try {
+      const res = await fetch(
+        `${VITE_API_URL}/test-teacher/api/get-test-info-details?test-id=${testId}`
+      );
+      if (!res.ok) {
+        toast.error('Lấy dữ liệu thất bại!');
+        return;
+      }
+      const { classTestInfo } = await res.json();
+      const classes = classTestInfo?.class || [];
+      setTestWithClassInfo(classes);
+      return;
+    } catch (err) {
+      console.error(err);
+      toast.error('Lấy dữ liệu thất bại!');
+    }
+  };
+
   useEffect(() => {
     fetchTestInfo();
     fetchClass();
+    getTestWithClassInfo();
   }, []);
 
   return (
@@ -125,7 +161,7 @@ export const TestDetail = () => {
           <i className="bi bi-file-earmark-text"></i>
           {testInfo?.title}
         </h6>
-        <small className="text-muted">Người tạo: {testInfo?.teacher_owner_id.fullname}</small>
+        <small className="text-muted">Người tạo: {testInfo?.teacher_owner_id?.fullname}</small>
         <br />
         <small className="text-muted">
           Ngày tạo:
@@ -181,47 +217,62 @@ export const TestDetail = () => {
         className="dark:bg-dark w-full max-w-lg rounded-2xl bg-white p-8 shadow-xl"
       >
         <h2 className="text-xl font-semibold text-black">Tải lên đề thi (PDF không có đáp án)</h2>
-        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-          <button className="btn btn-outline-secondary btn-sm">Chọn tất cả lớp</button>
-
-          <div class="input-group w-auto">
-            <input
-              id="searchClass"
-              class="form-control form-control-sm"
-              placeholder="Tìm kiếm lớp"
-            />
-            <span class="input-group-text">
-              <i class="bi bi-search"></i>
+        <div className="m-2">
+          <div className="w-full">
+            <input className="w-full" placeholder="Tìm kiếm lớp" />
+            <span className="input-group-text">
+              <i className="bi bi-search"></i>
             </span>
           </div>
         </div>
 
-        <div class="table-responsive rounded border">
-          <table class="table-hover mb-0 table">
-            <thead class="table-light">
+        <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-md">
+          <table className="min-w-full table-auto divide-y divide-gray-200 bg-white">
+            <thead className="bg-gray-100">
               <tr>
-                <th className="w-30"></th>
-                <th>Tên lớp</th>
-                <th>Khối</th>
-                <th>Sĩ số</th>
+                <th className="w-12 px-4 py-2 text-left text-sm font-medium text-gray-600">
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-4 w-4 text-indigo-600"
+                    // TODO: onChange={()=>setChooseAllClass(!chooseAllClass)}
+                  />
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Tên lớp</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Khối</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Sĩ số</th>
               </tr>
             </thead>
-            <tbody id="classListModel"></tbody>
+            <tbody className="divide-y divide-gray-200">
+              {classes.map((classroom, index) => (
+                <tr key={index} className="transition-colors duration-150 hover:bg-gray-50">
+                  <td className="px-4 py-2">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox h-4 w-4 text-indigo-600"
+                      checked={putClasses.class_id.includes(classroom._id)}
+                      onChange={() => {
+                        setPutClasses((prev) => {
+                          const isSelected = prev.class_id.includes(classroom._id);
+                          return {
+                            ...prev,
+                            class_id: isSelected
+                              ? prev.class_id.filter((id) => id !== classroom._id) // bỏ nếu đang có
+                              : [...prev.class_id, classroom._id], // thêm nếu chưa có
+                          };
+                        });
+                      }}
+                    />
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-800">{classroom.class_name}</td>
+                  <td className="px-4 py-2 text-sm text-gray-800">{classroom.grade}</td>
+                  <td className="px-4 py-2 text-sm text-gray-800">{classroom.number_student}</td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
 
-        <input
-          type="file"
-          accept=".pdf"
-          name="testFile"
-          // onChange={validFileTypeAndSetFiles}
-          className="file:bg-primary-from hover:file:bg-primary-to block w-full cursor-pointer text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
-        />
-
-        <p className="text-sm text-red-600">
-          Chỉ chấp nhận file <strong>.pdf</strong>
-        </p>
-
+        <hr className="my-3" />
         <div className="flex justify-end gap-3 pt-4">
           <button
             type="button"
@@ -233,8 +284,9 @@ export const TestDetail = () => {
           <button
             type="submit"
             className="bg-primary-from hover:bg-primary-to rounded-xl px-4 py-2 text-sm font-semibold text-white"
+            onClick={handleSubmitPutClassroom}
           >
-            Tải lên
+            Lưu
           </button>
         </div>
       </Modal>
