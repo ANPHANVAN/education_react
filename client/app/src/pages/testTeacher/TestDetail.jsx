@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Table } from '@/components';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Modal from 'react-modal';
 
@@ -78,6 +78,8 @@ export const TestDetail = () => {
     class_id: testInfo.class,
     testId: testId,
   });
+  const [chooseAllClass, setChooseAllClass] = useState(false);
+
   function openModal() {
     setModalIsOpen(true);
   }
@@ -105,29 +107,45 @@ export const TestDetail = () => {
     }
   };
 
+  const fetchPutTestClass = async () => {
+    try {
+      const res = await fetch(`${VITE_API_URL}/test-teacher/api/put-class-in-test`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(putClasses),
+      });
+      if (!res.ok) {
+        toast.error('Có lỗi khi lưu!');
+        return;
+      }
+      toast.success('Lưu Thành Công!');
+      return;
+    } catch (error) {
+      toast.error('Có lỗi khi lưu!');
+      console.error(error);
+      return;
+    }
+  };
   const handleSubmitPutClassroom = async (e) => {
-    console.log('FETCH PUT METHOD');
-    // try {
-    //   console.log('Selected class IDs:', selectedIds);
-    //   const res = await fetch(`/test-teacher/api/put-class-in-test`, {
-    //     method: 'PUT',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ class_id: selectedIds, testId: testId }),
-    //   });
-    //   if (!res.ok) throw new Error('Lưu thất bại');
-    //   bootstrap.Modal.getInstance(document.getElementById('assignClassModal')).hide();
-    //   alert('Giao bài thành công!');
-    //   window.location.reload();
-    // } catch (err) {
-    //   alert('Có lỗi khi lưu!');
-    //   console.error(err);
-    // } finally {
-    //   saveBtn.disabled = false;
-    // }
+    await fetchPutTestClass();
+    closeModal();
+  };
+  const handleToggleAllClasses = () => {
+    const allClassIds = classes.map((cls) => cls._id);
+    setChooseAllClass((prev) => {
+      const newValue = !prev;
+      setPutClasses((prevState) => ({
+        ...prevState,
+        class_id: newValue ? allClassIds : [],
+      }));
+      return newValue;
+    });
   };
 
   // GET Class of Test
-  const [testWithClassInfo, setTestWithClassInfo] = useState({});
+  const [testWithClassInfo, setTestWithClassInfo] = useState({
+    class: [],
+  });
 
   const getTestWithClassInfo = async () => {
     try {
@@ -139,14 +157,37 @@ export const TestDetail = () => {
         return;
       }
       const { classTestInfo } = await res.json();
-      const classes = classTestInfo?.class || [];
-      setTestWithClassInfo(classes);
+      setTestWithClassInfo(classTestInfo);
       return;
     } catch (err) {
       console.error(err);
       toast.error('Lấy dữ liệu thất bại!');
     }
   };
+
+  useEffect(() => {
+    setPutClasses((prev) => {
+      return {
+        ...prev,
+        class_id: testInfo.class,
+      };
+    });
+  }, [classes]);
+
+  // get new Test when change class
+  useEffect(() => {
+    getTestWithClassInfo();
+  }, [putClasses]);
+
+  // toogle click all class
+  useEffect(() => {
+    const allIds = classes
+      .map((classroom) => classroom._id)
+      .sort()
+      .join(',');
+    const selectedIds = putClasses.class_id.slice().sort().join(',');
+    setChooseAllClass(allIds === selectedIds);
+  }, [putClasses.class_id, classes]);
 
   useEffect(() => {
     fetchTestInfo();
@@ -207,7 +248,32 @@ export const TestDetail = () => {
         <div id="list-class-for-this-test"></div>
       </div>
 
-      <div className="bg-tertiary flex-3/4">this is right</div>
+      <div className="bg-tertiary flex-3/4">
+        <h1 className="title px-4 py-3 text-2xl font-bold text-gray-800">
+          Các lớp sử dụng đề thi này
+        </h1>
+        <div className="listClass m-4 grid gap-4 p-4">
+          {testWithClassInfo.class?.map((classroom) => (
+            <div className="classroomItem mb-3 transform rounded-xl border border-b-blue-950 p-2 shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <Link
+                to={`/test-teacher/test-class-detail?test-id=${testId}&class_id=${classroom._id}`}
+                className="block"
+              >
+                <div className="mb-2 flex items-center justify-between">
+                  <h5 className="text-lg font-semibold text-blue-700">{classroom.class_name}</h5>
+                  <small className="text-gray-500">Sĩ số: {classroom.number_student}</small>
+                </div>
+                <p className="text-sm text-gray-600">
+                  Khối {classroom.grade} • Năm học {classroom.school_year}
+                </p>
+                <small className="text-gray-400">
+                  Tạo ngày {new Date(classroom.createdAt).toLocaleDateString('vi-VN')}
+                </small>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <Modal
         isOpen={modalIsOpen}
@@ -234,7 +300,8 @@ export const TestDetail = () => {
                   <input
                     type="checkbox"
                     className="form-checkbox h-4 w-4 text-indigo-600"
-                    // TODO: onChange={()=>setChooseAllClass(!chooseAllClass)}
+                    checked={chooseAllClass}
+                    onChange={handleToggleAllClasses}
                   />
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Tên lớp</th>
