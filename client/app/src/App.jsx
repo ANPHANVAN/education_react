@@ -8,7 +8,7 @@ import { Login, Register, ResetOTP, ResetPassword } from './pages/auth';
 import { NotFound } from './pages/site';
 import { TestIndex, TestDetail, TestClassDetail, CreateTest } from './pages/testTeacher';
 import { VideoDetail, VideoClassDetail } from './pages/videoTeacher';
-import { EssayDetail, EssayClassDetail } from './pages/essayTeacher';
+import { EssayIndex, EssayDetail, EssayClassDetail } from './pages/essayTeacher';
 import {
   ClassIndex,
   ClassDetail,
@@ -51,7 +51,7 @@ function App() {
         <Route path="/test-teacher/test-detail" element={<TestDetail />} />
         <Route path="/test-teacher/test-class-detail" element={<TestClassDetail />} />
         <Route path="/test-teacher/create-test" element={<CreateTest />} />
-        <Route path="/essay-teacher" element={<div>Essay Teacher</div>} />
+        <Route path="/essay-teacher" element={<EssayIndex />} />
         <Route path="/essay-teacher/essay-detail" element={<EssayDetail />} />
         <Route path="/essay-teacher/essay-class-detail" element={<EssayClassDetail />} />
         <Route path="/video-teacher" element={<div>Video Teacher</div>} />
