@@ -39,8 +39,8 @@ export const EssayIndex = () => {
     { header: 'Ngày Tạo', accessor: 'createdAt' },
   ];
 
-  const handleUserId = (testId) => {
-    return navigate(`/test-teacher/test-detail?test-id=${testId}`);
+  const handleUserId = (essayId) => {
+    return navigate(`/essay-teacher/essay-detail?essay-id=${essayId}`);
   };
 
   useEffect(() => {
@@ -49,13 +49,16 @@ export const EssayIndex = () => {
 
   // Create Essay Test (modals with upload file, title, grade, subject)
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [formDataCreateEssay, setFormDataCreateEssay] = useState({});
+  const [formDataCreateEssay, setFormDataCreateEssay] = useState(new FormData());
+  const [formInput, setFormInput] = useState({});
 
   function openModal() {
     setModalIsOpen(true);
   }
 
   function closeModal() {
+    setFormDataCreateEssay(new FormData());
+    setFormInput({});
     setModalIsOpen(false);
   }
 
@@ -63,6 +66,8 @@ export const EssayIndex = () => {
     setLoading(true);
     e.preventDefault();
     await fetchPostNewEssay();
+    closeModal();
+    await fetchDataAndChangeTableData();
     setLoading(false);
   };
 
@@ -86,23 +91,24 @@ export const EssayIndex = () => {
     }
   };
 
-  const validFileTypeAndSetFiles = (e) => {
+  const validFileTypeAndSetFormData = (e) => {
+    const { name, value, files } = e.target;
     const validType = ['.pdf'];
-    const file = e.target.files[0];
+    const file = files[0];
     const ext = file?.name?.slice(file.name.lastIndexOf('.')).toLowerCase();
     if (file && !validType.includes(ext)) {
       toast.error('Chỉ chấp nhận file .pdf');
-      return (e.target.value = '');
+      return (value = '');
     } else {
-      return setFile(e.target.files[0]);
+      return formDataCreateEssay.set(name, file);
     }
   };
 
   const handleChangeInputCreateEssay = (e) => {
-    setFormDataCreateEssay((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target;
+    formDataCreateEssay.set(name, value);
+    setFormInput((prev) => ({ ...prev, [name]: value }));
+    return;
   };
 
   return (
@@ -155,7 +161,8 @@ export const EssayIndex = () => {
               type="text"
               name="title"
               id="title"
-              // value={newClassData.className}
+              required
+              value={formInput.title || ''}
               onChange={handleChangeInputCreateEssay}
               className="focus:border-primary-from focus:ring-primary-from/30 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:ring dark:text-white"
             />
@@ -172,10 +179,7 @@ export const EssayIndex = () => {
               accept=".pdf"
               name="upload-essay"
               required
-              onChange={() => {
-                validFileTypeAndSetFiles();
-              }}
-              // value={}
+              onChange={validFileTypeAndSetFormData}
               className="file:bg-primary-from hover:file:bg-primary-to block w-full cursor-pointer rounded-lg border border-gray-300 text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
             />
             <p className="hidden text-sm text-red-600">
@@ -183,9 +187,9 @@ export const EssayIndex = () => {
             </p>
           </div>
 
-          <div class="space-y-0">
+          <div className="space-y-0">
             <label
-              for="grade"
+              htmlFor="grade"
               className="block text-sm font-medium text-gray-900 dark:text-gray-100"
             >
               Khối
@@ -195,6 +199,7 @@ export const EssayIndex = () => {
               id="grade"
               name="grade"
               required
+              value={formInput.grade || '12'}
               onChange={handleChangeInputCreateEssay}
             >
               <option value="">Chọn khối</option>
@@ -208,9 +213,9 @@ export const EssayIndex = () => {
             </select>
           </div>
 
-          <div class="space-y-0">
+          <div className="space-y-0">
             <label
-              for="subject"
+              htmlFor="subject"
               className="block text-sm font-medium text-gray-900 dark:text-gray-100"
             >
               Môn học
@@ -220,6 +225,7 @@ export const EssayIndex = () => {
               id="subject"
               name="subject"
               required
+              value={formInput.subject || 'Toán'}
               onChange={handleChangeInputCreateEssay}
             >
               <option value="">Chọn môn học</option>
