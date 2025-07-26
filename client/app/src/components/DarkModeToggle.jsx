@@ -23,7 +23,7 @@ export const DarkModeToggle = () => {
   return (
     <button
       onClick={toggleDarkMode}
-      className="rounded bg-gray-200 px-4 py-2 text-sm dark:bg-gray-700 dark:text-blue-200"
+      className="mr-17 h-10 w-30 cursor-pointer rounded bg-gray-200 px-3 py-0 text-sm lg:mr-3 dark:bg-gray-700 dark:text-blue-200"
     >
       {isDark ? '🌙 Dark Mode' : '☀️ Light Mode'}
     </button>

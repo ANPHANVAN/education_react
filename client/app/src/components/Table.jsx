@@ -4,7 +4,7 @@ import React from 'react';
 export const Table = ({ columns, data, handleUserId }) => {
   return (
     <div className="mx-5 my-1 overflow-auto">
-      <table className="bg-bg min-w-full border-collapse rounded-lg shadow-md">
+      <table className="bg-bg border-secondary min-w-full rounded-3xl border shadow-md">
         <HeaderTable columns={columns} />
         <BodyTable data={data} columns={columns} handleUserId={handleUserId} />
       </table>
@@ -18,7 +18,7 @@ const HeaderTable = ({ columns }) => {
     <thead>
       <tr className="max-h-8 bg-gray-300 text-gray-700">
         {columns.map((column, index) => (
-          <th key={index} className="border-b border-gray-200 px-4 py-2 text-left font-semibold">
+          <th key={index} className="border-secondary border-b px-4 py-2 text-left font-semibold">
             {column.header}
           </th>
         ))}
