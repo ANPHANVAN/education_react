@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Modal from 'react-modal';
@@ -6,94 +6,73 @@ import Modal from 'react-modal';
 const VITE_API_URL = process.env.VITE_API_URL;
 
 export const EssayDetail = () => {
-  // General Variable
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [essayId, setEssayId] = useState(searchParams.get('test-id'));
-
-  // fetch GET Test information
-  const [testInfo, setTestInfo] = useState({
+  const [essayId, setEssayId] = useState(searchParams.get('essay-id'));
+  // fetch GET Essay information
+  const [essayInfo, setEssayInfo] = useState({
+    class: [],
+  });
+  // Feature give essay for class, PUT classroom(open modals and set classroom)
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [classes, setClasses] = useState([]);
+  const [listClassIdUseEssay, setListClassIdUseEssay] = useState([]);
+  const [putClasses, setPutClasses] = useState({
+    class_id: listClassIdUseEssay,
+    essayId: essayId,
+  });
+  const [chooseAllClass, setChooseAllClass] = useState(false);
+  // GET Class of Essay
+  const [essayWithClassInfo, setEssayWithClassInfo] = useState({
     class: [],
   });
 
-  // TODO: remove data template setTestInfo
   const fetchEssayInfo = async () => {
     try {
       const response = await fetch(
         `${VITE_API_URL}/essay-teacher/api/get-essay-detail?essay-id=${essayId}`
       );
-      const test = await response.json();
-      if (!test) {
+      const essay = await response.json();
+      if (!essay) {
         toast.error('Lỗi Lấy Thông Tin Đề Thi', {
           autoClose: 1000,
         });
         return;
       }
-      return setTestInfo(test);
+      return setEssayInfo(essay);
     } catch (error) {
       toast.error('Không Lấy Được Thông Tin Đề Thi');
-      setTestInfo({
-        _id: '68625a50d5382449d08b55d7',
-        title: 'Đăng Ký Học Phần',
-        url_file: '/uploads/1752813771032-485319910-ACB%20Online%20-%20sao%20kÃª.pdf',
-        grade: 12,
-        test_time: 30,
-        subject: 'Toán',
-        teacher_owner_id: {
-          _id: '68594ae3f74966354fa66035',
-          fullname: 'Phan Văn An',
-          email: 'anphan.mainwork@gmail.com',
-        },
-        class: ['6859677c9bc294de07d544b9'],
-        see_answer: false,
-        sum_score: 1,
-        createdAt: '2025-06-30T09:35:12.232Z',
-        updatedAt: '2025-06-30T09:35:21.833Z',
-        __v: 0,
-      });
     }
   };
 
-  // DELETE test
-  const deleteTest = async () => {
+  // DELETE essay
+  const deleteEssay = async () => {
     try {
-      const res = await fetch(`${VITE_API_URL}/test-teacher/api/delete-test/${testInfo._id}`, {
+      const res = await fetch(`${VITE_API_URL}/essay-teacher/api/delete-essay/${essayInfo._id}`, {
         method: 'DELETE',
       });
 
       if (res.ok) {
-        toast.success('Đề thi đã được xóa thành công.');
-        return navigate('/test-teacher');
+        toast.success('Đề thi Tự Luận đã được xóa thành công.');
+        return navigate('/essay-teacher');
       } else {
-        toast.error('Xóa đề thi thất bại. Vui lòng thử lại sau.');
+        toast.error('Xóa đề thi Tự luận thất bại. Vui lòng thử lại sau.');
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error('Xóa đề thi Tự luận thất bại. Vui lòng thử lại sau.');
+    }
   };
 
-  // Feature give test for class, PUT classroom(open modals and set classroom)
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [classes, setClasses] = useState([]);
-  const [putClasses, setPutClasses] = useState({
-    class_id: testInfo.class,
-    testId: essayId,
-  });
-  const [chooseAllClass, setChooseAllClass] = useState(false);
-
+  // Feature give essay for class, PUT classroom(open modals and set classroom)
   function openModal() {
     setModalIsOpen(true);
   }
   function closeModal() {
     setModalIsOpen(false);
-    setPutClasses((prev) => {
-      return {
-        ...prev,
-        class_id: testInfo.class,
-      };
-    });
   }
-
   const fetchClass = async () => {
     try {
+      // use test api to take class (same)
       const res = await fetch(`${VITE_API_URL}/test-teacher/api/get-classes`);
       const data = await res.json();
       if (!res.ok) {
@@ -105,10 +84,9 @@ export const EssayDetail = () => {
       return toast.error(`Lỗi Khi Lấy Thông Tin Lớp!, ${err}`);
     }
   };
-
-  const fetchPutTestClass = async () => {
+  const fetchPutEssayClass = async () => {
     try {
-      const res = await fetch(`${VITE_API_URL}/test-teacher/api/put-class-in-test`, {
+      const res = await fetch(`${VITE_API_URL}/essay-teacher/api/put-class-in-essay`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(putClasses),
@@ -125,9 +103,34 @@ export const EssayDetail = () => {
       return;
     }
   };
+  const transfromEssayInfoToListClassIdUseEssay = () => {
+    const listClassId = essayInfo.class.map((classes) => classes._id);
+    setListClassIdUseEssay(listClassId);
+  };
+
+  // GET Class of Essay
+  const getEssayWithClassInfo = async () => {
+    try {
+      const res = await fetch(
+        `${VITE_API_URL}/essay-teacher/api/get-essay-detail?essay-id=${essayId}`
+      );
+      if (!res.ok) {
+        toast.error('Lấy dữ liệu thất bại!');
+        return;
+      }
+      const classEssayInfo = await res.json();
+      setEssayWithClassInfo(classEssayInfo);
+      return;
+    } catch (err) {
+      console.error(err);
+      toast.error('Lấy dữ liệu thất bại!');
+    }
+  };
+
+  //////////// Handle //////////////
   const handleSubmitPutClassroom = async (e) => {
-    await fetchPutTestClass();
-    closeModal();
+    await fetchPutEssayClass();
+    Promise.all([fetchEssayInfo(), getEssayWithClassInfo()]);
   };
   const handleToggleAllClasses = () => {
     const allClassIds = classes.map((cls) => cls._id);
@@ -140,45 +143,29 @@ export const EssayDetail = () => {
       return newValue;
     });
   };
-
-  // GET Class of Test
-  const [testWithClassInfo, setTestWithClassInfo] = useState({
-    class: [],
-  });
-
-  const getTestWithClassInfo = async () => {
-    try {
-      const res = await fetch(
-        `${VITE_API_URL}/test-teacher/api/get-test-info-details?test-id=${essayId}`
-      );
-      if (!res.ok) {
-        toast.error('Lấy dữ liệu thất bại!');
-        return;
-      }
-      const { classTestInfo } = await res.json();
-      setTestWithClassInfo(classTestInfo);
-      return;
-    } catch (err) {
-      console.error(err);
-      toast.error('Lấy dữ liệu thất bại!');
-    }
+  const handleChangeCheck = (classroomId) => {
+    setPutClasses((prev) => {
+      const isSelected = prev.class_id.includes(classroomId);
+      return {
+        ...prev,
+        class_id: isSelected
+          ? prev.class_id.filter((id) => id !== classroomId) // bỏ nếu đang có
+          : [...prev.class_id, classroomId], // thêm nếu chưa có
+      };
+    });
   };
 
+  //////////////// UseEffect //////////////
   useEffect(() => {
     setPutClasses((prev) => {
       return {
         ...prev,
-        class_id: testInfo.class,
+        class_id: listClassIdUseEssay,
       };
     });
-  }, [classes]);
+    closeModal();
+  }, [listClassIdUseEssay]);
 
-  // get new Test when change class
-  useEffect(() => {
-    getTestWithClassInfo();
-  }, [putClasses]);
-
-  // toogle click all class
   useEffect(() => {
     const allIds = classes
       .map((classroom) => classroom._id)
@@ -189,77 +176,88 @@ export const EssayDetail = () => {
   }, [putClasses.class_id, classes]);
 
   useEffect(() => {
+    transfromEssayInfoToListClassIdUseEssay();
+  }, [essayInfo]);
+
+  useEffect(() => {
+    setEssayId(searchParams.get('essay-id'));
+  }, [searchParams]);
+
+  useEffect(() => {
     fetchEssayInfo();
     fetchClass();
-    getTestWithClassInfo();
+    getEssayWithClassInfo();
   }, []);
 
   return (
-    <div className="flex">
-      <div className="flex-1/4 bg-white">
-        <h6 className="text-truncate">
-          <i className="bi bi-file-earmark-text"></i>
-          {testInfo?.title}
-        </h6>
-        <small className="text-muted">Người tạo: {testInfo?.teacher_owner_id?.fullname}</small>
-        <br />
-        <small className="text-muted">
-          Ngày tạo:
-          {new Date(testInfo?.createdAt).toLocaleString('vi-VN', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-          })}
-        </small>
-        <br />
-        <small className="text-muted">Thời gian làm bài: {testInfo?.test_time} phút</small>
-        <br />
-        <small className="text-muted">Môn học: {testInfo?.subject}</small>
-        <br />
-        <small className="text-muted">Khối: {testInfo?.grade}</small>
-        <hr className="my-2" />
+    <div className="block h-full sm:flex">
+      <div className="bg-bg flex h-auto flex-1/4 justify-between px-4 py-4 sm:block sm:h-full lg:px-8">
+        <div className="info flex-1/2">
+          <h6 className="text-truncate text-xl">
+            <i className="bi bi-file-earmark-text"></i>
+            {essayInfo?.title}
+          </h6>
+          <small className="text-muted">Người tạo: {essayInfo?.teacher_owner_id?.fullname}</small>
+          <br />
+          <small className="text-muted">
+            Ngày tạo:
+            {new Date(essayInfo?.createdAt).toLocaleString('vi-VN', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            })}
+          </small>
+          <br />
+          {/* <small className="text-muted">Thời gian làm bài: {essayInfo?.test_time} phút</small>
+            <br /> */}
+          <small className="text-muted">Môn học: {essayInfo?.subject}</small>
+          <br />
+          <small className="text-muted">Khối: {essayInfo?.grade}</small>
+          <hr className="my-2 hidden sm:block" />
+        </div>
 
-        <h6>Menu</h6>
-        <div className="">
-          <button className="text-tertiary bg-primary-from hover:bg-primary-to m-1 w-40 cursor-pointer rounded-xl p-2">
-            <a href={testInfo?.url_file} target="_blank">
-              <i className="fa-solid fa-file-pdf mr-1"></i> Xem Đề Thi
-            </a>
-          </button>
+        <div className="menuButton flex-1/2">
+          {/* <h6>Menu</h6> */}
+          <div className="">
+            <button className="bg-primary-from hover:bg-primary-to my-1 w-full cursor-pointer rounded-xl p-2 text-white shadow-lg">
+              <a href={essayInfo?.url_file} target="_blank">
+                <i className="fa-solid fa-file-pdf mr-1"></i> Xem Đề Tự Luận
+              </a>
+            </button>
+          </div>
+          <div onClick={deleteEssay} className="menu-item text-dangerpy-2">
+            <button className="bg-primary-from hover:bg-primary-to my-1 w-full cursor-pointer rounded-xl p-2 text-white shadow-lg">
+              <i className="fa-solid fa-trash mr-1"></i> Xóa Đề Tự Luận
+            </button>
+          </div>
+          <hr className="my-2" />
+          <div className="d-flex justify-content-between align-items-center">
+            <button
+              className="bg-primary-from hover:bg-primary-to my-1 w-full cursor-pointer rounded-xl p-2 text-white shadow-lg"
+              onClick={openModal}
+            >
+              Giao Cho Lớp
+            </button>
+          </div>
         </div>
-        <div onClick={deleteTest} className="menu-item text-dangerpy-2">
-          <button className="text-tertiary bg-primary-from hover:bg-primary-to m-1 w-40 cursor-pointer rounded-xl p-2">
-            <i className="fa-solid fa-trash mr-1"></i> Xóa Đề Thi
-          </button>
-        </div>
-        <hr className="my-2" />
-        <div className="d-flex justify-content-between align-items-center">
-          <button
-            className="text-tertiary bg-primary-from hover:bg-primary-to m-1 w-40 cursor-pointer rounded-xl p-2"
-            onClick={openModal}
-          >
-            Giao cho lớp
-          </button>
-        </div>
-        <div id="list-class-for-this-test"></div>
       </div>
 
-      <div className="bg-tertiary flex-3/4">
-        <h1 className="title px-4 py-3 text-2xl font-bold text-gray-800">
-          Các lớp sử dụng đề thi này
+      <div className="bg-tertiary border-surface h-min-full flex-3/4 border-l-1 p-1 sm:overflow-y-auto sm:p-4">
+        <h1 className="title text-text px-2 pb-2 text-2xl font-bold">
+          Các lớp đang sử dụng đề tự luận
         </h1>
-        <div className="listClass m-4 grid gap-4 p-4">
-          {testWithClassInfo.class?.map((classroom) => (
-            <div className="classroomItem mb-3 transform rounded-xl border border-b-blue-950 p-2 shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <div className="listClass grid grid-cols-1 gap-4 p-2 sm:grid-cols-2 lg:grid-cols-3">
+          {essayWithClassInfo.class?.length == 0 && 'Chưa Giao Cho Lớp Nào'}
+          {essayWithClassInfo.class?.map((classroom) => (
+            <div className="classroomItem bg-bg border-surface mb-1 transform rounded-xl border p-2 shadow-xl transition-all duration-300 hover:-translate-y-0.5">
               <Link
-                to={`/test-teacher/test-class-detail?test-id=${essayId}&class_id=${classroom._id}`}
+                to={`/essay-teacher/essay-class-detail?essay-id=${essayId}&class_id=${classroom._id}`}
                 className="block"
               >
                 <div className="mb-2 flex items-center justify-between">
-                  <h5 className="text-lg font-semibold text-blue-700">{classroom.class_name}</h5>
+                  <h5 className="text-lg font-semibold text-blue-900 dark:text-white">
+                    {classroom.class_name}
+                  </h5>
                   <small className="text-gray-500">Sĩ số: {classroom.number_student}</small>
                 </div>
                 <p className="text-sm text-gray-600">
@@ -279,9 +277,9 @@ export const EssayDetail = () => {
         onRequestClose={closeModal}
         contentLabel="Tải lên đề thi"
         overlayClassName="fixed inset-0 bg-gray-600/50 dark:bg-gray-900/50 flex items-center justify-center z-20"
-        className="dark:bg-dark w-full max-w-lg rounded-2xl bg-white p-8 shadow-xl"
+        className="dark:bg-dark max-h-10/12 w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-8 shadow-xl"
       >
-        <h2 className="text-xl font-semibold text-black">Tải lên đề thi (PDF không có đáp án)</h2>
+        <h2 className="text-xl font-semibold text-black">Giao Đề Tự Luận Cho Lớp Học</h2>
         <div className="m-2">
           <div className="w-full">
             <input className="w-full" placeholder="Tìm kiếm lớp" />
@@ -316,17 +314,7 @@ export const EssayDetail = () => {
                       type="checkbox"
                       className="form-checkbox h-4 w-4 text-indigo-600"
                       checked={putClasses.class_id.includes(classroom._id)}
-                      onChange={() => {
-                        setPutClasses((prev) => {
-                          const isSelected = prev.class_id.includes(classroom._id);
-                          return {
-                            ...prev,
-                            class_id: isSelected
-                              ? prev.class_id.filter((id) => id !== classroom._id) // bỏ nếu đang có
-                              : [...prev.class_id, classroom._id], // thêm nếu chưa có
-                          };
-                        });
-                      }}
+                      onChange={() => handleChangeCheck(classroom._id)}
                     />
                   </td>
                   <td className="px-4 py-2 text-sm text-gray-800">{classroom.class_name}</td>
@@ -343,7 +331,7 @@ export const EssayDetail = () => {
           <button
             type="button"
             onClick={closeModal}
-            className="rounded-xl border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+            className="border-surface rounded-xl border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
           >
             Hủy
           </button>

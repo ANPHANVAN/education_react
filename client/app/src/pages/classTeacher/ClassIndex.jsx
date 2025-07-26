@@ -131,7 +131,7 @@ export const ClassIndex = () => {
   }, []);
 
   return (
-    <div className="m-5">
+    <div className="h-full overflow-y-auto p-5">
       <h1>
         Danh sách lớp học ( <span>{classData.length}</span> lớp )
       </h1>

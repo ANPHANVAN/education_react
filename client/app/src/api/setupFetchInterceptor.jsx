@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 export const setupFetchInterceptor = () => {
   const originalFetch = window.fetch;
 
@@ -13,8 +14,14 @@ export const setupFetchInterceptor = () => {
       return response;
     }
     if (response.redirected && urlPathname == '/auth/login') {
-      alert('Phiên Đăng Nhập Hết Hạn, Hãy Đăng Nhập Lại');
-      return (window.location.href = '/auth/login');
+      toast.info('Phiên Đăng Nhập Hết Hạn, Hãy Đăng Nhập Lại', {
+        autoClose: 3000,
+      });
+      setTimeout(() => {
+        window.location.href = '/auth/login';
+      }, 3000);
+      // alert('Phiên Đăng Nhập Hết Hạn, Hãy Đăng Nhập Lại');
+      return;
     }
     return response;
   };

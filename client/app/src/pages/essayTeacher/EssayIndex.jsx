@@ -20,10 +20,19 @@ export const EssayIndex = () => {
       }
       const finalEssaysData = essays.map((essay) => ({
         ...essay,
-        createdAt: new Date(essay.createdAt).toLocaleString('vi-VN').toString(),
+        createdAt: new Date(essay.createdAt)
+          .toLocaleString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          })
+          .toString(),
         classes:
           essay.class.length > 0
-            ? essay.class.map((cls) => cls.class_name).join(', ')
+            ? essay.class
+                .slice(0, 6) // chỉ lấy 6 lớp đầu tiên
+                .map((cls) => cls.class_name)
+                .join(', ') + (essay.class.length > 6 ? '...' : '')
             : 'Chưa Giao Cho Lớp Nào',
       }));
       return setTableData(finalEssaysData);
@@ -34,8 +43,8 @@ export const EssayIndex = () => {
 
   const tableColumn = [
     { header: 'Tiêu đề', accessor: 'title' },
-    { header: 'Khối', accessor: 'grade' },
     { header: 'Giao Cho Lớp', accessor: 'classes' },
+    { header: 'Khối', accessor: 'grade' },
     { header: 'Ngày Tạo', accessor: 'createdAt' },
   ];
 
@@ -92,13 +101,13 @@ export const EssayIndex = () => {
   };
 
   const validFileTypeAndSetFormData = (e) => {
-    const { name, value, files } = e.target;
     const validType = ['.pdf'];
-    const file = files[0];
-    const ext = file?.name?.slice(file.name.lastIndexOf('.')).toLowerCase();
-    if (file && !validType.includes(ext)) {
+    const name = e.target.name;
+    const file = e.target.files[0];
+    const extend = file?.name?.slice(file.name.lastIndexOf('.')).toLowerCase();
+    if (file && !validType.includes(extend)) {
       toast.error('Chỉ chấp nhận file .pdf');
-      return (value = '');
+      return (e.target.value = '');
     } else {
       return formDataCreateEssay.set(name, file);
     }

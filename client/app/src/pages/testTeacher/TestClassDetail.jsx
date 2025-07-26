@@ -13,7 +13,7 @@ export const TestClassDetail = () => {
 
   const tableColumn = [
     { header: 'STT', accessor: 'title' },
-    { header: 'Họ Và Tên / Email', accessor: 'title' },
+    { header: 'Học Sinh', accessor: 'title' },
     { header: 'Trạng Thái', accessor: 'subject' },
     { header: 'Điểm', accessor: 'createdAt' },
     { header: 'Thời Gian Nộp', accessor: 'createdAt' },

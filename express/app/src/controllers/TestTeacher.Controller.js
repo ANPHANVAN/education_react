@@ -153,9 +153,6 @@ class TestTeacherController {
   async putClass(req, res) {
     try {
       const { class_id, testId } = req.body;
-      if (class_id.length === 0 || !testId) {
-        return res.status(400).json({ message: 'Class ID and Test ID are required.' });
-      }
 
       const putClass = await Tests.findOneAndUpdate(
         { _id: testId },

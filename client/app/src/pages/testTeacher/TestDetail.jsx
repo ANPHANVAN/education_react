@@ -225,7 +225,7 @@ export const TestDetail = () => {
         </div>
 
         <div className="menuButton flex-1/2">
-          <h6>Menu</h6>
+          {/* <h6>Menu</h6> */}
           <div className="">
             <button className="bg-primary-from hover:bg-primary-to my-1 w-full cursor-pointer rounded-xl p-2 text-white shadow-lg">
               <a href={testInfo?.url_file} target="_blank">
@@ -244,14 +244,16 @@ export const TestDetail = () => {
               className="bg-primary-from hover:bg-primary-to my-1 w-full cursor-pointer rounded-xl p-2 text-white shadow-lg"
               onClick={openModal}
             >
-              Giao cho lớp
+              Giao Cho Lớp
             </button>
           </div>
         </div>
       </div>
 
       <div className="bg-tertiary border-surface h-min-full flex-3/4 border-l-1 p-1 sm:overflow-y-auto sm:p-4">
-        <h1 className="title text-text px-2 pb-2 text-2xl font-bold">Các lớp sử dụng đề thi này</h1>
+        <h1 className="title text-text px-2 pb-2 text-2xl font-bold">
+          Các lớp đang sử dụng đề thi
+        </h1>
         <div className="listClass grid grid-cols-1 gap-4 p-2 sm:grid-cols-2 lg:grid-cols-3">
           {testWithClassInfo.class?.length == 0 && 'Chưa Giao Cho Lớp Nào'}
           {testWithClassInfo.class?.map((classroom) => (
@@ -283,9 +285,9 @@ export const TestDetail = () => {
         onRequestClose={closeModal}
         contentLabel="Tải lên đề thi"
         overlayClassName="fixed inset-0 bg-gray-600/50 dark:bg-gray-900/50 flex items-center justify-center z-20"
-        className="dark:bg-dark w-full max-w-lg rounded-2xl bg-white p-8 shadow-xl"
+        className="dark:bg-dark max-h-10/12 w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-8 shadow-xl"
       >
-        <h2 className="text-xl font-semibold text-black">Tải lên đề thi (PDF không có đáp án)</h2>
+        <h2 className="text-xl font-semibold text-black">Giao Đề Thi Cho Lớp Học</h2>
         <div className="m-2">
           <div className="w-full">
             <input className="w-full" placeholder="Tìm kiếm lớp" />
