@@ -33,25 +33,6 @@ export const TestDetail = () => {
       return setTestInfo(test);
     } catch (error) {
       toast.error('Không Lấy Được Thông Tin Đề Thi');
-      setTestInfo({
-        _id: '68625a50d5382449d08b55d7',
-        title: 'Đăng Ký Học Phần',
-        url_file: '/uploads/1752813771032-485319910-ACB%20Online%20-%20sao%20kÃª.pdf',
-        grade: 12,
-        test_time: 30,
-        subject: 'Toán',
-        teacher_owner_id: {
-          _id: '68594ae3f74966354fa66035',
-          fullname: 'Phan Văn An',
-          email: 'anphan.mainwork@gmail.com',
-        },
-        class: ['6859677c9bc294de07d544b9'],
-        see_answer: false,
-        sum_score: 1,
-        createdAt: '2025-06-30T09:35:12.232Z',
-        updatedAt: '2025-06-30T09:35:21.833Z',
-        __v: 0,
-      });
     }
   };
 
@@ -79,18 +60,20 @@ export const TestDetail = () => {
     testId: testId,
   });
   const [chooseAllClass, setChooseAllClass] = useState(false);
+  const [readyUpdateCloseModal, setReadyUpdateCloseModal] = useState(false);
 
   function openModal() {
     setModalIsOpen(true);
   }
   function closeModal() {
-    setModalIsOpen(false);
     setPutClasses((prev) => {
       return {
         ...prev,
         class_id: testInfo.class,
       };
     });
+    setModalIsOpen(false);
+    setReadyUpdateCloseModal(false);
   }
 
   const fetchClass = async () => {
@@ -128,7 +111,10 @@ export const TestDetail = () => {
   };
   const handleSubmitPutClassroom = async (e) => {
     await fetchPutTestClass();
-    closeModal();
+    await fetchTestInfo();
+    await getTestWithClassInfo();
+    setReadyUpdateCloseModal(true);
+    setModalIsOpen(false);
   };
   const handleToggleAllClasses = () => {
     const allClassIds = classes.map((cls) => cls._id);
@@ -139,6 +125,18 @@ export const TestDetail = () => {
         class_id: newValue ? allClassIds : [],
       }));
       return newValue;
+    });
+  };
+
+  const handleChangeCheck = (classroomId) => {
+    setPutClasses((prev) => {
+      const isSelected = prev.class_id.includes(classroomId);
+      return {
+        ...prev,
+        class_id: isSelected
+          ? prev.class_id.filter((id) => id !== classroomId) // bỏ nếu đang có
+          : [...prev.class_id, classroomId], // thêm nếu chưa có
+      };
     });
   };
 
@@ -172,12 +170,16 @@ export const TestDetail = () => {
         class_id: testInfo.class,
       };
     });
-  }, [classes]);
+    if (readyUpdateCloseModal) {
+      setReadyUpdateCloseModal(false); // reset
+      closeModal();
+    }
+  }, [testInfo]);
 
-  // get new Test when change class
-  useEffect(() => {
-    getTestWithClassInfo();
-  }, [putClasses]);
+  // // get new Test when change class
+  // useEffect(() => {
+  //   getTestWithClassInfo();
+  // }, [putClasses]);
 
   // toogle click all class
   useEffect(() => {
@@ -196,71 +198,72 @@ export const TestDetail = () => {
   }, []);
 
   return (
-    <div className="flex">
-      <div className="flex-1/4 bg-white">
-        <h6 className="text-truncate">
-          <i className="bi bi-file-earmark-text"></i>
-          {testInfo?.title}
-        </h6>
-        <small className="text-muted">Người tạo: {testInfo?.teacher_owner_id?.fullname}</small>
-        <br />
-        <small className="text-muted">
-          Ngày tạo:
-          {new Date(testInfo?.createdAt).toLocaleString('vi-VN', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-          })}
-        </small>
-        <br />
-        <small className="text-muted">Thời gian làm bài: {testInfo?.test_time} phút</small>
-        <br />
-        <small className="text-muted">Môn học: {testInfo?.subject}</small>
-        <br />
-        <small className="text-muted">Khối: {testInfo?.grade}</small>
-        <hr className="my-2" />
+    <div className="block h-full sm:flex">
+      <div className="bg-bg flex h-auto flex-1/4 justify-between px-4 py-4 sm:block sm:h-full lg:px-8">
+        <div className="info flex-1/2">
+          <h6 className="text-truncate text-xl font-bold">
+            <i className="bi bi-file-earmark-text"></i>
+            {testInfo?.title}
+          </h6>
+          <small className="text-muted">Người tạo: {testInfo?.teacher_owner_id?.fullname}</small>
+          <br />
+          <small className="text-muted">
+            Ngày tạo:
+            {new Date(testInfo?.createdAt).toLocaleString('vi-VN', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            })}
+          </small>
+          <br />
+          <small className="text-muted">Thời gian làm bài: {testInfo?.test_time} phút</small>
+          <br />
+          <small className="text-muted">Môn học: {testInfo?.subject}</small>
+          <br />
+          <small className="text-muted">Khối: {testInfo?.grade}</small>
+          <hr className="my-2 hidden sm:block" />
+        </div>
 
-        <h6>Menu</h6>
-        <div className="">
-          <button className="text-tertiary bg-primary-from hover:bg-primary-to m-1 w-40 cursor-pointer rounded-xl p-2">
-            <a href={testInfo?.url_file} target="_blank">
-              <i className="fa-solid fa-file-pdf mr-1"></i> Xem Đề Thi
-            </a>
-          </button>
+        <div className="menuButton flex-1/2">
+          <h6>Menu</h6>
+          <div className="">
+            <button className="bg-primary-from hover:bg-primary-to my-1 w-full cursor-pointer rounded-xl p-2 text-white shadow-lg">
+              <a href={testInfo?.url_file} target="_blank">
+                <i className="fa-solid fa-file-pdf mr-1"></i> Xem Đề Thi
+              </a>
+            </button>
+          </div>
+          <div onClick={deleteTest} className="menu-item text-dangerpy-2">
+            <button className="bg-primary-from hover:bg-primary-to my-1 w-full cursor-pointer rounded-xl p-2 text-white shadow-lg">
+              <i className="fa-solid fa-trash mr-1"></i> Xóa Đề Thi
+            </button>
+          </div>
+          <hr className="my-2" />
+          <div className="d-flex justify-content-between align-items-center">
+            <button
+              className="bg-primary-from hover:bg-primary-to my-1 w-full cursor-pointer rounded-xl p-2 text-white shadow-lg"
+              onClick={openModal}
+            >
+              Giao cho lớp
+            </button>
+          </div>
         </div>
-        <div onClick={deleteTest} className="menu-item text-dangerpy-2">
-          <button className="text-tertiary bg-primary-from hover:bg-primary-to m-1 w-40 cursor-pointer rounded-xl p-2">
-            <i className="fa-solid fa-trash mr-1"></i> Xóa Đề Thi
-          </button>
-        </div>
-        <hr className="my-2" />
-        <div className="d-flex justify-content-between align-items-center">
-          <button
-            className="text-tertiary bg-primary-from hover:bg-primary-to m-1 w-40 cursor-pointer rounded-xl p-2"
-            onClick={openModal}
-          >
-            Giao cho lớp
-          </button>
-        </div>
-        <div id="list-class-for-this-test"></div>
       </div>
 
-      <div className="bg-tertiary flex-3/4">
-        <h1 className="title px-4 py-3 text-2xl font-bold text-gray-800">
-          Các lớp sử dụng đề thi này
-        </h1>
-        <div className="listClass m-4 grid gap-4 p-4">
+      <div className="bg-tertiary border-surface h-min-full flex-3/4 border-l-1 p-1 sm:overflow-y-auto sm:p-4">
+        <h1 className="title text-text px-2 pb-2 text-2xl font-bold">Các lớp sử dụng đề thi này</h1>
+        <div className="listClass grid grid-cols-1 gap-4 p-2 sm:grid-cols-2 lg:grid-cols-3">
+          {testWithClassInfo.class?.length == 0 && 'Chưa Giao Cho Lớp Nào'}
           {testWithClassInfo.class?.map((classroom) => (
-            <div className="classroomItem mb-3 transform rounded-xl border border-b-blue-950 p-2 shadow-xl transition-all duration-300 hover:-translate-y-1">
+            <div className="classroomItem bg-bg border-surface mb-1 transform rounded-xl border p-2 shadow-xl transition-all duration-300 hover:-translate-y-0.5">
               <Link
                 to={`/test-teacher/test-class-detail?test-id=${testId}&class_id=${classroom._id}`}
                 className="block"
               >
                 <div className="mb-2 flex items-center justify-between">
-                  <h5 className="text-lg font-semibold text-blue-700">{classroom.class_name}</h5>
+                  <h5 className="text-lg font-semibold text-blue-900 dark:text-white">
+                    {classroom.class_name}
+                  </h5>
                   <small className="text-gray-500">Sĩ số: {classroom.number_student}</small>
                 </div>
                 <p className="text-sm text-gray-600">
@@ -318,15 +321,7 @@ export const TestDetail = () => {
                       className="form-checkbox h-4 w-4 text-indigo-600"
                       checked={putClasses.class_id.includes(classroom._id)}
                       onChange={() => {
-                        setPutClasses((prev) => {
-                          const isSelected = prev.class_id.includes(classroom._id);
-                          return {
-                            ...prev,
-                            class_id: isSelected
-                              ? prev.class_id.filter((id) => id !== classroom._id) // bỏ nếu đang có
-                              : [...prev.class_id, classroom._id], // thêm nếu chưa có
-                          };
-                        });
+                        handleChangeCheck(classroom._id);
                       }}
                     />
                   </td>
@@ -344,7 +339,7 @@ export const TestDetail = () => {
           <button
             type="button"
             onClick={closeModal}
-            className="rounded-xl border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
+            className="border-surface rounded-xl border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300"
           >
             Hủy
           </button>

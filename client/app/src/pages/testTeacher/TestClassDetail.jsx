@@ -72,10 +72,10 @@ export const TestClassDetail = () => {
   }, []);
 
   return (
-    <div className="bg-bg m-3">
-      <h1 className="title px-4 py-3 text-2xl font-bold text-gray-800">Danh sách nộp bài</h1>
+    <div className="bg-bg mx-3 my-0">
+      <h1 className="title text-text px-4 py-3 text-2xl font-bold">Danh sách nộp bài</h1>
       <div id="infoCard" className="">
-        <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="mb-4 grid grid-cols-2 gap-4 sm:grid-cols-2">
           <div>
             <h5 className="mb-1 text-lg font-semibold">
               <span>{testInfo.title}</span>
@@ -87,7 +87,13 @@ export const TestClassDetail = () => {
               Thời lượng: <strong id="TestDuration">{`${testInfo.test_time} phút`}</strong>
               <br />
               Tạo ngày:{' '}
-              <span id="TestCreated">{new Date(testInfo.createdAt).toLocaleString('vi-VN')}</span>
+              <span id="TestCreated">
+                {new Date(testInfo.createdAt).toLocaleString('vi-VN', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                })}
+              </span>
             </p>
           </div>
           <div>
@@ -104,52 +110,60 @@ export const TestClassDetail = () => {
         </div>
       </div>
 
-      <table className="bg-bg min-w-full border-collapse rounded-lg shadow-md">
-        <thead>
-          <tr className="max-h-8 bg-gray-300 text-gray-700">
-            {tableColumn.map((column, index) => (
-              <th
-                key={index}
-                className="border-b border-gray-200 px-4 py-2 text-left font-semibold"
-              >
-                {column.header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody>
-          {tableData?.map((student, index) => {
-            const status = student.submit_status;
-            return (
-              <tr key={index + 1}>
-                <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
-                  {index + 1}
-                </td>
-                <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
-                  <h4>{student.student_user_id.fullname}</h4>
-                  <small>{student.student_user_id.email}</small>
-                </td>
-                <td
-                  className={`studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap`}
+      <div className="w-full overflow-x-auto">
+        <table className="bg-bg min-w-full border-collapse rounded-lg whitespace-nowrap shadow-md">
+          <thead>
+            <tr className="max-h-8 bg-gray-300 text-gray-700">
+              {tableColumn.map((column, index) => (
+                <th
+                  key={index}
+                  className="border-b border-gray-200 px-4 py-2 text-left font-semibold"
                 >
-                  <button
-                    className={`${status ? 'bg-green-400' : 'bg-red-400'} rounded-2xl px-3 py-2`}
+                  {column.header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody>
+            {tableData?.map((student, index) => {
+              const status = student.submit_status;
+              return (
+                <tr key={index + 1}>
+                  <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
+                    {index + 1}
+                  </td>
+                  <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
+                    <h4>{student.student_user_id.fullname}</h4>
+                    <small>{student.student_user_id.email}</small>
+                  </td>
+                  <td
+                    className={`studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap`}
                   >
-                    {status ? 'Đã Nộp' : 'Chưa Nộp'}
-                  </button>
-                </td>
-                <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
-                  {status ? status.score : '-'}
-                </td>
-                <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
-                  {status ? new Date(st.submission.time_end).toLocaleString('vi-VN') : '-'}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                    <button
+                      className={`${status ? 'bg-green-400' : 'bg-red-400'} rounded-2xl px-3 py-2`}
+                    >
+                      {status ? 'Đã Nộp' : 'Chưa Nộp'}
+                    </button>
+                  </td>
+                  <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
+                    {status ? status.score : '-'}
+                  </td>
+                  <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
+                    {status
+                      ? new Date(st.submission.time_end).toLocaleString('vi-VN', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })
+                      : '-'}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

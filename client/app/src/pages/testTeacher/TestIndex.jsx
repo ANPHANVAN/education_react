@@ -12,31 +12,42 @@ export const TestIndex = () => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
   const [tableData, setTableData] = useState([]);
+  const [fileValidError, setFileValidError] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`${VITE_API_URL}/test-teacher/api/get-tests/`, {
+        credentials: 'include',
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return toast.error('Có Vấn Đề Khi Lấy Dữ Liệu');
+      }
+      const finalData = data.map((test) => ({
+        ...test,
+        createdAt: new Date(test.createdAt)
+          .toLocaleString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+          })
+          .toString(),
+        test_time: test.test_time + ' phút',
+        classes:
+          test.class.length > 0
+            ? test.class
+                .slice(0, 6) // chỉ lấy 6 lớp đầu tiên
+                .map((cls) => cls.class_name)
+                .join(', ') + (test.class.length > 6 ? ', . . .' : '')
+            : 'Chưa Giao Cho Lớp Nào',
+      }));
+      return setTableData(finalData);
+    } catch (error) {
+      return toast.error('Lỗi Lấy Dữ Liệu');
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${VITE_API_URL}/test-teacher/api/get-tests/`, {
-          credentials: 'include',
-        });
-        const data = await response.json();
-        if (!response.ok) {
-          return toast.error('Có Vấn Đề Khi Lấy Dữ Liệu');
-        }
-        const finalData = data.map((test) => ({
-          ...test,
-          createdAt: new Date(test.createdAt).toLocaleString('vi-VN').toString(),
-          test_time: test.test_time + ' phút',
-          classes:
-            test.class.length > 0
-              ? test.class.map((cls) => cls.class_name).join(' ')
-              : 'Chưa Giao Cho Lớp Nào',
-        }));
-        return setTableData(finalData);
-      } catch (error) {
-        return toast.error('Lỗi Lấy Dữ Liệu');
-      }
-    };
     fetchData();
   }, []);
 
@@ -59,11 +70,13 @@ export const TestIndex = () => {
   }
 
   const validFileTypeAndSetFiles = (e) => {
+    setFileValidError(false);
     const validType = ['.pdf'];
     const file = e.target.files[0];
     const ext = file?.name?.slice(file.name.lastIndexOf('.')).toLowerCase();
     if (file && !validType.includes(ext)) {
       toast.error('Chỉ chấp nhận file .pdf');
+      setFileValidError(true);
       return (e.target.value = '');
     } else {
       return setFile(e.target.files[0]);
@@ -155,10 +168,11 @@ export const TestIndex = () => {
             className="file:bg-primary-from hover:file:bg-primary-to block w-full cursor-pointer text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
           />
 
-          <p className="text-sm text-red-600">
-            Chỉ chấp nhận file <strong>.pdf</strong>
-          </p>
-
+          {fileValidError && (
+            <p className="text-sm text-red-600">
+              Chỉ chấp nhận file <strong>.pdf</strong>
+            </p>
+          )}
           <div className="flex justify-end gap-3 pt-4">
             <button
               type="button"
