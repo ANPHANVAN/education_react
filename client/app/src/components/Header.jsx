@@ -44,7 +44,7 @@ export const Header = () => {
         <nav
           // :className="!navbarOpen && 'hidden' "
           id="navbarCollapse"
-          className={`bg-header dark:bg-black-2 bg-gray-[--color-tertiary] absolute top-full right-0 w-auto max-w-[250px] rounded-bl-3xl px-6 py-2 shadow lg:static lg:block lg:w-full lg:max-w-full lg:shadow-none lg:dark:bg-transparent ${
+          className={`bg-header dark:bg-black-2 bg-gray-[--color-tertiary] absolute top-full right-0 w-auto max-w-[250px] rounded-bl-3xl px-4 py-2 shadow lg:static lg:block lg:w-full lg:max-w-full lg:shadow-none lg:dark:bg-transparent ${
             !open && 'hidden'
           } `}
         >

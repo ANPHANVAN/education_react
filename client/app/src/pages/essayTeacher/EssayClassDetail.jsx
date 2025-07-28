@@ -1,13 +1,3 @@
-//
-/** Đang làm xử lý gửi điểm và đánh giá student,
- * formDataEvaluate sẽ lưu trữ thông tin score và comments,
- * formDataEvaluate thêm 1 trường submitId nữa để biết đường để gửi đi
- *
- * tiếp theo làm xử lý onChange khi nhập input thằng modals
- * sử lý ónSubmit khi gửi
- * Xử lý hiển thị
- * */
-
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -15,29 +5,30 @@ import Modal from 'react-modal';
 const VITE_API_URL = process.env.VITE_API_URL;
 
 export const EssayClassDetail = () => {
+  const tableColumn = [
+    { header: '#' },
+    { header: 'Học Sinh' },
+    { header: 'Trạng Thái' },
+    { header: 'Thời Gian Nộp' },
+    { header: 'Bài Nộp' },
+    { header: 'Điểm' },
+    { header: 'Đánh Giá' },
+    { header: 'Chấm Điểm' },
+  ];
+  const studentFormTemplate = { submitId: '', score: 0, comments: '' };
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [classId, setClassId] = useState(searchParams.get('class_id'));
-  const [essayId, setEssayId] = useState(searchParams.get('essay-id'));
+  const [classId] = useState(searchParams.get('class_id'));
+  const [essayId] = useState(searchParams.get('essay-id'));
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [studentInfoModal, setStudentInfoModal] = useState({});
   const [tableData, setTableData] = useState([]);
 
-  const tableColumn = [
-    { header: '#', accessor: 'title' },
-    { header: 'Học Sinh', accessor: 'title' },
-    { header: 'Trạng Thái', accessor: 'subject' },
-    { header: 'Thời Gian Nộp', accessor: 'createdAt' },
-    { header: 'Bài Nộp', accessor: 'subject' },
-    { header: 'Điểm', accessor: 'createdAt' },
-    { header: 'Đánh Giá', accessor: 'subject' },
-    { header: 'Lưu', accessor: 'subject' },
-  ];
-
   const [essaySubmitInfo, setEssaySubmitInfo] = useState([]);
   const [classInfo, setClassInfo] = useState({});
   const [essayInfo, setEssayInfo] = useState({});
-  const [formDataEvaluate, setFormDataEvaluate] = useState({});
+  const [formDataEvaluate, setFormDataEvaluate] = useState(studentFormTemplate);
 
   const fetchGetClassEssay = async () => {
     try {
@@ -49,7 +40,6 @@ export const EssayClassDetail = () => {
         return;
       }
       const { essaySubmitInfo, classInfo, essayInfo } = await res.json();
-      console.log(classInfo);
       setEssaySubmitInfo(essaySubmitInfo);
       setClassInfo(classInfo);
       setEssayInfo(essayInfo);
@@ -107,19 +97,31 @@ export const EssayClassDetail = () => {
     }
   };
 
+  const clearStudentFormData = () => {
+    setFormDataEvaluate(studentFormTemplate);
+  };
+
+  /////////////////// Handle ///////////////////
   const handleClickModalScoreAndComments = (student) => {
+    if (!student.submit_status) {
+      toast.info('Học sinh chưa làm bài nên không thể chấm điểm', { autoClose: 2000 });
+      return;
+    }
     setModalIsOpen(true);
     setStudentInfoModal(student);
-    // TODO: find and set submissionID
-    // setFormDataEvaluate((prev)=>({...prev, submitId:student.submission.}))
+    setFormDataEvaluate({ submitId: student.submission._id, score: null, comments: '' });
   };
 
-  const handleUserId = (essayId) => {
-    return navigate(`/test-teacher/test-detail?test-id=${essayId}`);
+  const handleChangeInputEvaluate = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setFormDataEvaluate((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmitScoreAndComments = (studentInfo) => {
-    fetchPostEvaluateStudent();
+  const handleSubmitScoreAndComments = async (e) => {
+    await fetchPostEvaluateStudent();
+    clearStudentFormData();
+    setModalIsOpen(false);
   };
 
   useEffect(() => {
@@ -186,12 +188,6 @@ export const EssayClassDetail = () => {
               const status = student.submit_status;
               const score = student.submission?.score ?? '';
               const comments = student.submission?.comments ?? '';
-              const essaySubmitId = student.submission?.grade; // ID cần để gửi chấm điểm
-              const actionSubmit = student.submission
-                ? `/essay-teacher/api/teacher-give-evaluate?essay-submit-id=${
-                    student.submission?._id ?? ''
-                  }`
-                : '';
               const timeSubmit = student.submit_status
                 ? new Date(student.submission.createdAt).toLocaleString('vi-VN', {
                     day: '2-digit',
@@ -199,7 +195,7 @@ export const EssayClassDetail = () => {
                     year: 'numeric',
                   })
                 : '-';
-              const linkFile = student.submit_status ? student.submission.url_file_submit : false;
+              const linkFile = student.submission?.url_file_submit ?? false;
 
               return (
                 <tr key={index + 1}>
@@ -214,7 +210,7 @@ export const EssayClassDetail = () => {
                     className={`studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap`}
                   >
                     <button
-                      className={`${status ? 'bg-green-400' : 'bg-red-400'} rounded-2xl px-3 py-2`}
+                      className={`${status ? 'bg-green-400' : 'bg-red-400'} w-24 rounded-2xl px-3 py-2 font-bold text-black`}
                     >
                       {status ? 'Đã Nộp' : 'Chưa Nộp'}
                     </button>
@@ -223,22 +219,28 @@ export const EssayClassDetail = () => {
                     {timeSubmit}
                   </td>
                   <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
-                    {status}
+                    {status ? (
+                      <a href={linkFile} target="_blank" className="hover:text-blue-500">
+                        Link Bài Nộp
+                      </a>
+                    ) : (
+                      '-'
+                    )}
                   </td>
                   <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
-                    {status ? status.score : '-'}
+                    {(status && student.submission.score) || '-'}
                   </td>
                   <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
-                    {'comments'}
+                    {(status && student.submission.comments) || '-'}
                   </td>
                   <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
                     <button
-                      className="bg-primary-from rounded-2xl px-3 py-2"
+                      className="bg-primary-from hover:bg-primary-to cursor-pointer rounded-2xl px-3 py-2 font-bold text-white"
                       onClick={() => {
                         handleClickModalScoreAndComments(student);
                       }}
                     >
-                      Lưu
+                      Chấm Điểm
                     </button>
                   </td>
                 </tr>
@@ -250,11 +252,11 @@ export const EssayClassDetail = () => {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
-        contentLabel="Tải lên đề thi"
+        contentLabel="Chấm Điểm Học Sinh"
         overlayClassName="fixed inset-0 bg-gray-600/50 dark:bg-gray-900/50 flex items-center justify-center z-20"
         className="dark:bg-bg w-full max-w-lg rounded-2xl bg-white p-8 shadow-xl"
       >
-        <h2 className="mb-3 text-center text-xl font-semibold sm:text-2xl">
+        <h2 className="mb-3 text-center text-2xl font-semibold">
           Chấm Điểm Và Đánh Giá Bài Tự Luận
         </h2>
         <div className="studentInfo mb-1">
@@ -274,8 +276,8 @@ export const EssayClassDetail = () => {
             name="score"
             id="score"
             required
-            // value={}
-            // onChange={handleChangeInputEvaluate}
+            defaultValue={studentInfoModal?.submission?.score}
+            onChange={handleChangeInputEvaluate}
             className="focus:border-primary-from focus:ring-primary-from/30 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:ring dark:text-white"
           />
         </div>
@@ -293,8 +295,8 @@ export const EssayClassDetail = () => {
             name="comments"
             id="comments"
             required
-            // value={}
-            // onChange={handleChangeInputEvaluate}
+            defaultValue={studentInfoModal?.submission?.comments}
+            onChange={handleChangeInputEvaluate}
             className="focus:border-primary-from focus:ring-primary-from/30 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:ring dark:text-white"
           />
         </div>
@@ -311,7 +313,7 @@ export const EssayClassDetail = () => {
           <button
             type="submit"
             className="bg-primary-from hover:bg-primary-to rounded-xl px-4 py-2 text-sm font-semibold text-white"
-            onClick={() => handleSubmitScoreAndComments(studentInfoModal)}
+            onClick={() => handleSubmitScoreAndComments()}
           >
             Lưu
           </button>

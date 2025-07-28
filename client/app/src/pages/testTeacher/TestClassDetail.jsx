@@ -151,7 +151,7 @@ export const TestClassDetail = () => {
                   </td>
                   <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
                     {status
-                      ? new Date(st.submission.time_end).toLocaleString('vi-VN', {
+                      ? new Date(student.submission.time_end).toLocaleString('vi-VN', {
                           day: '2-digit',
                           month: '2-digit',
                           year: 'numeric',

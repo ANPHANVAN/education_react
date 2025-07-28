@@ -7,8 +7,9 @@ import { DarkModeToggle, Header } from './components';
 import { Login, Register, ResetOTP, ResetPassword } from './pages/auth';
 import { NotFound } from './pages/site';
 import { TestIndex, TestDetail, TestClassDetail, CreateTest } from './pages/testTeacher';
-import { VideoDetail, VideoClassDetail } from './pages/videoTeacher';
+import { VideoIndex, VideoDetail, VideoClassDetail } from './pages/videoTeacher';
 import { EssayIndex, EssayDetail, EssayClassDetail } from './pages/essayTeacher';
+
 import {
   ClassIndex,
   ClassDetail,
@@ -55,7 +56,7 @@ function App() {
           <Route path="/essay-teacher" element={<EssayIndex />} />
           <Route path="/essay-teacher/essay-detail" element={<EssayDetail />} />
           <Route path="/essay-teacher/essay-class-detail" element={<EssayClassDetail />} />
-          <Route path="/video-teacher" element={<div>Video Teacher</div>} />
+          <Route path="/video-teacher" element={<VideoIndex />} />
           <Route path="/video-teacher/video-detail" element={<VideoDetail />} />
           <Route path="/video-teacher/class-video-detail" element={<VideoClassDetail />} />
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const VITE_API_URL = process.env.VITE_API_URL;
@@ -15,17 +15,17 @@ export const CreateTest = () => {
     urlFile: '',
     answers: [],
   });
+  const [searchParams] = useSearchParams();
 
   // Load file từ URL params
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const fileUrl = urlParams.get('file');
+    const fileUrl = searchParams.get('file');
     if (fileUrl) {
       const filePath = `/uploads/${encodeURIComponent(fileUrl)}`;
       setViewerFile(filePath);
       setTest((prev) => ({ ...prev, urlFile: `/uploads/${encodeURIComponent(fileUrl)}` }));
     }
-  }, []);
+  }, [searchParams]);
 
   // Thêm câu hỏi mới
   const addAnswer = () => {
