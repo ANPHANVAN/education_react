@@ -131,17 +131,37 @@ export const ClassIndex = () => {
   }, []);
 
   return (
-    <div className="h-full overflow-y-auto p-5">
-      <h1>
-        Danh sách lớp học ( <span>{classData.length}</span> lớp )
-      </h1>
+    <div className="h-full overflow-y-auto px-5 pb-3">
       <button
-        className="bg-primary-from hover:bg-primary-to m-3 cursor-pointer rounded-xl px-6 py-3 text-white"
+        className="bg-primary-from dark:border-black-2 hover:bg-body-color hover:border-body-color disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5 m-3 ml-0 inline-flex items-center justify-center rounded-xl border border-black px-7 py-3 text-center text-base font-medium text-white hover:cursor-pointer"
         onClick={openModal}
       >
-        + Tạo Lớp Học
+        <span className="mr-[10px]">
+          <svg
+            width={20}
+            height={20}
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="fill-current"
+          >
+            <g clipPath="url(#clip0_906_8052)">
+              <path d="M13.1875 9.28125H10.6875V6.8125C10.6875 6.4375 10.375 6.125 9.96875 6.125C9.59375 6.125 9.28125 6.4375 9.28125 6.84375V9.3125H6.8125C6.4375 9.3125 6.125 9.625 6.125 10.0312C6.125 10.4062 6.4375 10.7187 6.84375 10.7187H9.3125V13.1875C9.3125 13.5625 9.625 13.875 10.0312 13.875C10.4062 13.875 10.7187 13.5625 10.7187 13.1562V10.6875H13.1875C13.5625 10.6875 13.875 10.375 13.875 9.96875C13.875 9.59375 13.5625 9.28125 13.1875 9.28125Z" />
+              <path d="M10 0.5625C4.78125 0.5625 0.5625 4.78125 0.5625 10C0.5625 15.2188 4.8125 19.4688 10.0312 19.4688C15.25 19.4688 19.5 15.2188 19.5 10C19.4688 4.78125 15.2188 0.5625 10 0.5625ZM10 18.0625C5.5625 18.0625 1.96875 14.4375 1.96875 10C1.96875 5.5625 5.5625 1.96875 10 1.96875C14.4375 1.96875 18.0625 5.5625 18.0625 10C18.0625 14.4375 14.4375 18.0625 10 18.0625Z" />
+            </g>
+            <defs>
+              <clipPath id="clip0_906_8052">
+                <rect width={20} height={20} fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </span>
+        Tạo Lớp Học
       </button>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {/* <h1 className="mb-3 text-center text-xl">
+        Danh sách lớp học ( <span>{classData.length}</span> lớp )
+      </h1> */}
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         {classData.map((clas) => (
           <ClassItem
             key={clas._id}
@@ -174,6 +194,7 @@ export const ClassIndex = () => {
               type="text"
               name="className"
               id="className"
+              autoFocus
               // value={newClassData.className}
               onChange={handleInput}
               className="focus:border-primary-from focus:ring-primary-from/30 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:ring dark:text-white"
@@ -236,7 +257,7 @@ export const ClassIndex = () => {
             <button
               type="button"
               onClick={closeModal}
-              className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-700 dark:text-gray-200"
+              className="text-text rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-700 hover:text-white dark:text-gray-200"
             >
               Hủy
             </button>
@@ -272,6 +293,7 @@ export const ClassIndex = () => {
             type="text"
             name="className"
             id="className"
+            autoFocus
             defaultValue={renameData.newClassName}
             onChange={handleInputRename}
             className="focus:border-primary-from focus:ring-primary-from/30 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:ring dark:text-white"
@@ -307,11 +329,11 @@ export const ClassItem = ({ classItem, deleteClass, handleRenameCallback }) => {
     handleRenameCallback(classItem._id, classItem.className);
   };
   return (
-    <div className="class-item position-relative w-auto max-w-sm rounded border p-3 shadow-sm">
+    <div className="class-item position-relative bg-bg border-surface mb-1 w-auto transform rounded-xl border p-2 shadow-xl transition-all duration-300 hover:-translate-y-0.5">
       <div className="justify-content-between align-items-center flex">
         <Link
           to={`/class-teacher/classroom-details/${classItem._id}`}
-          className="text-decoration-none text-dark flex-4/5 text-2xl hover:text-blue-900 dark:hover:text-blue-300"
+          className="text-decoration-none text-dark flex-4/5 text-2xl hover:text-blue-900 hover:underline dark:hover:text-blue-300"
         >
           <h5 className="mb-0">{classItem.class_name}</h5>
         </Link>

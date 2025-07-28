@@ -90,7 +90,7 @@ export const Student = () => {
       );
 
       if (!response.ok) {
-        return toast.error('Lỗi Khi Thêm Học Sinh');
+        return toast.error('Email không đúng hoặc không tồn tại tài khoản');
       }
       toast.success('Thêm Học Sinh Thành Công');
       return;
@@ -135,27 +135,47 @@ export const Student = () => {
   useEffect(() => fetchClassInfo, []);
 
   return (
-    <div className="m-2">
-      <div className="m-3 flex">
-        <div className="input-group me-3 w-auto flex-4/5">
+    <div className="mx-0">
+      <div className="my-2 flex items-center justify-between">
+        <div className="input-group me-3 w-full max-w-90">
           <input
             type="text"
             onChange={handleInputSearch}
             value={searchTerm}
-            className="form-control p-1.5"
+            className="form-control w-full rounded-lg border p-2 px-2 sm:px-4"
             placeholder="Tìm học sinh theo tên, email"
           />
         </div>
         <button
-          className="flex-1/5 cursor-pointer rounded-xl border border-gray-800 px-2 text-center shadow-md dark:border-gray-300"
+          className="bg-primary-from dark:border-black-2 hover:bg-body-color hover:border-body-color disabled:bg-gray-3 disabled:border-gray-3 disabled:text-dark-5 inline-flex items-center justify-center rounded-xl border border-black px-3 py-3 text-center text-base font-medium whitespace-nowrap text-white hover:cursor-pointer"
           onClick={() => setModalIsOpen(true)}
         >
-          <i class="fa-solid fa-plus"></i> Thêm học sinh
+          <span className="mr-[10px] hidden sm:block">
+            <svg
+              width={20}
+              height={20}
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="fill-current"
+            >
+              <g clipPath="url(#clip0_906_8052)">
+                <path d="M13.1875 9.28125H10.6875V6.8125C10.6875 6.4375 10.375 6.125 9.96875 6.125C9.59375 6.125 9.28125 6.4375 9.28125 6.84375V9.3125H6.8125C6.4375 9.3125 6.125 9.625 6.125 10.0312C6.125 10.4062 6.4375 10.7187 6.84375 10.7187H9.3125V13.1875C9.3125 13.5625 9.625 13.875 10.0312 13.875C10.4062 13.875 10.7187 13.5625 10.7187 13.1562V10.6875H13.1875C13.5625 10.6875 13.875 10.375 13.875 9.96875C13.875 9.59375 13.5625 9.28125 13.1875 9.28125Z" />
+                <path d="M10 0.5625C4.78125 0.5625 0.5625 4.78125 0.5625 10C0.5625 15.2188 4.8125 19.4688 10.0312 19.4688C15.25 19.4688 19.5 15.2188 19.5 10C19.4688 4.78125 15.2188 0.5625 10 0.5625ZM10 18.0625C5.5625 18.0625 1.96875 14.4375 1.96875 10C1.96875 5.5625 5.5625 1.96875 10 1.96875C14.4375 1.96875 18.0625 5.5625 18.0625 10C18.0625 14.4375 14.4375 18.0625 10 18.0625Z" />
+              </g>
+              <defs>
+                <clipPath id="clip0_906_8052">
+                  <rect width={20} height={20} fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+          </span>
+          Thêm học sinh
         </button>
       </div>
-      <div className="student-part w-full overflow-x-auto p-4">
-        <div className="overflow-x-auto rounded-lg shadow">
-          <table className="w-full table-auto divide-y divide-gray-200 bg-gray-400">
+      <div className="student-part w-full p-0 py-3">
+        <div className="overflow-auto rounded-lg shadow">
+          <table className="w-full table-auto divide-y divide-gray-200 bg-gray-100 whitespace-nowrap">
             <thead className="bg-gray-200">
               <tr>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-600">
@@ -172,7 +192,7 @@ export const Student = () => {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {filterStudent.map((student, index) => (
-                <tr key={student.student_id._id} className="hover:bg-gray-50">
+                <tr key={student.student_id._id} className="hover:bg-gray-300">
                   <td className="px-4 py-2 text-sm text-gray-800">{index + 1}</td>
                   <td className="px-4 py-2 text-sm text-gray-800">
                     {student.student_user_id.fullname}
@@ -214,6 +234,7 @@ export const Student = () => {
         <input
           type="email"
           name="email"
+          autoFocus
           onChange={handleChangeEmail}
           className="focus:border-primary-from focus:ring-primary-from/30 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:ring dark:text-white"
         />
