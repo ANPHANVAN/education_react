@@ -6,12 +6,22 @@ const mongoose = require('mongoose');
 class TestTeacherController {
   // [GET] /test-teacher/
   async index(req, res) {
-    res.render('testTeacher/index');
+    try {
+      res.render('testTeacher/index');
+    } catch (error) {
+      console.error('Error:', err);
+      res.status(500).send('Internal Server Error');
+    }
   }
 
   // [GET] /test-teacher/upload-files-test
   async uploadFileTests(req, res) {
-    res.render('testTeacher/uploadFiles');
+    try {
+      res.render('testTeacher/uploadFiles');
+    } catch (error) {
+      console.error('Error:', err);
+      res.status(500).send('Internal Server Error');
+    }
   }
 
   // [GET] /test-teacher/test-detail?test-id=:testId

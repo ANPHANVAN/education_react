@@ -38,7 +38,12 @@ class AdminController {
 
   // [GET] /admin/find-user (Hiển thị trang HTML)
   findUser = (req, res) => {
-    res.status(200).render('admin/findUser'); // cần tạo file views/admin/find-user.ejs hoặc .html
+    try {
+      res.status(200).render('admin/findUser'); // cần tạo file views/admin/find-user.ejs hoặc .html
+    } catch (error) {
+      console.error('Error:', err);
+      res.status(500).send('Internal Server Error');
+    }
   };
 
   // [GET] /admin/api/find-user?keyword=...

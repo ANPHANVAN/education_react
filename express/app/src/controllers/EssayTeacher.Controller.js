@@ -126,9 +126,6 @@ class ClassTeacherController {
   async putClass(req, res) {
     try {
       const { class_id, essayId } = req.body;
-      if (class_id.length === 0 || !essayId) {
-        return res.status(400).json({ message: 'Class ID and Essay ID are required.' });
-      }
 
       const putClass = await Essay.findOneAndUpdate(
         { _id: essayId },
@@ -177,6 +174,7 @@ class ClassTeacherController {
       const classId = req.query['class_id'];
       const essayId = req.query['essay-id'];
       const essaySubmitInfo = await EssaySubmit.find({ class_id: classId, essay_id: essayId });
+      console.log('classId essayId', classId, essayId);
       const classInfo = await Class.findById(classId, { announcement: 0 }).populate({
         path: 'students',
         populate: {

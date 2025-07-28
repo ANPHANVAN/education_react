@@ -4,22 +4,37 @@ const VideoProgress = require('../models/videoProgressModel.js');
 class VideoStudentController {
   // [GET] /video-student/
   async index(req, res) {
-    res.render('videoStudent/indexVideo');
+    try {
+      res.render('videoStudent/indexVideo');
+    } catch (error) {
+      console.error('Error:', err);
+      res.status(500).send('Internal Server Error');
+    }
   }
 
   // [GET] /video-student/watch-video/:videoRequirementId?student_id=StudentId
   async watchVideoRequirement(req, res) {
-    res.render('videoStudent/watchVideoRequirement');
+    try {
+      res.render('videoStudent/watchVideoRequirement');
+    } catch (error) {
+      console.error('Error:', err);
+      res.status(500).send('Internal Server Error');
+    }
   }
 
   // [GET] /video-student/api/watch-video/:videoRequirementId
   async getVideoInfo(req, res) {
-    const { videoRequirementId } = req.params;
-    const videoRequirement = await VideoRequirements.findById(videoRequirementId);
-    if (!videoRequirement) {
-      return res.status(404).send('Video requirement not found');
+    try {
+      const { videoRequirementId } = req.params;
+      const videoRequirement = await VideoRequirements.findById(videoRequirementId);
+      if (!videoRequirement) {
+        return res.status(404).send('Video requirement not found');
+      }
+      res.json(videoRequirement);
+    } catch (error) {
+      console.error('Error:', err);
+      res.status(500).send('Internal Server Error');
     }
-    res.json(videoRequirement);
   }
 
   // [POST] /video-student/api/finish-video/

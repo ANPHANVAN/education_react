@@ -4,12 +4,22 @@ const Students = require('../models/studentModel.js');
 class VideoTeacherController {
   // [GET] /video-teacher/
   async index(req, res) {
-    res.render('videoTeacher/indexVideo');
+    try {
+      res.render('videoTeacher/indexVideo');
+    } catch (error) {
+      console.error('Error:', err);
+      res.status(500).send('Internal Server Error');
+    }
   }
 
   // [GET] /video-teacher/create-video
   async getCreateVideo(req, res) {
-    res.render('videoTeacher/createVideo');
+    try {
+      res.render('videoTeacher/createVideo');
+    } catch (error) {
+      console.error('Error:', err);
+      res.status(500).send('Internal Server Error');
+    }
   }
 
   // [GET] /video-teacher/video-detail/:videoId
@@ -34,14 +44,21 @@ class VideoTeacherController {
 
   // [POST] /video-teacher/api/create-video
   async postCreateVideo(req, res) {
-    const { video_requirement_name, note, video_embed, video_duration, grade, subject } = req.body;
-    const videoInfomation = req.body;
-    const teacher_owner_id = req.user._id;
+    try {
+      const { video_requirement_name, note, video_embed, video_duration, grade, subject } =
+        req.body;
+      const videoInfomation = req.body;
+      console.log('videoInfomation', videoInfomation);
+      const teacher_owner_id = req.user._id;
 
-    videoInfomation.teacher_owner_id = teacher_owner_id;
+      videoInfomation.teacher_owner_id = teacher_owner_id;
 
-    VideoRequirements.create(videoInfomation);
-    res.redirect('/video-teacher');
+      VideoRequirements.create(videoInfomation);
+      return res.status(201).redirect('/video-teacher');
+    } catch (error) {
+      console.error('Error post videos:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
   }
 
   // [GET] /video-teacher/api/get-video  // get video of teacher
@@ -50,7 +67,7 @@ class VideoTeacherController {
       const teacher_owner_id = req.user._id;
       const videos = await VideoRequirements.find({ teacher_owner_id })
         .populate('teacher_owner_id', 'fullname email')
-        .populate('class.class_id')
+        .populate('class')
         .sort({ createdAt: -1 });
 
       res.status(200).json(videos);
@@ -66,7 +83,7 @@ class VideoTeacherController {
       const videoId = req.params.videoId;
       const video = await VideoRequirements.findById(videoId)
         .populate('teacher_owner_id', 'fullname email')
-        .populate('class.class_id');
+        .populate('class');
 
       if (!video) {
         return res.status(404).json({ message: 'Video not found.' });
@@ -120,9 +137,6 @@ class VideoTeacherController {
   async putClassInVideo(req, res) {
     try {
       const { class_id, videoId } = req.body;
-      if (class_id.length === 0 || !videoId) {
-        return res.status(400).json({ message: 'Class ID and Video ID are required.' });
-      }
 
       const putClass = await VideoRequirements.findOneAndUpdate(
         { _id: videoId },
@@ -147,7 +161,7 @@ class VideoTeacherController {
       const videoId = req.query['video-id'];
       const videoInfo = await VideoRequirements.findById(videoId).populate({
         path: 'class',
-        select: '_id grade class_name number_student school_year',
+        select: '_id grade class_name number_student school_year createdAt',
       });
       if (!videoInfo) {
         res

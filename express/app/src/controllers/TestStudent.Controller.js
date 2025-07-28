@@ -5,7 +5,12 @@ const Students = require('../models/studentModel.js');
 class TestStudentController {
   // [GET] /test-student/
   async index(req, res) {
-    res.render('testStudent/indexTest');
+    try {
+      res.render('testStudent/indexTest');
+    } catch (error) {
+      console.error('Error:', err);
+      res.status(500).send('Internal Server Error');
+    }
   }
 
   // [GET] /test-student/test-information/:testId // this page display info before do test
