@@ -10,8 +10,8 @@ export const Folder = () => {
     { header: 'Tên Gợi Nhớ' },
     { header: 'Tên File' },
     { header: 'Xem File' },
-    { header: 'Ngày Tải Lên' },
     { header: 'Hành Động' },
+    { header: 'Ngày Tải Lên' },
   ];
   const [loading, setLoading] = useState(true);
   const { classId } = useParams();

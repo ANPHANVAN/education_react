@@ -9,7 +9,6 @@ import { NotFound } from './pages/site';
 import { TestIndex, TestDetail, TestClassDetail, CreateTest } from './pages/testTeacher';
 import { VideoIndex, VideoDetail, VideoClassDetail } from './pages/videoTeacher';
 import { EssayIndex, EssayDetail, EssayClassDetail } from './pages/essayTeacher';
-
 import {
   ClassIndex,
   ClassDetail,
@@ -20,6 +19,11 @@ import {
   Announce,
   Folder,
 } from './pages/classTeacher';
+
+import * as StudentClass from './pages/classStudent';
+import * as TestStudent from './pages/testStudent';
+import * as VideoStudent from './pages/videoStudent';
+import * as EssayStudent from './pages/essayStudent';
 
 function App() {
   const VITE_API_URL = import.meta.env.VITE_API_URL;
@@ -36,9 +40,7 @@ function App() {
           <Route path="/auth/reset-password" element={<ResetPassword />} />
 
           {/* Teacher */}
-          <Route path="/home-student" element={<div>Home Student</div>} />
           <Route path="/class-teacher" element={<ClassIndex />}></Route>
-
           <Route path="/class-teacher/classroom-details/:classId" element={<ClassDetail />}>
             <Route index element={<Navigate to="student" replace />} />
             <Route path="student" element={<Student />}></Route>
@@ -48,7 +50,6 @@ function App() {
             <Route path="announce" element={<Announce />}></Route>
             <Route path="folder" element={<Folder />}></Route>
           </Route>
-
           <Route path="/test-teacher" element={<TestIndex />} />
           <Route path="/test-teacher/test-detail" element={<TestDetail />} />
           <Route path="/test-teacher/test-class-detail" element={<TestClassDetail />} />
@@ -61,6 +62,22 @@ function App() {
           <Route path="/video-teacher/class-video-detail" element={<VideoClassDetail />} />
 
           {/* Student */}
+          <Route path="/home-student" element={<StudentClass.HomeStudent />} />
+          <Route path="/class-student/:classId" element={<StudentClass.ClassStudentIndex />}>
+            <Route index element={<Navigate to="information" replace />} />
+            <Route path="information" element={<StudentClass.ClassInfo />} />
+            <Route path="test" element={<StudentClass.Test />} />
+            <Route path="essay" element={<StudentClass.Essay />} />
+            <Route path="video" element={<StudentClass.Video />} />
+            <Route path="folder" element={<StudentClass.Folder />} />
+            <Route path="teacher-info" element={<StudentClass.TeacherInfo />} />
+          </Route>
+          <Route path="/test-student/information/:testId" element={<TestStudent.Information />} />
+          <Route path="/test-student/test/:testId" element={<TestStudent.DoTest />} />
+          <Route path="/test-student/submit/:submitId" element={<TestStudent.SubmissionInfo />} />
+          <Route path="/essay-student/information/:essayId" element={<EssayStudent.Infor />} />
+          <Route path="/essay-student/essay/:essayId" element={<EssayStudent.DoEssay />} />
+          <Route path="/video-student/watch-video/:videoId" element={<VideoStudent.Watch />} />
 
           {/* Admin */}
           <Route path="/admin" element={<DarkModeToggle />} />
