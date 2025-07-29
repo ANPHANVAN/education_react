@@ -37,7 +37,7 @@ export const ClassDetail = () => {
   return (
     <div className="block h-full sm:flex">
       <div
-        className="nav bg-muted sticky top-[calc(56px)] flex cursor-pointer items-center justify-center"
+        className="nav bg-muted sticky top-[calc(56px)] z-10 flex cursor-pointer items-center justify-center"
         onClick={() => {
           setOpenNavBar((prev) => !prev);
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -45,11 +45,9 @@ export const ClassDetail = () => {
       >
         <button
           id="navbarToggler"
-          className={`block cursor-pointer items-center px-3 py-[6px] sm:hidden`}
+          className={`flex cursor-pointer items-center justify-center px-3 py-[6px] sm:hidden`}
         >
-          <span className="relative my-[6px] block h-[2px] w-[30px] bg-gray-950 text-center dark:bg-gray-950"></span>
-          <span className="relative my-[6px] block h-[2px] w-[30px] bg-gray-950 text-center dark:bg-gray-950"></span>
-          <span className="relative my-[6px] block h-[2px] w-[30px] bg-gray-950 text-center dark:bg-gray-950"></span>
+          <i className="fa-solid fa-bars text-2xl"></i>
         </button>
       </div>
 
@@ -84,7 +82,7 @@ const ListItem = ({ children, NavLink }) => {
       <li className="">
         <Link
           to={NavLink}
-          className="text-text mx-0 flex w-full justify-center pb-3 text-base font-medium hover:text-blue-300 sm:mx-3 sm:justify-start sm:text-left lg:ml-3 lg:inline-flex dark:text-white dark:hover:text-blue-300"
+          className="text-text mx-0 flex w-full justify-center pb-3 text-base font-medium hover:text-blue-900 sm:mx-3 sm:justify-start sm:text-left lg:ml-3 lg:inline-flex dark:text-white dark:hover:text-blue-200"
         >
           {children}
         </Link>

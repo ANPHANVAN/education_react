@@ -15,7 +15,7 @@ export const setupFetchInterceptor = () => {
     }
     if (response.redirected && urlPathname == '/auth/login') {
       toast.info('Phiên Đăng Nhập Hết Hạn, Hãy Đăng Nhập Lại', {
-        autoClose: 3000,
+        autoClose: 1500,
       });
       setTimeout(() => {
         window.location.href = '/auth/login';

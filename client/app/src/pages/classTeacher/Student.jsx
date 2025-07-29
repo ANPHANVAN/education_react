@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Outlet, Link, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Modal from 'react-modal';
+import { MiniLoading } from '../../components';
 const VITE_API_URL = process.env.VITE_API_URL;
 
 export const Student = () => {
   // fetch GET classroom data
+  const [loading, setLoading] = useState(true);
   const { classId } = useParams();
   const [classData, setClassData] = useState({
     class_name: 'No Data',
@@ -29,6 +31,8 @@ export const Student = () => {
     } catch (error) {
       // dont toast because in main route have toast this error
       return;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -136,6 +140,7 @@ export const Student = () => {
 
   return (
     <div className="mx-0">
+      {loading && <MiniLoading />}
       <div className="my-2 flex items-center justify-between">
         <div className="input-group me-3 w-full max-w-90">
           <input

@@ -335,7 +335,7 @@ export const ClassItem = ({ classItem, deleteClass, handleRenameCallback }) => {
           to={`/class-teacher/classroom-details/${classItem._id}`}
           className="text-decoration-none text-dark flex-4/5 text-2xl hover:text-blue-900 hover:underline dark:hover:text-blue-300"
         >
-          <h5 className="mb-0">{classItem.class_name}</h5>
+          <h5 className="mb-0 text-lg font-bold">{classItem.class_name}</h5>
         </Link>
         <div className="dropdown h-5 flex-1/5">
           <Dropdown
@@ -346,9 +346,11 @@ export const ClassItem = ({ classItem, deleteClass, handleRenameCallback }) => {
         </div>
       </div>
 
-      <p className="mt-2">Sĩ số: {classItem.number_student}</p>
-      <p>Năm học: {classItem.school_year}</p>
-      <p>Khối: {classItem.grade}</p>
+      <div className="flex items-center justify-between">
+        <small>Khối {classItem.grade}</small>
+        <small className="mt-2">Sĩ số: {classItem.number_student + ' học sinh'}</small>
+      </div>
+      <small>Năm học: {classItem.school_year}</small>
     </div>
   );
 };
