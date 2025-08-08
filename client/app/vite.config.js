@@ -24,6 +24,15 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), tailwindcss()],
+    build: {
+      sourcemap: false,
+      rollupOptions: {
+        external: ['path', 'fs', 'url', 'source-map-js', 'postcss', '@tailwindcss/node'],
+      },
+      optimizeDeps: {
+        exclude: ['path', 'fs', 'url', 'source-map-js', 'postcss', '@tailwindcss/node'],
+      },
+    },
     server: {
       host: '0.0.0.0',
       port: 9000,
