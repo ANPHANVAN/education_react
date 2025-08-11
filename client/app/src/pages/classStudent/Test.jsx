@@ -48,34 +48,38 @@ const Test = () => {
             className="testItem bg-bg border-surface mb-1 transform rounded-xl border p-2 shadow-xl transition-all duration-300 hover:-translate-y-0.5"
           >
             <Link
-              to={`/test-student/information/${testItem.test_id}&class_id=${classId}`}
+              to={`/test-student/information/${testItem.test_id}?class_id=${classId}`}
               className="block"
             >
-              <div className="mb-2 flex items-center justify-between">
+              <div className="flex items-center justify-between">
                 <h5 className="text-lg font-semibold text-blue-900 dark:text-white">
                   {testItem.test_title}
                 </h5>
+              </div>
+              <div className="status flex items-center justify-between">
                 {testItem.test_status_submit ? (
-                  <button className="text-md m-1 rounded-xl bg-green-700 px-2 py-1 text-gray-100">
-                    Đã Hoàn Thành
+                  <button className="my-1 rounded-xl bg-green-700 px-3 py-1 text-sm font-bold text-gray-100">
+                    Đã Nộp
                   </button>
                 ) : (
-                  <button className="text-md m-1 rounded-xl bg-red-700 px-2 py-1 text-gray-100">
-                    Chưa Hoàn Thành
+                  <button className="my-1 rounded-xl bg-red-700 px-3 py-1 text-sm font-bold text-gray-100">
+                    Chưa Nộp
                   </button>
+                )}
+                {testItem.test_status_submit && (
+                  <small className="text-gray-400">
+                    Thời gian nộp: {new Date(testItem.time_end).toLocaleDateString('vi-VN')}
+                  </small>
                 )}
               </div>
               {testItem.test_status_submit && (
                 <div className="testSubmitInfo">
                   <div className="flex items-center justify-between text-sm text-gray-600">
-                    <p>
+                    <p className="text-text font-bold">
                       Điểm {testItem.score}/{testItem.sum_score}
                     </p>
-                    <p>Thời gian làm bài: {testItem.sum_score}</p>
+                    <p>Thời gian làm bài: {testItem.sum_score + "'"}</p>
                   </div>
-                  <small className="text-gray-400">
-                    Thời gian nộp {new Date(testItem.time_end).toLocaleDateString('vi-VN')}
-                  </small>
                 </div>
               )}
             </Link>

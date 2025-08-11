@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Outlet, Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 const VITE_API_URL = process.env.VITE_API_URL;
 
@@ -23,10 +23,14 @@ const ClassInfo = () => {
     } catch (error) {
       toast.error(`Lỗi Khi Lấy Dữ Liệu! ${error || ''}`);
       return;
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => fetchClassInfo, []);
+  useEffect(() => {
+    fetchClassInfo();
+  }, []);
 
   return (
     <div>
@@ -41,8 +45,11 @@ const ClassInfo = () => {
         <h1 className="m-1 text-center text-2xl">Thông báo</h1>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {!loading && classData?.announcement?.length == 0 && 'Chưa có thông báo nào!'}
-          {classData?.announcement?.map((announceItem) => (
-            <div className="announceItem bg-bg border-surface mb-1 transform rounded-xl border p-2 shadow-xl transition-all duration-300 hover:-translate-y-0.5">
+          {classData?.announcement?.map((announceItem, index) => (
+            <div
+              key={index}
+              className="announceItem bg-bg border-surface mb-1 transform rounded-xl border p-2 shadow-xl transition-all duration-300 hover:-translate-y-0.5"
+            >
               <div className="mt-1 block">
                 <div className="mb-1 flex items-center justify-between">
                   <h5 className="text-sm font-semibold text-blue-900 dark:text-white">

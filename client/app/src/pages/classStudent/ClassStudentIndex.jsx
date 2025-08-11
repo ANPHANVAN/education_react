@@ -10,7 +10,7 @@ const ClassStudentIndex = () => {
   return (
     <div className="block h-full sm:flex">
       <div
-        className="nav bg-muted sticky top-[calc(56px)] z-10 flex cursor-pointer items-center justify-center"
+        className="nav bg-muted sticky top-0 z-10 flex cursor-pointer items-center justify-center"
         onClick={() => {
           setOpenNavBar((prev) => !prev);
           window.scrollTo({ top: 0, behavior: 'smooth' });
