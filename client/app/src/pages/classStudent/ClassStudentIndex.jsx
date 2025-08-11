@@ -8,7 +8,7 @@ const ClassStudentIndex = () => {
   };
 
   return (
-    <div className="block h-full sm:flex">
+    <div className="block h-[calc(100vh-3.5rem)] sm:flex">
       <div
         className="nav bg-muted sticky top-0 z-10 flex cursor-pointer items-center justify-center"
         onClick={() => {
