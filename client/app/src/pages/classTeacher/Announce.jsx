@@ -15,6 +15,7 @@ export const Announce = () => {
   // Fetch list data from API
   const fetchListData = async () => {
     try {
+      setLoading(true);
       const response = await fetch(
         `${VITE_API_URL}/class-teacher/api/classroom-details/${classId}/announce`
       );

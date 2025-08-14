@@ -18,6 +18,7 @@ import {
   Video,
   Announce,
   Folder,
+  EditTeacherInfo,
 } from './pages/classTeacher';
 
 import * as StudentClass from './pages/classStudent';
@@ -50,6 +51,7 @@ function App() {
               <Route path="video" element={<Video />}></Route>
               <Route path="announce" element={<Announce />}></Route>
               <Route path="folder" element={<Folder />}></Route>
+              <Route path="teacher" element={<EditTeacherInfo />}></Route>
             </Route>
             <Route path="/test-teacher" element={<TestIndex />} />
             <Route path="/test-teacher/test-detail" element={<TestDetail />} />

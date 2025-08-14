@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { MiniLoading } from '../../components';
+
 const VITE_API_URL = process.env.VITE_API_URL;
 
 const ClassInfo = () => {
@@ -13,6 +15,7 @@ const ClassInfo = () => {
 
   const fetchClassInfo = async () => {
     try {
+      setLoading(true);
       const response = await fetch(`${VITE_API_URL}/class-student/api/${classId}`);
       const data = await response.json();
       if (!response.ok) {
@@ -34,6 +37,7 @@ const ClassInfo = () => {
 
   return (
     <div>
+      {loading && <MiniLoading />}
       <div className="classInfo">
         <h1 className="text-3xl">{classData.class_name + ' (' + classData.school_year + ')'}</h1>
         <div className="">

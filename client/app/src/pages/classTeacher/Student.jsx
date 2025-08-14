@@ -136,7 +136,9 @@ export const Student = () => {
     return;
   };
 
-  useEffect(() => fetchClassInfo, []);
+  useEffect(() => {
+    fetchClassInfo();
+  }, []);
 
   return (
     <div className="mx-0">

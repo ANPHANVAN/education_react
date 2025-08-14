@@ -32,10 +32,12 @@ export const ClassDetail = () => {
     }
   };
 
-  useEffect(() => fetchClassInfo, []);
+  useEffect(() => {
+    fetchClassInfo();
+  }, []);
 
   return (
-    <div className="block h-full sm:flex">
+    <div className="block h-[calc(100vh-3.5rem)] sm:flex">
       <div
         className="nav bg-muted sticky top-[calc(56px)] z-10 flex cursor-pointer items-center justify-center"
         onClick={() => {
@@ -66,6 +68,7 @@ export const ClassDetail = () => {
           <ListItem NavLink="video">Video</ListItem>
           <ListItem NavLink="announce">Bảng Tin</ListItem>
           <ListItem NavLink="folder">Tài Liệu</ListItem>
+          <ListItem NavLink="teacher">Giáo Viên</ListItem>
         </ul>
       </div>
       <div className="sm:h-full-minus-[calc(56px)] flex-5/6 overflow-auto p-4 sm:px-6">
