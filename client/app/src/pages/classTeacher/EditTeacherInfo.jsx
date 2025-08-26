@@ -2,15 +2,19 @@ import { useState, useEffect } from 'react';
 import { MiniLoading } from '../../components';
 import { useParams } from 'react-router-dom';
 import { ObjectId } from 'bson';
+import { toast } from 'react-toastify';
 
 const VITE_API_URL = process.env.VITE_API_URL;
-
+// TODO: add more button add certificate
 export const EditTeacherInfo = () => {
   const { classId } = useParams();
+  const [preview, setPreview] = useState(null);
+  const [teacherImage, setTeacherImage] = useState(null);
   const [formData, setFormData] = useState({
     titleFullname: 'Thầy Huỳnh Đăng Phong',
     teacherSubject: 'Giáo viên môn Toán học',
     fullname: 'Huỳnh Đăng Phong',
+    teacherImageLink: '/uploads/thay-huynh-dang-phong.jpeg',
     degree: [
       { _id: 1, context: 'Cử nhân Công Nghệ Thông Tin - Đại học Sư phạm TP.HCM' },
       { _id: 2, context: 'Cử nhân Sư phạm Toán - Đại học Sư phạm TP.HCM' },
@@ -55,8 +59,51 @@ export const EditTeacherInfo = () => {
   });
 
   const fetchTeacherInfo = async () => {
-    console.log('get Teacher Info');
-    // setFormData()
+    try {
+      const res = await fetch(
+        `${VITE_API_URL}/class-teacher/api/classroom-details/get-teacher-info/${classId}`
+      );
+      if (res.ok) {
+        const dataTeacherInfo = await res.json();
+        setFormData(dataTeacherInfo);
+      } else {
+        toast.error('Không lấy được thông tin giáo viên');
+        return;
+      }
+    } catch (error) {
+      console.error(`Lỗi lấy dữ liệu! ${error}`);
+      toast.error('Không lấy được dữ liệu');
+      return;
+    }
+  };
+
+  const postChangeTeacherInfo = async () => {
+    const data = new FormData();
+    if (teacherImage) {
+      data.set('teacherPhoto', teacherImage);
+    }
+    data.set('titleFullname', formData.titleFullname);
+    data.set('teacherSubject', formData.teacherSubject);
+    data.set('fullname', formData.fullname);
+    data.set('subject', formData.subject);
+    data.set('workPassion', formData.workPassion);
+    data.set('degree', JSON.stringify(formData.degree));
+    data.set('part', JSON.stringify(formData.part));
+
+    const res = await fetch(
+      `${VITE_API_URL}/class-teacher/api/classroom-details/createTeacherInfo/${classId}`,
+      {
+        method: 'POST',
+        body: data,
+      }
+    );
+
+    if (res.ok) {
+      toast.success('Thay đổi thông tin thành công!');
+      return;
+    } else {
+      toast.success('Thay đổi thông tin thất bại!');
+    }
   };
 
   const handleChangeInputMainFormData = (e) => {
@@ -222,131 +269,136 @@ export const EditTeacherInfo = () => {
     };
     setFormData((prev) => ({ ...prev, part: [...prev.part, newObjectPart] }));
   };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setTeacherImage(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
   useEffect(() => {
     fetchTeacherInfo();
   }, []);
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
-      <div className="rounded-2xl bg-white p-8 shadow-lg">
-        {/* Tiêu đề */}
-        <h1 className="text-center text-3xl font-bold text-gray-800">
-          <input
-            type="text"
-            name="titleFullname"
-            id="titleFullname"
-            value={formData.titleFullname}
-            onChange={handleChangeInputMainFormData}
-          />
-        </h1>
-        <p className="mt-2 text-center text-gray-500">
-          <input
-            type="text"
-            name="teacherSubject"
-            id="teacherSubject"
-            value={formData.teacherSubject}
-            onChange={handleChangeInputMainFormData}
-          />
-        </p>
+    <div className="mx-auto max-w-5xl space-y-8 px-6 py-6">
+      <div className="rounded-xl p-6 shadow-lg">
+        {/* Header */}
+        <h1 className="mb-6 text-center text-3xl font-bold">Chỉnh sửa thông tin giáo viên</h1>
 
-        <div className="my-6 border-t"></div>
-
-        {/* Thông tin cá nhân */}
-        <div className="grid items-center gap-8 md:grid-cols-2">
-          <div className="space-y-3 text-gray-700">
-            <p>
-              <strong>👤 Họ và tên:</strong>
-              <input
-                className="w-full"
-                type="text"
-                name="fullname"
-                id="fullname"
-                value={formData.fullname}
-                onChange={handleChangeInputMainFormData}
-              />
-            </p>
-            {formData.degree.map((degreeItem) => {
-              return (
-                <p key={degreeItem._id}>
-                  <strong>
-                    🎓 Bằng cấp:
-                    <input
-                      className="w-full"
-                      type="text"
-                      name={degreeItem._id}
-                      id={'degree_' + degreeItem._id}
-                      value={degreeItem.context}
-                      onChange={handleChangeDegree}
-                    />
-                  </strong>
-                </p>
-              );
-            })}
+        {/* Thông tin cơ bản */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <label className="mb-2 block font-semibold">Tiêu đề</label>
+            <input
+              className="focus:ring-primary-to w-full rounded-lg border border-gray-300 p-3 focus:ring"
+              type="text"
+              name="titleFullname"
+              value={formData.titleFullname}
+              onChange={handleChangeInputMainFormData}
+            />
           </div>
           <div>
-            <img
-              src="/uploads/thay-huynh-dang-phong.jpeg"
-              alt="Ảnh giáo viên"
-              className="w-full rounded-xl shadow-md"
+            <label className="mb-2 block font-semibold">Môn giảng dạy</label>
+            <input
+              className="focus:ring-primary-to w-full rounded-lg border border-gray-300 p-3 focus:ring"
+              type="text"
+              name="teacherSubject"
+              value={formData.teacherSubject}
+              onChange={handleChangeInputMainFormData}
             />
           </div>
         </div>
 
-        {formData.part?.map((partItem) => {
-          return (
-            <div key={partItem._id} className="part">
-              <h2 className="mt-10 text-2xl font-semibold text-gray-800">
-                <input
-                  type="text"
-                  name={'part.title' + '_' + partItem._id}
-                  id={partItem._id}
-                  value={partItem.title}
-                  className="w-full"
-                  onChange={handleChangePartTitle}
-                />
-              </h2>
+        {/* Ảnh giáo viên */}
+        <div className="mt-6">
+          <p className="mb-2 font-semibold">Ảnh giáo viên</p>
+          <div className="flex flex-col items-center space-y-4">
+            <img
+              src={preview || formData.teacherImageLink}
+              alt="Ảnh giáo viên"
+              className="h-40 w-40 rounded-full object-cover shadow-md"
+            />
+            <input
+              onChange={handleFileChange}
+              type="file"
+              name="teacherPhoto"
+              accept="image/*"
+              className="file:bg-primary-from hover:file:bg-primary-to text-gray-500 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-white"
+            />
+          </div>
+        </div>
+
+        {/* Bằng cấp */}
+        <div className="mt-6">
+          <h2 className="mb-4 text-lg font-semibold">🎓 Bằng cấp</h2>
+          {formData.degree.map((degreeItem) => (
+            <input
+              key={degreeItem._id}
+              className="focus:ring-primary-to mb-3 w-full rounded-lg border border-gray-300 p-3 focus:ring"
+              type="text"
+              name={degreeItem._id}
+              value={degreeItem.context}
+              onChange={handleChangeDegree}
+            />
+          ))}
+        </div>
+
+        {/* Các phần nội dung */}
+        <div className="mt-8 space-y-6">
+          <h2 className="text-lg font-semibold">📌 Các phần nội dung</h2>
+          {formData.part.map((partItem) => (
+            <div key={partItem._id} className="rounded-lg border p-4 shadow-sm">
+              <input
+                type="text"
+                className="mb-3 w-full border-b pb-2 text-xl font-semibold focus:ring"
+                value={partItem.title}
+                onChange={handleChangePartTitle}
+                id={partItem._id}
+              />
+              {partItem.content.map((contentItem) => (
+                <div key={contentItem._id} className="mb-3">
+                  <textarea
+                    className="w-full rounded-lg border p-3 focus:ring"
+                    value={contentItem.context}
+                    name={partItem._id + '_' + contentItem._id}
+                    onChange={handleChangeContent}
+                  />
+                  <button
+                    onClick={() => handleClickDeleteContentItem(partItem._id, contentItem._id)}
+                    className="mt-2 text-sm text-red-600 hover:text-red-800"
+                  >
+                    Xóa đoạn
+                  </button>
+                </div>
+              ))}
               <button
-                className="bg-primary-from hover:bg-primary-to cursor-pointer rounded-2xl px-3 py-1 shadow"
-                onClick={() => handleClickDeletePart(partItem._id)}
-              >
-                Xóa Phần
-              </button>
-              <button
-                className="bg-primary-from hover:bg-primary-to cursor-pointer rounded-2xl px-3 py-1 shadow"
                 onClick={() => handleClickAddContent(partItem._id)}
+                className="text-sm text-blue-600 hover:text-blue-800"
               >
-                Thêm Đoạn
+                + Thêm đoạn
               </button>
-              {partItem.content.map((contentItem) => {
-                return (
-                  <div key={contentItem._id} className="partItem">
-                    <p className="mt-3 leading-relaxed text-gray-700">
-                      <textarea
-                        type="text"
-                        name={partItem._id + '_' + contentItem._id}
-                        id={partItem._id + '_' + contentItem._id}
-                        value={contentItem.context}
-                        className="w-full"
-                        onChange={handleChangeContent}
-                      />
-                    </p>
-                    <button
-                      onClick={() => handleClickDeleteContentItem(partItem._id, contentItem._id)}
-                      className="deleteContentItem bg-primary-from hover:bg-primary-to cursor-pointer rounded-2xl px-3 py-1 shadow"
-                    >
-                      Xóa Đoạn
-                    </button>
-                  </div>
-                );
-              })}
             </div>
-          );
-        })}
+          ))}
+
+          <button
+            onClick={handleClickAddPart}
+            className="mt-4 rounded-lg bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+          >
+            + Thêm phần
+          </button>
+        </div>
+      </div>
+
+      {/* Nút lưu */}
+      <div className="text-center">
         <button
-          className="bg-primary-from hover:bg-primary-to cursor-pointer rounded-2xl px-3 py-1 shadow"
-          onClick={handleClickAddPart}
+          onClick={postChangeTeacherInfo}
+          className="bg-primary-from hover:bg-primary-to cursor-pointer rounded-lg px-6 py-3 text-lg font-semibold text-white shadow-lg"
         >
-          Thêm Phần
+          Lưu thông tin
         </button>
       </div>
     </div>

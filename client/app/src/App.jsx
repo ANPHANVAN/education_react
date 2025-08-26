@@ -25,6 +25,7 @@ import * as StudentClass from './pages/classStudent';
 import * as TestStudent from './pages/testStudent';
 import * as VideoStudent from './pages/videoStudent';
 import * as EssayStudent from './pages/essayStudent';
+import * as Admin from './pages/admin';
 
 function App() {
   const VITE_API_URL = import.meta.env.VITE_API_URL;
@@ -83,7 +84,7 @@ function App() {
             <Route path="/video-student/watch-video/:videoId" element={<VideoStudent.Watch />} />
 
             {/* Admin */}
-            <Route path="/admin" element={<DarkModeToggle />} />
+            <Route path="/admin" element={<Admin.AdminIndex />} />
 
             {/* Another */}
             <Route path="*" element={<NotFound />} />
