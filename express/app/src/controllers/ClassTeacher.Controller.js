@@ -355,6 +355,59 @@ class ClassTeacherController {
       res.status(500).send('Internal Server Error');
     }
   }
+  // [GET] /class-teacher/api/classroom-details/get-teacher-info/:classId
+  async getTeacherInfo(req, res) {
+    try {
+      const userId = req.user.ObjectId;
+      const userCurrent = await Users.findById(userId);
+      if (!userCurrent) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json(userCurrent.teacher_info || {});
+    } catch (error) {
+      console.error('Error fetching teacher info:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  }
+
+  // [POST] /class-teacher/api/classroom-details/createTeacherInfo/:classId
+  async createTeacherInfo(req, res) {
+    // check do have file or not => have file: take file information || dont change teacherImageLink
+    try {
+      const userId = req.user.ObjectId;
+      // const { titleFullname, teacherSubject, fullname, degree, subject, workPassion, part } = req.body;
+      let formDataCreateTeacherInfo = req.body;
+      formDataCreateTeacherInfo.degree = JSON.parse(req.body.degree || '[]');
+      req.body.part = JSON.parse(req.body.part || '[]');
+
+      // const { fieldname, originalname, encoding, mimetype, destination, filename } = req.file;
+      if (req.file) {
+        formDataCreateTeacherInfo.teacherImageLink = `/uploads/teacherInfo/${req.file.filename}`;
+      }
+
+      // update nested field in mongodb
+      const updateUserInfo = await Users.findByIdAndUpdate(
+        userId,
+        {
+          $set: Object.fromEntries(
+            Object.entries(formDataCreateTeacherInfo).map(([key, value]) => [
+              `teacher_info.${key}`,
+              value,
+            ])
+          ),
+        },
+        {
+          new: true,
+          upsert: false, // dont create new document if not found
+        }
+      );
+
+      res.status(200).json({ updateUserInfo: updateUserInfo });
+    } catch (error) {
+      console.error('Error POST teacherInfo', error);
+      res.status(500).send('Internal Server Error');
+    }
+  }
 }
 
 module.exports = new ClassTeacherController();

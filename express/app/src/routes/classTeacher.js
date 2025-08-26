@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const classTeacherController = require('../controllers/ClassTeacher.Controller.js');
+const uploadTeacherInfo = require('../middleware/uploadTeacherInfo.js');
 
 ///////////////////////////////////// Classroom Details /////////////////////////////////////
 
@@ -36,6 +37,19 @@ router.get('/classroom-details/:classId/essay', classTeacherController.classDeta
 
 // [GET] /class-teacher/api/classroom-details/:classId/essay
 router.get('/api/classroom-details/:classId/essay', classTeacherController.getClassDetailsEssay);
+
+// teacher info update
+// [GET] /class-teacher/api/classroom-details/get-teacher-info/:classId
+router.get(
+  `/api/classroom-details/get-teacher-info/:classId`,
+  classTeacherController.getTeacherInfo
+);
+// [POST] /class-teacher/api/classroom-details/createTeacherInfo/:classId
+router.post(
+  '/api/classroom-details/createTeacherInfo/:classId',
+  uploadTeacherInfo.single('teacherPhoto'),
+  classTeacherController.createTeacherInfo
+);
 
 /////////////////////////////////////////////////////////////////
 
