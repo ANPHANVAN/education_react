@@ -134,7 +134,6 @@
   function renderClasses(list) {
     const container = document.getElementById('classList');
     container.innerHTML = '';
-    console.log('list', list);
     list.forEach((cls) => container.appendChild(buildClassCard(cls)));
   }
 

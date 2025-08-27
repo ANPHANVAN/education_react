@@ -205,7 +205,6 @@
       });
       if (!res.ok) throw new Error('Nộp bài thất bại');
       const testSubmitInfo = await res.json();
-      console.log('testSubmitInfo', testSubmitInfo);
       alert('Nộp bài thành công!');
 
       // Delete time statt and draftAnswers

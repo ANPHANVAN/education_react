@@ -69,7 +69,6 @@ export const Login = () => {
       });
 
       if (res.ok) {
-        console.log(res);
         toast.success('Đăng nhập thành công!');
         const urlNavigate = new URL(res.url).pathname;
         return window.location.replace('/');

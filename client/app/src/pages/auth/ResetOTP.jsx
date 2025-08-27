@@ -41,7 +41,6 @@ export const ResetOTP = () => {
 
     // Nếu không có lỗi, tiến hành gửi dữ liệu lên server
     // TODO: Gửi yêu cầu đăng ký lên API
-    console.log('formSubmit: ', formData);
     const res = await fetch(`${process.env.VITE_API_URL}/auth/api/forgot-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

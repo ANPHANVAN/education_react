@@ -79,7 +79,6 @@
   function getTestId() {
     // URL pattern: /video-student/test-information/:testId
     const segments = window.location.pathname.split('/');
-    console.log(segments[segments.length - 1] || segments[segments.length - 2]);
     return segments[segments.length - 1] || segments[segments.length - 2];
   }
 
@@ -99,7 +98,6 @@
 
       // Danh sách thông tin chi tiết
       const infoList = document.getElementById('infoList');
-      console.log('infoList', infoList);
       INFO_CONFIG.forEach(({ icon, label, value }) => {
         const val = typeof value === 'function' ? value(data) : value;
         infoList.appendChild(makeInfoRow(icon, label, val));

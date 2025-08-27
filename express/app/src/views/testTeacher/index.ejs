@@ -37,7 +37,6 @@
         throw new Error('Network response was not ok');
       }
       const tests = await response.json();
-      console.log(tests);
       const listItems = document.querySelector('.test-teacher-list');
       listItems.innerHTML = ''; // Clear existing items
       tests.forEach((test) => {

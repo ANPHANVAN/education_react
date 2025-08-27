@@ -101,7 +101,6 @@ export const VideoDetail = () => {
     }
   };
   const transfromVideoInfoToListClassIdUseVideo = () => {
-    console.log('videoInfo', videoInfo);
     const listClassId = videoInfo.class.map((classes) => classes._id);
     setListClassIdUseVideo(listClassId);
   };
@@ -189,7 +188,6 @@ export const VideoDetail = () => {
 
   return (
     <div className="block h-full sm:flex">
-      {console.log('putClasses', putClasses)}
       <div className="bg-bg flex h-auto flex-1/4 justify-between px-4 py-4 sm:block sm:h-full lg:px-8">
         <div className="info flex-1/2">
           <h6 className="text-truncate text-xl">

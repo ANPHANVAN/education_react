@@ -85,7 +85,6 @@
     const handleSubmit = async (e) => {
       e.preventDefault();
       // Validate dữ liệu
-      console.log('Submitting test:', test);
       if (!test.title || !test.testTime || !test.subject || !test.grade || !test.urlFile) {
         alert('Vui lòng điền đầy đủ thông tin và đảm bảo có file đề thi!');
         return;
@@ -103,7 +102,6 @@
       }
 
       try {
-        console.log('Submitting test data:', test);
         const response = await fetch('/test-teacher/api/create-test', {
           method: 'POST',
           headers: {

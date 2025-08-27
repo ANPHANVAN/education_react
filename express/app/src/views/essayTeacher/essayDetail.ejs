@@ -184,7 +184,6 @@
 
     saveBtn.disabled = true;
     try {
-      console.log('Selected class IDs:', selectedIds);
       const res = await fetch(`/essay-teacher/api/put-class-in-essay`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

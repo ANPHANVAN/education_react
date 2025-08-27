@@ -48,7 +48,6 @@ class VideoTeacherController {
       const { video_requirement_name, note, video_embed, video_duration, grade, subject } =
         req.body;
       const videoInfomation = req.body;
-      console.log('videoInfomation', videoInfomation);
       const teacher_owner_id = req.user._id;
 
       videoInfomation.teacher_owner_id = teacher_owner_id;

@@ -180,7 +180,6 @@
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const filteredStudents = allStudents.filter((student) => {
       const studentData = student.student_user_id;
-      console.log('go in searchStudents');
       return (
         studentData.fullname.toLowerCase().includes(searchTerm) ||
         studentData.email.toLowerCase().includes(searchTerm)

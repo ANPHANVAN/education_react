@@ -75,7 +75,6 @@ export const CreateTest = () => {
     }
 
     try {
-      console.log('Submitting test data:', test);
       const response = await fetch(`${VITE_API_URL}/test-teacher/api/create-test`, {
         method: 'POST',
         headers: {

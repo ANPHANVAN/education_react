@@ -90,7 +90,6 @@
   fetchTestdata().then((data) => {
     if (data) {
       testInformation = data;
-      console.log('Test testInformation:', testInformation);
     } else {
       console.error('Không tìm thấy thông tin đề thi');
     }
@@ -185,7 +184,6 @@
 
     saveBtn.disabled = true;
     try {
-      console.log('Selected class IDs:', selectedIds);
       const res = await fetch(`/test-teacher/api/put-class-in-test`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

@@ -95,7 +95,6 @@
 
       // Danh sách thông tin chi tiết
       const infoList = document.getElementById('infoList');
-      console.log('infoList', infoList);
       INFO_CONFIG.forEach(({ icon, label, value }) => {
         const val = typeof value === 'function' ? value(data) : value;
         infoList.appendChild(makeInfoRow(icon, label, val));

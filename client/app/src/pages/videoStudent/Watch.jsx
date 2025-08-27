@@ -151,7 +151,6 @@ const Watch = () => {
       durationRef.current &&
       currentTime >= durationRef.current * COMPLETE_RATIO
     ) {
-      console.log('fetch data');
       markVideoCompleted(studentId, videoInfo._id)
         .then(() => {
           localStorage.setItem(keyDone, '1');

@@ -174,7 +174,6 @@ class ClassTeacherController {
       const classId = req.query['class_id'];
       const essayId = req.query['essay-id'];
       const essaySubmitInfo = await EssaySubmit.find({ class_id: classId, essay_id: essayId });
-      console.log('classId essayId', classId, essayId);
       const classInfo = await Class.findById(classId, { announcement: 0 }).populate({
         path: 'students',
         populate: {

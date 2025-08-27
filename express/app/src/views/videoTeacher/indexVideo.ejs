@@ -69,7 +69,6 @@
         throw new Error('Network response was not ok');
       }
       const videos = await response.json();
-      console.log(videos);
       document.querySelector('.video-teacher-list').innerHTML = videos
         .map(
           (video) => `

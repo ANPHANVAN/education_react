@@ -120,7 +120,6 @@
         throw new Error('Network response was not ok');
       }
       const files = await response.json();
-      console.log(files);
       const listItems = document.querySelector('.file-teacher-list');
       listItems.innerHTML = ''; // Clear existing items
       files.forEach((file) => {

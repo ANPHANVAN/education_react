@@ -37,7 +37,6 @@ const Information = () => {
 
   return (
     <div className="bg-bg flex items-center justify-center p-4 sm:p-6">
-      {console.log(essayId)}
       {loading ? (
         <MiniLoading />
       ) : (
