@@ -6,4 +6,5 @@ export * from './Essay.jsx';
 export * from './Video.jsx';
 export * from './Announce.jsx';
 export * from './Folder.jsx';
+export * from './TeacherInfo.jsx';
 export * from './EditTeacherInfo.jsx';

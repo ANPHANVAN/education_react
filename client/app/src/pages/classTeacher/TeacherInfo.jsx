@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 const VITE_API_URL = process.env.VITE_API_URL;
 
-const TeacherInfo = () => {
+export const TeacherInfo = () => {
   const { classId } = useParams();
   const [loading, setLoading] = useState(true);
   const [teacherInfo, setTeacherInfo] = useState(null);
@@ -14,7 +14,7 @@ const TeacherInfo = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        `${VITE_API_URL}/class-student/api/classroom-details/get-teacher-info/${classId}`
+        `${VITE_API_URL}/class-teacher/api/classroom-details/get-teacher-info/${classId}`
       );
       if (res.ok) {
         const data = await res.json();
@@ -101,8 +101,12 @@ const TeacherInfo = () => {
             </div>
           ))}
       </div>
+      <Link
+        to={`/class-teacher/classroom-details/${classId}/teacher-edit`}
+        className="bg-primary-from hover:bg-primary-to cursor-pointer rounded-lg px-6 py-3 text-lg font-semibold text-white shadow-lg"
+      >
+        Chỉnh sửa thông tin
+      </Link>
     </div>
   );
 };
-
-export default TeacherInfo;
