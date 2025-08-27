@@ -25,7 +25,7 @@ export const HomeStudent = () => {
 
   return (
     <div className="h-full overflow-y-auto px-5 pb-3">
-      <h1 className="mb-3 text-center text-xl">
+      <h1 className="my-3 text-center text-xl">
         Danh sách lớp học ( <span>{classData.length}</span> lớp )
       </h1>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -38,12 +38,6 @@ export const HomeStudent = () => {
 };
 
 export const ClassItem = ({ classItem }) => {
-  const handleDelete = () => {
-    deleteClass(classItem._id);
-  };
-  const handleRename = () => {
-    handleRenameCallback(classItem._id, classItem.className);
-  };
   return (
     <div className="class-item position-relative bg-bg border-surface mb-1 w-auto transform rounded-xl border p-2 shadow-xl transition-all duration-300 hover:-translate-y-0.5">
       <div className="justify-content-between align-items-center flex">

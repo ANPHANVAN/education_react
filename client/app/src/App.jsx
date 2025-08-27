@@ -1,9 +1,8 @@
-import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './App.css';
 
-import { DarkModeToggle, Header } from './components';
+import { Header } from './components';
 import { Login, Register, ResetOTP, ResetPassword } from './pages/auth';
 import { NotFound } from './pages/site';
 import { TestIndex, TestDetail, TestClassDetail, CreateTest } from './pages/testTeacher';
@@ -87,6 +86,8 @@ function App() {
 
             {/* Admin */}
             <Route path="/admin" element={<Admin.AdminIndex />} />
+
+            <Route path="/" element={<Navigate to="/home-student" replace />} />
 
             {/* Another */}
             <Route path="*" element={<NotFound />} />

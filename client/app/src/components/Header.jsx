@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { DarkModeToggle } from './DarkModeToggle';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 const VITE_API_URL = process.env.VITE_API_URL;
 
 export const Header = () => {
+  const navigate = useNavigate();
   const [role, setRole] = useState('student');
   const [fullname, setFullname] = useState('');
   const [userInfo, setUserInfo] = useState({});
@@ -20,10 +21,24 @@ export const Header = () => {
       setRole(userInfo.role);
       setFullname(userInfo.fullname);
       setUserInfo(userInfo);
+      navigationFromRole(userInfo.role);
       return;
     } catch (error) {
       setRole('student');
       setFullname('Hồ Sơ');
+    }
+  };
+
+  const navigationFromRole = (role) => {
+    switch (role) {
+      case 'admin':
+        return navigate(`/admin`);
+      case 'teacher':
+        return navigate(`/class-teacher`);
+      case 'student':
+        return navigate(`/home-student`);
+      default:
+        return navigate(`/auth/login`);
     }
   };
 
@@ -50,9 +65,9 @@ export const Header = () => {
         >
           <ul className="block lg:flex" onClick={handleClick}>
             {(role == 'student' || role == 'admin' || role == 'teacher') && (
-              <ListItem NavLink="/home-student">Học Sinh</ListItem>
+              <ListItem NavLink="/home-student">Lớp Học Sinh</ListItem>
             )}
-            {(role == 'student' || role == 'admin' || role == 'teacher') && (
+            {(role == 'admin' || role == 'teacher') && (
               <>
                 <ListItem NavLink="/class-teacher">Lớp Học</ListItem>
                 <ListItem NavLink="/test-teacher">Đề Thi</ListItem>
@@ -60,9 +75,7 @@ export const Header = () => {
                 <ListItem NavLink="/video-teacher">Video</ListItem>
               </>
             )}
-            {(role == 'student' || role == 'admin' || role == 'teacher') && (
-              <ListItem NavLink="/admin">Admin</ListItem>
-            )}
+            {role == 'admin' && <ListItem NavLink="/admin">Admin</ListItem>}
           </ul>
         </nav>
       </div>
