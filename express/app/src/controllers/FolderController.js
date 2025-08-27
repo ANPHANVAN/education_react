@@ -64,10 +64,6 @@ class FolderController {
     try {
       const classId = req.params.classId;
       const fileList = await Folders.find({ class_id: classId });
-      if (fileList.length == 0) {
-        res.status(404).json({ message: 'Dont have any file in this class' });
-        return;
-      }
 
       res.status(200).json(fileList);
     } catch (err) {

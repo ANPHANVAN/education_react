@@ -4,6 +4,7 @@ const Submissions = require('../models/submissionModel.js');
 const VideoRequirements = require('../models/videoRequirementModel.js');
 const Students = require('../models/studentModel.js');
 const Essay = require('../models/essayModel.js');
+const Users = require('../models/userModel.js');
 
 class ClassTeacherController {
   async index(req, res) {
@@ -126,6 +127,26 @@ class ClassTeacherController {
       res.status(200).json({ essayClassInfo, studentEssayInfo, student_id });
     } catch (error) {
       console.error('Error fetching data:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  }
+
+  // [GET] /class-student/api/classroom-details/get-teacher-info/:classId
+  async getTeacherInfo(req, res) {
+    try {
+      const classId = req.params.classId;
+      const classInfo = await Classes.findById(classId);
+      if (!classInfo) {
+        return res.status(404).json({ message: 'Class not found' });
+      }
+
+      const userCurrent = await Users.findById(classInfo.teacher_id[0]);
+      if (!userCurrent) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json(userCurrent.teacher_info || {});
+    } catch (error) {
+      console.error('Error fetching teacher info:', error);
       res.status(500).send('Internal Server Error');
     }
   }

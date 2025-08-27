@@ -13,6 +13,13 @@ class AdminController {
   // [POST] /admin/api/set-role
   async setRole(req, res) {
     try {
+      const userId = req.user.ObjectId;
+      const userPostInfo = await Users.findById(userId);
+
+      if (userPostInfo.role != 'admin') {
+        return res.status(403).json({ message: 'You dont have permission set Role' });
+      }
+
       let { username, email, role } = req.body;
       username = username.trim().toLowerCase();
       email = email.trim().toLowerCase();

@@ -7,7 +7,7 @@ class VideoStudentController {
     try {
       res.render('videoStudent/indexVideo');
     } catch (error) {
-      console.error('Error:', err);
+      console.error('Error:', error);
       res.status(500).send('Internal Server Error');
     }
   }
@@ -17,7 +17,7 @@ class VideoStudentController {
     try {
       res.render('videoStudent/watchVideoRequirement');
     } catch (error) {
-      console.error('Error:', err);
+      console.error('Error:', error);
       res.status(500).send('Internal Server Error');
     }
   }
@@ -32,7 +32,7 @@ class VideoStudentController {
       }
       res.json(videoRequirement);
     } catch (error) {
-      console.error('Error:', err);
+      console.error('Error:', error);
       res.status(500).send('Internal Server Error');
     }
   }

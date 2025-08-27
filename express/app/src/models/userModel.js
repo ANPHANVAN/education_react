@@ -56,7 +56,7 @@ const UsersSchema = new mongoose.Schema(
         ref: 'Classes',
       },
     ],
-    teacher_info: { type: Object, default: {} },
+    teacher_info: { type: TeacherInfoSchema, default: {} },
   },
   { timestamps: true }
 );

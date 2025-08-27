@@ -16,6 +16,12 @@ router.get('/student-video', setStudentInfo, classStudentController.getStudentVi
 // [GET] /class-student/student-essay?class_id=class_id   //get student status essay
 router.get('/student-essay', setStudentInfo, classStudentController.getStudentEssayStatus);
 
+// [GET] /class-student/api/classroom-details/get-teacher-info/:classId
+router.get(
+  `/api/classroom-details/get-teacher-info/:classId`,
+  classStudentController.getTeacherInfo
+);
+
 //////////// ROUTE /////////////
 // [GET] /class-student/:class_id
 router.get('/:class_id', classStudentController.classDetail);
