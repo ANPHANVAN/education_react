@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './App.css';
@@ -26,22 +27,32 @@ import * as TestStudent from './pages/testStudent';
 import * as VideoStudent from './pages/videoStudent';
 import * as EssayStudent from './pages/essayStudent';
 import * as Admin from './pages/admin';
+import * as Me from './pages/me';
 
 function App() {
-  const VITE_API_URL = import.meta.env.VITE_API_URL;
+  const [routeBeginNavigation, setRouteBeginNavigation] = React.useState(false);
+  const [role, setRole] = React.useState('student');
+
+  const navigationFromRole = (role) => {
+    setRole(role);
+    switch (role) {
+      case 'admin':
+        return setRouteBeginNavigation('/admin');
+      case 'teacher':
+        return setRouteBeginNavigation('/class-teacher');
+      case 'student':
+        return setRouteBeginNavigation('/home-student');
+      default:
+        return setRouteBeginNavigation('/auth/login');
+    }
+  };
 
   return (
     <BrowserRouter>
       <div className="body flex h-screen w-screen flex-col">
-        <Header />
+        <Header navigationFromRole={navigationFromRole} />
         <main className="h-full w-full flex-1">
           <Routes>
-            {/* Auth */}
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/register" element={<Register />} />
-            <Route path="/auth/forgot-password" element={<ResetOTP />} />
-            <Route path="/auth/reset-password" element={<ResetPassword />} />
-
             {/* Teacher */}
             <Route path="/class-teacher" element={<ClassIndex />}></Route>
             <Route path="/class-teacher/classroom-details/:classId" element={<ClassDetail />}>
@@ -66,6 +77,15 @@ function App() {
             <Route path="/video-teacher/video-detail" element={<VideoDetail />} />
             <Route path="/video-teacher/class-video-detail" element={<VideoClassDetail />} />
 
+            {/* Admin */}
+            <Route path="/admin" element={<Admin.AdminIndex />} />
+
+            {/* Auth */}
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/register" element={<Register />} />
+            <Route path="/auth/forgot-password" element={<ResetOTP />} />
+            <Route path="/auth/reset-password" element={<ResetPassword />} />
+
             {/* Student */}
             <Route path="/home-student" element={<StudentClass.HomeStudent />} />
             <Route path="/class-student/:classId" element={<StudentClass.ClassStudentIndex />}>
@@ -84,12 +104,13 @@ function App() {
             <Route path="/essay-student/essay/:essayId" element={<EssayStudent.DoEssay />} />
             <Route path="/video-student/watch-video/:videoId" element={<VideoStudent.Watch />} />
 
-            {/* Admin */}
-            <Route path="/admin" element={<Admin.AdminIndex />} />
-
-            <Route path="/" element={<Navigate to="/home-student" replace />} />
-
             {/* Another */}
+            <Route path="/me/:userId" element={<Me.EditProfile />} />
+
+            <Route
+              path="/"
+              element={<Navigate to={routeBeginNavigation && routeBeginNavigation} replace />}
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

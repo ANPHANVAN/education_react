@@ -3,7 +3,7 @@ import { DarkModeToggle } from './DarkModeToggle';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 const VITE_API_URL = process.env.VITE_API_URL;
 
-export const Header = () => {
+export const Header = ({ navigationFromRole }) => {
   const navigate = useNavigate();
   const [role, setRole] = useState('student');
   const [fullname, setFullname] = useState('');
@@ -26,19 +26,6 @@ export const Header = () => {
     } catch (error) {
       setRole('student');
       setFullname('Hồ Sơ');
-    }
-  };
-
-  const navigationFromRole = (role) => {
-    switch (role) {
-      case 'admin':
-        return navigate(`/admin`);
-      case 'teacher':
-        return navigate(`/class-teacher`);
-      case 'student':
-        return navigate(`/home-student`);
-      default:
-        return navigate(`/auth/login`);
     }
   };
 
