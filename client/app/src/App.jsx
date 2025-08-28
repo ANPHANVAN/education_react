@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import './App.css';
@@ -6,36 +6,99 @@ import './App.css';
 import { Header } from './components';
 import { Login, Register, ResetOTP, ResetPassword } from './pages/auth';
 import { NotFound } from './pages/site';
-import { TestIndex, TestDetail, TestClassDetail, CreateTest } from './pages/testTeacher';
-import { VideoIndex, VideoDetail, VideoClassDetail } from './pages/videoTeacher';
-import { EssayIndex, EssayDetail, EssayClassDetail } from './pages/essayTeacher';
-import {
-  ClassIndex,
-  ClassDetail,
-  Student,
-  Test,
-  Essay,
-  Video,
-  Announce,
-  Folder,
-  EditTeacherInfo,
-  TeacherInfo,
-} from './pages/classTeacher';
+import * as Me from './pages/me';
+
+// import { TestIndex, TestDetail, TestClassDetail, CreateTest } from './pages/testTeacher';
+const TestIndex = lazy(() =>
+  import('./pages/testTeacher').then((module) => ({ default: module.TestIndex }))
+);
+const TestDetail = lazy(() =>
+  import('./pages/testTeacher').then((module) => ({ default: module.TestDetail }))
+);
+const TestClassDetail = lazy(() =>
+  import('./pages/testTeacher').then((module) => ({ default: module.TestClassDetail }))
+);
+const CreateTest = lazy(() =>
+  import('./pages/testTeacher').then((module) => ({ default: module.CreateTest }))
+);
+
+// import { VideoIndex, VideoDetail, VideoClassDetail } from './pages/videoTeacher';
+const VideoIndex = lazy(() =>
+  import('./pages/videoTeacher').then((module) => ({ default: module.VideoIndex }))
+);
+const VideoDetail = lazy(() =>
+  import('./pages/videoTeacher').then((module) => ({ default: module.VideoDetail }))
+);
+const VideoClassDetail = lazy(() =>
+  import('./pages/videoTeacher').then((module) => ({ default: module.VideoClassDetail }))
+);
+// import { EssayIndex, EssayDetail, EssayClassDetail } from './pages/essayTeacher';
+const EssayIndex = lazy(() =>
+  import('./pages/essayTeacher').then((module) => ({ default: module.EssayIndex }))
+);
+const EssayDetail = lazy(() =>
+  import('./pages/essayTeacher').then((module) => ({ default: module.EssayDetail }))
+);
+const EssayClassDetail = lazy(() =>
+  import('./pages/essayTeacher').then((module) => ({ default: module.EssayClassDetail }))
+);
+// import {
+//   ClassIndex,
+//   ClassDetail,
+//   Student,
+//   Test,
+//   Essay,
+//   Video,
+//   Announce,
+//   Folder,
+//   EditTeacherInfo,
+//   TeacherInfo,
+// } from './pages/classTeacher';
+const ClassIndex = lazy(() =>
+  import('./pages/classTeacher').then((module) => ({ default: module.ClassIndex }))
+);
+const ClassDetail = lazy(() =>
+  import('./pages/classTeacher').then((module) => ({ default: module.ClassDetail }))
+);
+const Student = lazy(() =>
+  import('./pages/classTeacher').then((module) => ({ default: module.Student }))
+);
+const Test = lazy(() =>
+  import('./pages/classTeacher').then((module) => ({ default: module.Test }))
+);
+const Essay = lazy(() =>
+  import('./pages/classTeacher').then((module) => ({ default: module.Essay }))
+);
+const Video = lazy(() =>
+  import('./pages/classTeacher').then((module) => ({ default: module.Video }))
+);
+const Announce = lazy(() =>
+  import('./pages/classTeacher').then((module) => ({ default: module.Announce }))
+);
+const Folder = lazy(() =>
+  import('./pages/classTeacher').then((module) => ({ default: module.Folder }))
+);
+const EditTeacherInfo = lazy(() =>
+  import('./pages/classTeacher').then((module) => ({ default: module.EditTeacherInfo }))
+);
+const TeacherInfo = lazy(() =>
+  import('./pages/classTeacher').then((module) => ({ default: module.TeacherInfo }))
+);
 
 import * as StudentClass from './pages/classStudent';
 import * as TestStudent from './pages/testStudent';
 import * as VideoStudent from './pages/videoStudent';
 import * as EssayStudent from './pages/essayStudent';
+
 import * as Admin from './pages/admin';
-import * as Me from './pages/me';
 
 function App() {
   const [routeBeginNavigation, setRouteBeginNavigation] = React.useState(false);
   const [role, setRole] = React.useState('student');
 
-  const navigationFromRole = (role) => {
-    setRole(role);
-    switch (role) {
+  const navigationFromRole = (roleCallBack) => {
+    setRole(roleCallBack);
+    switch (roleCallBack) {
       case 'admin':
         return setRouteBeginNavigation('/admin');
       case 'teacher':
