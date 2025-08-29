@@ -86,11 +86,32 @@ const TeacherInfo = lazy(() =>
 );
 
 import * as StudentClass from './pages/classStudent';
-import * as TestStudent from './pages/testStudent';
-import * as VideoStudent from './pages/videoStudent';
-import * as EssayStudent from './pages/essayStudent';
+// import * as TestStudent from './pages/testStudent';
+const TestStudentInformation = lazy(() =>
+  import('./pages/testStudent').then((module) => ({ default: module.Information }))
+);
+const TestStudentDoTest = lazy(() =>
+  import('./pages/testStudent').then((module) => ({ default: module.DoTest }))
+);
+const TestStudentSubmissionInfo = lazy(() =>
+  import('./pages/testStudent').then((module) => ({ default: module.SubmissionInfo }))
+);
 
-import * as Admin from './pages/admin';
+// import * as VideoStudent from './pages/videoStudent';
+const VideoStudentWatch = lazy(() =>
+  import('./pages/videoStudent').then((module) => ({ default: module.Watch }))
+);
+// import * as EssayStudent from './pages/essayStudent';
+const EssayStudentInfor = lazy(() =>
+  import('./pages/essayStudent').then((module) => ({ default: module.Infor }))
+);
+const EssayStudentDoEssay = lazy(() =>
+  import('./pages/essayStudent').then((module) => ({ default: module.DoEssay }))
+);
+// import * as Admin from './pages/admin';
+const AdminAdminIndex = lazy(() =>
+  import('./pages/admin').then((module) => ({ default: module.AdminIndex }))
+);
 
 function App() {
   const [routeBeginNavigation, setRouteBeginNavigation] = React.useState(false);
@@ -141,7 +162,7 @@ function App() {
             <Route path="/video-teacher/class-video-detail" element={<VideoClassDetail />} />
 
             {/* Admin */}
-            <Route path="/admin" element={<Admin.AdminIndex />} />
+            <Route path="/admin" element={<AdminAdminIndex />} />
 
             {/* Auth */}
             <Route path="/auth/login" element={<Login />} />
@@ -160,12 +181,12 @@ function App() {
               <Route path="folder" element={<StudentClass.Folder />} />
               <Route path="teacher-info" element={<StudentClass.TeacherInfo />} />
             </Route>
-            <Route path="/test-student/information/:testId" element={<TestStudent.Information />} />
-            <Route path="/test-student/test/:testId" element={<TestStudent.DoTest />} />
-            <Route path="/test-student/submit/:submitId" element={<TestStudent.SubmissionInfo />} />
-            <Route path="/essay-student/information/:essayId" element={<EssayStudent.Infor />} />
-            <Route path="/essay-student/essay/:essayId" element={<EssayStudent.DoEssay />} />
-            <Route path="/video-student/watch-video/:videoId" element={<VideoStudent.Watch />} />
+            <Route path="/test-student/information/:testId" element={<TestStudentInformation />} />
+            <Route path="/test-student/test/:testId" element={<TestStudentDoTest />} />
+            <Route path="/test-student/submit/:submitId" element={<TestStudentSubmissionInfo />} />
+            <Route path="/essay-student/information/:essayId" element={<EssayStudentInfor />} />
+            <Route path="/essay-student/essay/:essayId" element={<EssayStudentDoEssay />} />
+            <Route path="/video-student/watch-video/:videoId" element={<VideoStudentWatch />} />
 
             {/* Another */}
             <Route path="/me/:userId" element={<Me.EditProfile />} />
