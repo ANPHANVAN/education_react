@@ -74,6 +74,7 @@ services:
       - ./express/app/src/uploads:/uploads:ro
       - ./nginx/certbot/www:/var/www/certbot:ro
       - ./nginx/certbot/conf:/etc/letsencrypt:ro
+      - ./client/app/dist:/client/app/dist:ro
     depends_on:
       express:
         condition: service_healthy
@@ -121,18 +122,19 @@ services:
         condition: service_healthy
     networks:
       - app-network
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-size: "10m"
+    #     max-file: "3"
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
+    # restart: unless-stopped
     container_name: education-client-1
+    command: ["npm", "run", "build"]
 
 networks:
   app-network:
