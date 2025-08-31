@@ -125,10 +125,11 @@ const DoTest = () => {
   };
 
   const handleAutoSubmit = async () => {
-    setFormDataAnswers((prev) => ({
-      ...prev,
-      time_end: new Date().toISOString(),
-    }));
+    const newTimeEnd = new Date().toISOString();
+    formDataAnswersRef.current = {
+      ...formDataAnswersRef.current,
+      time_end: newTimeEnd,
+    };
     const submissionId = await fetchPostSubmitTest();
     if (submissionId) {
       navigate(`/test-student/submit/${submissionId}?class_id=${classId}`);

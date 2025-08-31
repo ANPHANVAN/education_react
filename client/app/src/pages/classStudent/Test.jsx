@@ -78,7 +78,7 @@ const Test = () => {
                     <p className="text-text font-bold">
                       Điểm {testItem.score}/{testItem.sum_score}
                     </p>
-                    <p>Thời gian làm bài: {testItem.sum_score + "'"}</p>
+                    <p>Thời gian làm bài: {testItem.time_test + "'"}</p>
                   </div>
                 </div>
               )}

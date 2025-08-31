@@ -4,9 +4,23 @@ import { ToastContainer } from 'react-toastify';
 import './App.css';
 
 import { Header } from './components';
-import { Login, Register, ResetOTP, ResetPassword } from './pages/auth';
 import { NotFound } from './pages/site';
-import * as Me from './pages/me';
+
+// import { Login, Register, ResetOTP, ResetPassword } from './pages/auth';
+import { Login } from './pages/auth';
+const Register = lazy(() =>
+  import('./pages/auth').then((module) => ({ default: module.Register }))
+);
+const ResetOTP = lazy(() =>
+  import('./pages/auth').then((module) => ({ default: module.ResetOTP }))
+);
+const ResetPassword = lazy(() =>
+  import('./pages/auth').then((module) => ({ default: module.ResetPassword }))
+);
+// import * as Me from './pages/me';
+const MeEditProfile = lazy(() =>
+  import('./pages/me').then((module) => ({ default: module.EditProfile }))
+);
 
 // import { TestIndex, TestDetail, TestClassDetail, CreateTest } from './pages/testTeacher';
 const TestIndex = lazy(() =>
@@ -42,18 +56,9 @@ const EssayDetail = lazy(() =>
 const EssayClassDetail = lazy(() =>
   import('./pages/essayTeacher').then((module) => ({ default: module.EssayClassDetail }))
 );
-// import {
-//   ClassIndex,
-//   ClassDetail,
-//   Student,
-//   Test,
-//   Essay,
-//   Video,
-//   Announce,
-//   Folder,
-//   EditTeacherInfo,
-//   TeacherInfo,
-// } from './pages/classTeacher';
+
+// import { ClassIndex, ClassDetail, Student, Test, Essay, Video,
+//   Announce, Folder, EditTeacherInfo,TeacherInfo } from './pages/classTeacher';
 const ClassIndex = lazy(() =>
   import('./pages/classTeacher').then((module) => ({ default: module.ClassIndex }))
 );
@@ -85,7 +90,30 @@ const TeacherInfo = lazy(() =>
   import('./pages/classTeacher').then((module) => ({ default: module.TeacherInfo }))
 );
 
-import * as StudentClass from './pages/classStudent';
+// import * as StudentClass from './pages/classStudent';
+import StudentClassHomeStudent from './pages/classStudent/HomeStudent.jsx';
+const StudentClassClassStudentIndex = lazy(() =>
+  import('./pages/classStudent').then((module) => ({ default: module.ClassStudentIndex }))
+);
+const StudentClassClassInfo = lazy(() =>
+  import('./pages/classStudent').then((module) => ({ default: module.ClassInfo }))
+);
+const StudentClassTest = lazy(() =>
+  import('./pages/classStudent').then((module) => ({ default: module.Test }))
+);
+const StudentClassEssay = lazy(() =>
+  import('./pages/classStudent').then((module) => ({ default: module.Essay }))
+);
+const StudentClassVideo = lazy(() =>
+  import('./pages/classStudent').then((module) => ({ default: module.Video }))
+);
+const StudentClassFolder = lazy(() =>
+  import('./pages/classStudent').then((module) => ({ default: module.Folder }))
+);
+const StudentClassTeacherInfo = lazy(() =>
+  import('./pages/classStudent').then((module) => ({ default: module.TeacherInfo }))
+);
+
 // import * as TestStudent from './pages/testStudent';
 const TestStudentInformation = lazy(() =>
   import('./pages/testStudent').then((module) => ({ default: module.Information }))
@@ -133,9 +161,10 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="body flex h-screen w-screen flex-col">
+      {/* <div className="body flex h-screen w-screen flex-col"> */}
+      <div className="body flex h-screen flex-col">
         <Header navigationFromRole={navigationFromRole} />
-        <main className="h-full w-full flex-1">
+        <main className="h-full w-full flex-1 overflow-auto">
           <Routes>
             {/* Teacher */}
             <Route path="/class-teacher" element={<ClassIndex />}></Route>
@@ -171,15 +200,15 @@ function App() {
             <Route path="/auth/reset-password" element={<ResetPassword />} />
 
             {/* Student */}
-            <Route path="/home-student" element={<StudentClass.HomeStudent />} />
-            <Route path="/class-student/:classId" element={<StudentClass.ClassStudentIndex />}>
+            <Route path="/home-student" element={<StudentClassHomeStudent />} />
+            <Route path="/class-student/:classId" element={<StudentClassClassStudentIndex />}>
               <Route index element={<Navigate to="information" replace />} />
-              <Route path="information" element={<StudentClass.ClassInfo />} />
-              <Route path="test" element={<StudentClass.Test />} />
-              <Route path="essay" element={<StudentClass.Essay />} />
-              <Route path="video" element={<StudentClass.Video />} />
-              <Route path="folder" element={<StudentClass.Folder />} />
-              <Route path="teacher-info" element={<StudentClass.TeacherInfo />} />
+              <Route path="information" element={<StudentClassClassInfo />} />
+              <Route path="test" element={<StudentClassTest />} />
+              <Route path="essay" element={<StudentClassEssay />} />
+              <Route path="video" element={<StudentClassVideo />} />
+              <Route path="folder" element={<StudentClassFolder />} />
+              <Route path="teacher-info" element={<StudentClassTeacherInfo />} />
             </Route>
             <Route path="/test-student/information/:testId" element={<TestStudentInformation />} />
             <Route path="/test-student/test/:testId" element={<TestStudentDoTest />} />
@@ -189,7 +218,7 @@ function App() {
             <Route path="/video-student/watch-video/:videoId" element={<VideoStudentWatch />} />
 
             {/* Another */}
-            <Route path="/me/:userId" element={<Me.EditProfile />} />
+            <Route path="/me/:userId" element={<MeEditProfile />} />
 
             <Route
               path="/"

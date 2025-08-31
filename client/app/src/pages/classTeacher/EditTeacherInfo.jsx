@@ -358,7 +358,7 @@ export const EditTeacherInfo = () => {
                 />
                 <button
                   onClick={() => handleClickDeleteDegreeItem(degreeItem._id)}
-                  className="mb-3 cursor-pointer text-sm text-red-600 hover:text-red-800"
+                  className="my-1 cursor-pointer text-sm text-red-600 hover:text-red-800"
                 >
                   Xóa bằng
                 </button>
@@ -385,7 +385,7 @@ export const EditTeacherInfo = () => {
                   id={partItem._id}
                 />
                 {partItem.content.map((contentItem) => (
-                  <div key={contentItem._id} className="mb-3">
+                  <div key={contentItem._id} className="">
                     <textarea
                       className="w-full rounded-lg border p-3 focus:ring"
                       value={contentItem.context}
@@ -394,7 +394,7 @@ export const EditTeacherInfo = () => {
                     />
                     <button
                       onClick={() => handleClickDeleteContentItem(partItem._id, contentItem._id)}
-                      className="mt-2 cursor-pointer text-sm text-red-600 hover:text-red-800"
+                      className="my-1 cursor-pointer text-sm text-red-600 hover:text-red-800"
                     >
                       Xóa đoạn
                     </button>
@@ -417,7 +417,7 @@ export const EditTeacherInfo = () => {
 
             <button
               onClick={handleClickAddPart}
-              className="mt-4 rounded-lg bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+              className="rounded-lg bg-green-500 px-4 py-2 text-white hover:bg-green-600"
             >
               + Thêm phần
             </button>

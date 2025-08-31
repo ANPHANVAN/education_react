@@ -111,7 +111,7 @@ export const TestClassDetail = () => {
       </div>
 
       <div className="w-full overflow-x-auto">
-        <table className="bg-bg min-w-full border-collapse rounded-lg whitespace-nowrap shadow-md">
+        <table className="bg-bg min-w-full border-collapse rounded-lg shadow-md">
           <thead>
             <tr className="max-h-8 bg-gray-300 text-gray-700">
               {tableColumn.map((column, index) => (
@@ -130,15 +130,15 @@ export const TestClassDetail = () => {
               const status = student.submit_status;
               return (
                 <tr key={index + 1}>
-                  <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
+                  <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm">
                     {index + 1}
                   </td>
-                  <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
+                  <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm">
                     <h4>{student.student_user_id.fullname}</h4>
                     <small>{student.student_user_id.email}</small>
                   </td>
                   <td
-                    className={`studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap`}
+                    className={`studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm`}
                   >
                     <button
                       className={`${status ? 'bg-green-400' : 'bg-red-400'} rounded-2xl px-3 py-2`}
@@ -146,10 +146,10 @@ export const TestClassDetail = () => {
                       {status ? 'Đã Nộp' : 'Chưa Nộp'}
                     </button>
                   </td>
-                  <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
+                  <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm">
                     {status ? status.score : '-'}
                   </td>
-                  <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm whitespace-nowrap">
+                  <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm">
                     {status
                       ? new Date(student.submission.time_end).toLocaleString('vi-VN', {
                           day: '2-digit',

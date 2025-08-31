@@ -146,15 +146,7 @@ export const Login = () => {
                 </div>
                 {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
               </div>
-              <div className="flex flex-wrap items-center justify-end gap-4">
-                <Link
-                  to="/auth/forgot-password"
-                  className="text-sm font-semibold text-blue-600 hover:underline"
-                >
-                  Quên Mật Khẩu?
-                </Link>
-              </div>
-              <div className="!mt-12">
+              <div className="">
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -166,6 +158,14 @@ export const Login = () => {
                 >
                   Đăng Nhập
                 </button>
+                <div className="mt-3 flex flex-wrap items-center justify-end gap-4">
+                  <Link
+                    to="/auth/forgot-password"
+                    className="text-sm font-semibold text-blue-600 hover:underline"
+                  >
+                    Quên Mật Khẩu?
+                  </Link>
+                </div>
               </div>
               <p className="!mt-6 text-center text-sm text-slate-900">
                 Không có tài khoản?{' '}

@@ -11,6 +11,7 @@ const ClassInfo = () => {
     class_name: 'No Data',
     school_year: 'No Data',
   });
+  const [announcementSorted, setAnnouncementSorted] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchClassInfo = async () => {
@@ -31,8 +32,22 @@ const ClassInfo = () => {
     }
   };
 
+  const sortAndSetAnouncement = () => {
+    if (!classData.announcement) return;
+    const sorted = [...classData.announcement].sort((a, b) => new Date(b.date) - new Date(a.date));
+    setAnnouncementSorted(sorted);
+  };
+
   useEffect(() => {
-    fetchClassInfo();
+    sortAndSetAnouncement();
+  }, [classData.announcement]);
+
+  useEffect(() => {
+    const init = async () => {
+      fetchClassInfo();
+    };
+
+    init();
   }, []);
 
   return (
@@ -48,8 +63,8 @@ const ClassInfo = () => {
       <div className="announce">
         <h1 className="m-1 text-center text-2xl">Thông báo</h1>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {!loading && classData?.announcement?.length == 0 && 'Chưa có thông báo nào!'}
-          {classData?.announcement?.map((announceItem, index) => (
+          {!loading && announcementSorted?.length == 0 && 'Chưa có thông báo nào!'}
+          {announcementSorted?.map((announceItem, index) => (
             <div
               key={index}
               className="announceItem bg-bg border-surface mb-1 transform rounded-xl border p-2 shadow-xl transition-all duration-300 hover:-translate-y-0.5"

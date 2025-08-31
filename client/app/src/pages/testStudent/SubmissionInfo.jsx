@@ -42,8 +42,8 @@ const SubmissionInfo = () => {
         Kết Quả Bài Làm
       </h2>
       <div className="mb-3 flex justify-center">
-        <Link to={`/class-student/${classId}`}>
-          <button className="rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white transition-all hover:bg-blue-700">
+        <Link to={`/class-student/${classId}/test`}>
+          <button className="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white transition-all hover:bg-blue-700">
             Về Lớp
           </button>
         </Link>

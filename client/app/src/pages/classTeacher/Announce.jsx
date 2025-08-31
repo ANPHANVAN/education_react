@@ -8,6 +8,7 @@ const VITE_API_URL = process.env.VITE_API_URL;
 export const Announce = () => {
   const { classId } = useParams();
   const [listAnnounce, setListAnnounce] = useState([]);
+  const [announcementSorted, setAnnouncementSorted] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [formDataContent, setFormDataContent] = useState({ content: '' });
   const [loading, setLoading] = useState(true);
@@ -50,11 +51,20 @@ export const Announce = () => {
         return;
       }
       const data = await response.json();
+      toast.success('Gửi thông báo thành công!');
+      setFormDataContent({ content: '' });
+      return data;
     } catch (error) {
       console.error('Error fetching:', error);
       toast.error(`Lỗi gửi dữ liệu! ${error}`);
       return;
     }
+  };
+
+  const sortAndSetAnouncement = () => {
+    if (!listAnnounce) return;
+    const sorted = [...listAnnounce].sort((a, b) => new Date(b.date) - new Date(a.date));
+    setAnnouncementSorted(sorted);
   };
 
   const handleSubmitContent = async () => {
@@ -73,6 +83,10 @@ export const Announce = () => {
   useEffect(() => {
     fetchListData();
   }, []);
+
+  useEffect(() => {
+    sortAndSetAnouncement();
+  }, [listAnnounce]);
 
   return (
     <div className="">
@@ -107,8 +121,8 @@ export const Announce = () => {
       </div>
       {loading && <MiniLoading />}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {!loading && listAnnounce?.length == 0 && 'Chưa có thông báo nào!'}
-        {listAnnounce?.map((announceItem) => (
+        {!loading && announcementSorted?.length == 0 && 'Chưa có thông báo nào!'}
+        {announcementSorted?.map((announceItem) => (
           <div className="announceItem bg-bg border-surface mb-1 transform rounded-xl border p-2 shadow-xl transition-all duration-300 hover:-translate-y-0.5">
             <div className="mt-1 block">
               <div className="mb-1 flex items-center justify-between">
@@ -145,6 +159,7 @@ export const Announce = () => {
             name="content"
             id="content"
             required
+            autoFocus={true}
             value={formDataContent.content}
             onChange={handleChangeInputContent}
             className="focus:border-primary-from focus:ring-primary-from/30 w-full rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:ring dark:text-white"

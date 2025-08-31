@@ -52,8 +52,9 @@ export const Folder = () => {
         toast.error('Lỗi lấy dữ liệu!');
         return;
       }
-      const data = await response.json();
-      toast.success('posst thanh cong');
+      toast.success('Tạo file thành công!');
+      setFormDataInput({ title: '' });
+      return;
     } catch (error) {
       console.error('Error fetching:', error);
       toast.error(`Lỗi gửi dữ liệu! ${error}`);
