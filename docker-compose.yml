@@ -142,3 +142,4 @@ networks:
 
 volumes:
   mongo-data:
+    name: education_mongo-data
