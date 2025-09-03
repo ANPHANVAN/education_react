@@ -28,6 +28,9 @@ express/app/src/uploads/
 # certificates ssl
 nginx/certbot/
 
+# config
+nginx/nginx.conf
+
 # frontend build
 *dist/
 *build/
