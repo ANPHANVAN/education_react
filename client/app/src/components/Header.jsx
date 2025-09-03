@@ -51,9 +51,7 @@ export const Header = ({ navigationFromRole }) => {
           } `}
         >
           <ul className="block lg:flex" onClick={handleClick}>
-            {(role == 'student' || role == 'admin' || role == 'teacher') && (
-              <ListItem NavLink="/home-student">Lớp Học Sinh</ListItem>
-            )}
+            {role == 'student' && <ListItem NavLink="/home-student">Lớp Học Sinh</ListItem>}
             {(role == 'admin' || role == 'teacher') && (
               <>
                 <ListItem NavLink="/class-teacher">Lớp Học</ListItem>
