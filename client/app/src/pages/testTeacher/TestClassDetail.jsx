@@ -147,7 +147,7 @@ export const TestClassDetail = () => {
                     </button>
                   </td>
                   <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm">
-                    {status ? status.score : '-'}
+                    {status ? student.submission.score : '-'}
                   </td>
                   <td className="studentSubmission border-secondary max-h-32 truncate border-b px-4 py-2 text-sm">
                     {status
