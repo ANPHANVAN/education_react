@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
 import Dropdown from '../../components/Dropdown';
 const VITE_API_URL = process.env.VITE_API_URL;
@@ -30,10 +30,13 @@ export const ClassIndex = () => {
       }
       const data = await response.json();
       return setClassData(data[0]?.class_id || []);
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const createClass = async () => {
+  const createClass = async (e) => {
+    e.preventDefault();
     try {
       const response = await fetch(`${VITE_API_URL}/class-teacher/api/create-class`, {
         method: 'POST',
@@ -54,6 +57,7 @@ export const ClassIndex = () => {
       }
     } catch (error) {
       toast.error('Có lỗi xảy ra khi tạo lớp học. Vui lòng thử lại sau.');
+      console.error(error);
     }
   };
 
@@ -179,7 +183,7 @@ export const ClassIndex = () => {
         overlayClassName="fixed inset-0 z-20 flex items-center justify-center bg-gray-600/50 dark:bg-gray-900/50"
         className="dark:bg-bg w-full max-w-md rounded-2xl bg-white p-8 shadow-xl"
       >
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={createClass}>
           <h2 className="text-xl font-semibold text-black dark:text-white">Tạo lớp học mới</h2>
 
           {/* Tên lớp */}
@@ -262,8 +266,7 @@ export const ClassIndex = () => {
               Hủy
             </button>
             <button
-              type="button"
-              onClick={createClass}
+              type="submit"
               className="bg-primary-from hover:bg-primary-to rounded-xl px-4 py-2 text-sm font-semibold text-white"
             >
               Tải lên
