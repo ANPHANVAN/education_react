@@ -5,7 +5,7 @@ services:
       - mongo-data:/data/db
       - ./.database/mongo_backup/backup:/data/backup # take backup files
     healthcheck:
-      test: ['CMD', 'mongostat', '--host', 'localhost', '--rowcount', '1', '--noheaders']
+      test: ['CMD', 'mongosh', '--quiet', '--eval', "db.adminCommand('ping').ok"]
       interval: 10s
       timeout: 5s
       retries: 5
